@@ -1,0 +1,421 @@
+:host {
+  display: contents;
+}
+
+/* =========================================================
+   Backdrop
+   ========================================================= */
+
+.dialog-backdrop {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 3000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(15, 23, 42, .5);
+
+  backdrop-filter:
+    blur(4px);
+
+}
+
+/* =========================================================
+   Dialog
+   ========================================================= */
+
+.confirm-dialog {
+
+  width:
+    min(100%, 420px);
+
+  padding:
+    25px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    17px;
+
+  background:
+    white;
+
+  box-shadow:
+    0 30px 80px
+    rgba(15, 23, 42, .22);
+
+  animation:
+    dialog-in .18s ease-out;
+
+}
+
+@keyframes dialog-in {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(10px)
+      scale(.97);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+
+  }
+
+}
+
+/* =========================================================
+   Icon
+   ========================================================= */
+
+.dialog-icon {
+
+  width: 48px;
+
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border-radius: 13px;
+
+  font-size: 19px;
+
+}
+
+.dialog-icon.danger {
+
+  background:
+    #fef2f2;
+
+  color:
+    #dc2626;
+
+}
+
+.dialog-icon.warning {
+
+  background:
+    #fff7ed;
+
+  color:
+    #ea580c;
+
+}
+
+.dialog-icon.primary {
+
+  background:
+    #eff6ff;
+
+  color:
+    #2563eb;
+
+}
+
+.dialog-icon.success {
+
+  background:
+    #f0fdf4;
+
+  color:
+    #16a34a;
+
+}
+
+/* =========================================================
+   Content
+   ========================================================= */
+
+.dialog-content h3 {
+
+  margin:
+    0 0 7px;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    17px;
+
+  font-weight:
+    700;
+
+}
+
+.dialog-content p {
+
+  margin:
+    0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    10px;
+
+  line-height:
+    1.7;
+
+}
+
+/* =========================================================
+   Actions
+   ========================================================= */
+
+.dialog-actions {
+
+  display:
+    flex;
+
+  justify-content:
+    flex-end;
+
+  gap:
+    8px;
+
+  margin-top:
+    23px;
+
+}
+
+.cancel-button,
+.confirm-button {
+
+  min-height:
+    39px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    7px;
+
+  padding:
+    0 14px;
+
+  border-radius:
+    8px;
+
+  font-family:
+    inherit;
+
+  font-size:
+    9px;
+
+  font-weight:
+    650;
+
+  cursor:
+    pointer;
+
+}
+
+.cancel-button {
+
+  border:
+    1px solid var(--color-border);
+
+  background:
+    white;
+
+  color:
+    var(--color-text-secondary);
+
+}
+
+.cancel-button:hover:not(:disabled) {
+
+  background:
+    #f8fafc;
+
+}
+
+.confirm-button {
+
+  border:
+    0;
+
+  color:
+    white;
+
+}
+
+.confirm-button.danger {
+
+  background:
+    #dc2626;
+
+}
+
+.confirm-button.danger:hover:not(:disabled) {
+
+  background:
+    #b91c1c;
+
+}
+
+.confirm-button.warning {
+
+  background:
+    #ea580c;
+
+}
+
+.confirm-button.warning:hover:not(:disabled) {
+
+  background:
+    #c2410c;
+
+}
+
+.confirm-button.primary {
+
+  background:
+    var(--color-primary);
+
+}
+
+.confirm-button.primary:hover:not(:disabled) {
+
+  background:
+    var(--color-primary-dark);
+
+}
+
+.confirm-button.success {
+
+  background:
+    #16a34a;
+
+}
+
+.confirm-button.success:hover:not(:disabled) {
+
+  background:
+    #15803d;
+
+}
+
+.cancel-button:disabled,
+.confirm-button:disabled {
+
+  opacity:
+    .55;
+
+  cursor:
+    not-allowed;
+
+}
+
+/* =========================================================
+   Spinner
+   ========================================================= */
+
+.spinner {
+
+  width:
+    13px;
+
+  height:
+    13px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, .35);
+
+  border-top-color:
+    white;
+
+  border-radius:
+    50%;
+
+  animation:
+    spin .6s linear infinite;
+
+}
+
+@keyframes spin {
+
+  to {
+
+    transform:
+      rotate(360deg);
+
+  }
+
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+  .dialog-backdrop {
+
+    align-items:
+      flex-end;
+
+    padding:
+      0;
+
+  }
+
+  .confirm-dialog {
+
+    width:
+      100%;
+
+    border-radius:
+      17px 17px 0 0;
+
+  }
+
+  .dialog-actions {
+
+    flex-direction:
+      column-reverse;
+
+  }
+
+  .cancel-button,
+  .confirm-button {
+
+    width:
+      100%;
+
+  }
+
+}

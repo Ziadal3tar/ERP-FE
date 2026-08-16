@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.purchase-create-page {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+}
+
+.error-banner {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 15px;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: 9px;
+
+  background:
+    #fef2f2;
+
+  color:
+    #b91c1c;
+
+  font-size: 11px;
+}

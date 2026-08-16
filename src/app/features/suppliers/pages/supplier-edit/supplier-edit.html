@@ -1,0 +1,74 @@
+<div class="supplier-page">
+
+  <app-page-header
+    title="Edit Supplier"
+    description="Update supplier information."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      {{ error() }}
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading supplier...
+
+    </div>
+
+  } @else if (supplier(); as currentSupplier) {
+
+ <section class="form-card">
+
+    <div class="form-card-header">
+
+      <div class="icon">
+        <i class="bi bi-pencil-square"></i>
+      </div>
+
+      <div>
+
+        <h2>
+          Supplier Information
+        </h2>
+
+        <p>
+          Update the supplier details below.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <app-supplier-form
+
+      [supplier]="currentSupplier"
+
+      [loading]="saving()"
+
+      (submitted)="submit($event)"
+
+      (cancelled)="cancel()"
+
+    />
+
+  </section>
+
+  }
+
+</div>
+

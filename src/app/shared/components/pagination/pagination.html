@@ -1,0 +1,60 @@
+@if (totalPages() > 1) {
+
+  <div class="pagination-wrapper">
+
+    <span class="pagination-info">
+
+      {{ total() }} records
+
+    </span>
+
+
+    <div class="pagination-controls">
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="page() === 1"
+        (click)="previous()"
+      >
+
+        <i class="bi bi-chevron-left"></i>
+
+      </button>
+
+
+      @for (
+        pageNumber of pages();
+        track pageNumber
+      ) {
+
+        <button
+          type="button"
+          class="pagination-button number"
+          [class.active]="pageNumber === page()"
+          (click)="goToPage(pageNumber)"
+        >
+
+          {{ pageNumber }}
+
+        </button>
+
+      }
+
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="page() === totalPages()"
+        (click)="next()"
+      >
+
+        <i class="bi bi-chevron-right"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

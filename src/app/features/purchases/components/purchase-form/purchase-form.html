@@ -1,0 +1,690 @@
+<div class="purchase-form">
+
+  @if (dataLoading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading suppliers, products and warehouses...
+
+    </div>
+
+  } @else {
+
+    <!-- =====================================================
+         Error
+         ===================================================== -->
+
+    @if (dataError()) {
+
+      <div class="error-banner">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ dataError() }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         Purchase Information
+         ===================================================== -->
+
+    <section
+      class="form-section"
+      [formGroup]="form"
+    >
+
+      <div class="section-header">
+
+        <div class="section-icon blue">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            Purchase Information
+          </h2>
+
+          <span>
+            Select the supplier and receiving warehouse.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="fields-grid">
+
+        <!-- Supplier -->
+
+        <div class="field">
+
+          <label>
+
+            Supplier
+
+            <span>*</span>
+
+          </label>
+
+
+          <select
+            formControlName="supplier"
+          >
+
+            <option value="">
+              Select supplier
+            </option>
+
+
+            @for (
+              supplier of suppliers();
+              track supplier._id
+            ) {
+
+              <option
+                [value]="supplier._id"
+              >
+
+                {{ supplier.name }}
+
+                ·
+
+                {{ supplier.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+
+          @if (
+            form.controls.supplier.touched &&
+            form.controls.supplier.errors?.['required']
+          ) {
+
+            <small>
+              Supplier is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Warehouse -->
+
+        <div class="field">
+
+          <label>
+
+            Warehouse
+
+            <span>*</span>
+
+          </label>
+
+
+          <select
+            formControlName="warehouse"
+          >
+
+            <option value="">
+              Select warehouse
+            </option>
+
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+                ·
+
+                {{ warehouse.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+
+          @if (
+            form.controls.warehouse.touched &&
+            form.controls.warehouse.errors?.['required']
+          ) {
+
+            <small>
+              Warehouse is required.
+            </small>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Purchase Items
+         ===================================================== -->
+
+    <section
+      class="form-section"
+      [formGroup]="form"
+    >
+
+      <div class="section-header items-header">
+
+        <div class="section-title-row">
+
+          <div class="section-icon green">
+
+            <i class="bi bi-box-seam"></i>
+
+          </div>
+
+
+          <div>
+
+            <h2>
+              Purchase Items
+            </h2>
+
+            <span>
+              Add the products received from the supplier.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="add-item-button"
+          (click)="addItem()"
+        >
+
+          <i class="bi bi-plus-lg"></i>
+
+          Add Item
+
+        </button>
+
+      </div>
+
+
+      <div class="items-table">
+
+        <!-- Header -->
+
+        <div class="items-header-row">
+
+          <span>
+            Product
+          </span>
+
+          <span>
+            Quantity
+          </span>
+
+          <span>
+            Unit Price
+          </span>
+
+          <span>
+            Total
+          </span>
+
+          <span></span>
+
+        </div>
+
+
+        <!-- Body -->
+
+        <div
+          class="items-body"
+          formArrayName="items"
+        >
+
+          @for (
+            item of itemControls;
+            track $index
+          ) {
+
+            <div
+              class="item-row"
+              [formGroupName]="$index"
+            >
+
+              <!-- Product -->
+
+              <div class="item-product">
+
+                <select
+                  formControlName="product"
+                >
+
+                  <option value="">
+                    Select product
+                  </option>
+
+
+                  @for (
+                    product of products();
+                    track product._id
+                  ) {
+
+                    @if (
+                      !isProductUsed(
+                        product._id,
+                        $index
+                      ) ||
+                      item.controls.product.value ===
+                      product._id
+                    ) {
+
+                      <option
+                        [value]="product._id"
+                      >
+
+                        {{ product.name }}
+
+                        @if (product.sku) {
+
+                          ·
+                          {{ product.sku }}
+
+                        }
+
+                      </option>
+
+                    }
+
+                  }
+
+                </select>
+
+
+                @if (
+                  item.controls.product.touched &&
+                  item.controls.product.errors?.['required']
+                ) {
+
+                  <small>
+                    Product is required.
+                  </small>
+
+                }
+
+              </div>
+
+
+              <!-- Quantity -->
+
+              <div class="item-field">
+
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  formControlName="quantity"
+                />
+
+
+                @if (
+                  item.controls.quantity.touched &&
+                  item.controls.quantity.errors?.['required']
+                ) {
+
+                  <small>
+                    Quantity is required.
+                  </small>
+
+                }
+
+
+                @if (
+                  item.controls.quantity.touched &&
+                  item.controls.quantity.errors?.['min']
+                ) {
+
+                  <small>
+                    Must be greater than zero.
+                  </small>
+
+                }
+
+              </div>
+
+
+              <!-- Unit Price -->
+
+              <div class="item-field">
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  formControlName="unitPrice"
+                />
+
+
+                @if (
+                  item.controls.unitPrice.touched &&
+                  item.controls.unitPrice.errors?.['required']
+                ) {
+
+                  <small>
+                    Unit price is required.
+                  </small>
+
+                }
+
+
+                @if (
+                  item.controls.unitPrice.touched &&
+                  item.controls.unitPrice.errors?.['min']
+                ) {
+
+                  <small>
+                    Cannot be negative.
+                  </small>
+
+                }
+
+              </div>
+
+
+              <!-- Total -->
+
+              <div class="item-total">
+
+                {{
+                  itemTotal($index)
+                    | currency:'EGP':'symbol':'1.2-2'
+                }}
+
+              </div>
+
+
+              <!-- Remove -->
+
+              <button
+                type="button"
+                class="remove-item-button"
+
+                [disabled]="
+                  itemControls.length === 1
+                "
+
+                (click)="
+                  removeItem($index)
+                "
+              >
+
+                <i class="bi bi-trash3"></i>
+
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Totals
+         ===================================================== -->
+
+    <section
+      class="totals-section"
+      [formGroup]="form"
+    >
+
+      <div class="totals-left">
+
+        <div class="summary-info">
+
+          <i class="bi bi-calculator"></i>
+
+
+          <div>
+
+            <strong>
+              Purchase Summary
+            </strong>
+
+            <span>
+
+              {{ itemControls.length }}
+              products
+
+              ·
+
+              {{ totalItems | number }}
+              units
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Notes -->
+
+        <div class="field notes-field">
+
+          <label>
+            Notes
+          </label>
+
+
+          <textarea
+            rows="4"
+            formControlName="notes"
+            placeholder="Add notes about this purchase..."
+          ></textarea>
+
+
+          <span class="hint">
+            Maximum 500 characters.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Totals -->
+
+      <div class="totals-card">
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+
+          <strong>
+
+            {{
+              subtotal
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+
+          <div class="money-input">
+
+            <span>
+              −
+            </span>
+
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="discount"
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Tax
+          </span>
+
+
+          <div class="money-input">
+
+            <span>
+              +
+            </span>
+
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="tax"
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="total-divider"></div>
+
+
+        <div class="summary-total">
+
+          <span>
+            Grand Total
+          </span>
+
+
+          <strong>
+
+            {{
+              total
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        @if (total < 0) {
+
+          <small class="negative-total">
+            Total cannot be negative.
+          </small>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Actions
+         ===================================================== -->
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="secondary-button"
+
+        [disabled]="loading()"
+
+        (click)="cancel()"
+      >
+
+        Cancel
+
+      </button>
+
+
+      <button
+        type="button"
+        class="primary-button"
+
+        [disabled]="
+          loading() ||
+          dataLoading()
+        "
+
+        (click)="submit()"
+      >
+
+        @if (loading()) {
+
+          <span class="button-spinner"></span>
+
+          Creating...
+
+        } @else {
+
+          <i class="bi bi-check-lg"></i>
+
+          Create Purchase
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>

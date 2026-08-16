@@ -1,0 +1,427 @@
+<div class="employee-form-page">
+
+  <app-page-header
+    [title]="
+      isEditMode()
+        ? 'Edit Employee'
+        : 'Create Employee'
+    "
+
+    [description]="
+      isEditMode()
+        ? 'Update employee profile and employment details.'
+        : 'Add a new employee to your organization.'
+    "
+  />
+
+
+  @if (loading() || dependenciesLoading()) {
+
+    <app-loading-state
+      message="Preparing employee form..."
+    />
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+
+      @if (error()) {
+
+        <div class="form-error">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ error() }}
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           Employment
+           ================================================== -->
+
+      <div class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon blue">
+
+            <i class="bi bi-person-badge"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Employment Information
+            </h2>
+
+            <p>
+              Basic employee assignment and identity.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- User -->
+
+          <div class="form-field">
+
+            <label>
+              User
+            </label>
+
+            <select
+              formControlName="user"
+            >
+
+              <option value="">
+                Select user
+              </option>
+
+              @for (
+                user of activeUsers();
+                track user._id
+              ) {
+
+                <option [value]="user._id">
+
+                  {{ user.name }}
+                  —
+                  {{ user.email }}
+
+                </option>
+
+              }
+
+            </select>
+
+            @if (
+              form.controls.user.touched &&
+              form.controls.user.errors?.['required']
+            ) {
+
+              <small>
+                User is required.
+              </small>
+
+            }
+
+            @if (isEditMode()) {
+
+              <span class="field-hint">
+                The linked user cannot be changed here.
+              </span>
+
+            }
+
+          </div>
+
+
+          <!-- Employee Code -->
+
+          <div class="form-field">
+
+            <label>
+              Employee Code
+            </label>
+
+            <input
+              type="text"
+              formControlName="employeeCode"
+              placeholder="EMP-001"
+            />
+
+            @if (
+              form.controls.employeeCode.touched &&
+              form.controls.employeeCode.errors?.['required']
+            ) {
+
+              <small>
+                Employee code is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- Department -->
+
+          <div class="form-field">
+
+            <label>
+              Department
+            </label>
+
+            <select
+              formControlName="department"
+            >
+
+              <option value="">
+                Select department
+              </option>
+
+              @for (
+                department of activeDepartments();
+                track department._id
+              ) {
+
+                <option
+                  [value]="department._id"
+                >
+
+                  {{ department.name }}
+
+                  @if (department.code) {
+                    ({{ department.code }})
+                  }
+
+                </option>
+
+              }
+
+            </select>
+
+            @if (
+              form.controls.department.touched &&
+              form.controls.department.errors?.['required']
+            ) {
+
+              <small>
+                Department is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- Job Title -->
+
+          <div class="form-field">
+
+            <label>
+              Job Title
+            </label>
+
+            <input
+              type="text"
+              formControlName="jobTitle"
+              placeholder="e.g. Frontend Developer"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           Contact
+           ================================================== -->
+
+      <div class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon green">
+
+            <i class="bi bi-person-lines-fill"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Contact Information
+            </h2>
+
+            <p>
+              Employee contact details.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-field">
+
+            <label>
+              Phone
+            </label>
+
+            <input
+              type="text"
+              formControlName="phone"
+              placeholder="+20..."
+            />
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label>
+              Hire Date
+            </label>
+
+            <input
+              type="date"
+              formControlName="hireDate"
+            />
+
+          </div>
+
+
+          <div class="form-field full-width">
+
+            <label>
+              Address
+            </label>
+
+            <textarea
+              rows="4"
+              formControlName="address"
+              placeholder="Employee address..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           Compensation
+           ================================================== -->
+
+      @if (!isEditMode()) {
+
+        <div class="form-section salary-section">
+
+          <div class="section-heading">
+
+            <div class="section-icon purple">
+
+              <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+            <div>
+
+              <h2>
+                Compensation
+              </h2>
+
+              <p>
+                Initial employee salary.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-field salary-field">
+
+            <label>
+              Monthly Salary
+            </label>
+
+            <div class="salary-input">
+
+              <input
+                type="number"
+                formControlName="salary"
+                min="0"
+                placeholder="0"
+              />
+
+              <span>
+                EGP
+              </span>
+
+            </div>
+
+            @if (
+              form.controls.salary.touched &&
+              form.controls.salary.errors?.['min']
+            ) {
+
+              <small>
+                Salary cannot be negative.
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           Actions
+           ================================================== -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            Saving...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            {{
+              isEditMode()
+                ? 'Save Changes'
+                : 'Create Employee'
+            }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

@@ -1,0 +1,601 @@
+<div class="customer-details-page">
+
+  <app-page-header
+    title="Customer Details"
+    description="View customer information, credit settings and account status."
+  />
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading customer...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadCustomer()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  } @else if (customer(); as currentCustomer) {
+
+    <!-- Hero -->
+
+    <section class="hero-card">
+
+      <div class="customer-avatar">
+
+        {{
+          currentCustomer.name
+            .charAt(0)
+            .toUpperCase()
+        }}
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span class="eyebrow">
+          CUSTOMER
+        </span>
+
+        <h1>
+          {{ currentCustomer.name }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span class="code">
+            {{ currentCustomer.code }}
+          </span>
+
+          <span
+            class="status"
+            [class.active]="currentCustomer.isActive"
+            [class.inactive]="!currentCustomer.isActive"
+          >
+
+            <span class="status-dot"></span>
+
+            {{
+              currentCustomer.isActive
+                ? 'Active'
+                : 'Inactive'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        @if (currentCustomer.isActive) {
+
+          <button
+            type="button"
+            class="purchase-button"
+            (click)="createSale()"
+          >
+
+            <i class="bi bi-cart-plus"></i>
+
+            Create Sale
+
+          </button>
+
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="edit()"
+          >
+
+            <i class="bi bi-pencil"></i>
+
+            Edit
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askDeactivate()"
+          >
+
+            <i class="bi bi-pause-circle"></i>
+
+            Deactivate
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="restore-button"
+            [disabled]="actionLoading()"
+            (click)="askRestore()"
+          >
+
+            <i class="bi bi-arrow-counterclockwise"></i>
+
+            Restore
+
+          </button>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- Main Information -->
+
+    <div class="details-grid">
+
+      <!-- Contact -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+            <i class="bi bi-person-lines-fill"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Contact Information
+            </h2>
+
+            <span>
+              Customer communication details
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span>
+              Email
+            </span>
+
+            @if (currentCustomer.email) {
+
+              <a
+                [href]="
+                  'mailto:' +
+                  currentCustomer.email
+                "
+              >
+
+                {{ currentCustomer.email }}
+
+              </a>
+
+            } @else {
+
+              <strong>—</strong>
+
+            }
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Phone
+            </span>
+
+            @if (currentCustomer.phone) {
+
+              <a
+                [href]="
+                  'tel:' +
+                  currentCustomer.phone
+                "
+              >
+
+                {{ currentCustomer.phone }}
+
+              </a>
+
+            } @else {
+
+              <strong>—</strong>
+
+            }
+
+          </div>
+
+
+          <div class="info-item full">
+
+            <span>
+              Address
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.address ||
+                '—'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- Credit -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+            <i class="bi bi-credit-card-2-front"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Credit Information
+            </h2>
+
+            <span>
+              Customer credit settings
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="credit-card">
+
+          <span>
+            CREDIT LIMIT
+          </span>
+
+          <strong>
+
+            {{
+              currentCustomer.creditLimit
+                | number:'1.2-2'
+            }}
+
+            EGP
+
+          </strong>
+
+
+          @if (currentCustomer.creditLimit > 0) {
+
+            <div class="credit-status positive">
+
+              <i class="bi bi-check-circle-fill"></i>
+
+              Credit payment available
+
+            </div>
+
+          } @else {
+
+            <div class="credit-status negative">
+
+              <i class="bi bi-x-circle-fill"></i>
+
+              Credit payment unavailable
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Business -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon orange">
+            <i class="bi bi-building"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Customer Information
+            </h2>
+
+            <span>
+              Identification details
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span>
+              Customer Code
+            </span>
+
+            <strong>
+              {{ currentCustomer.code }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Tax Number
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.taxNumber ||
+                '—'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- Notes -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+            <i class="bi bi-sticky"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Notes
+            </h2>
+
+            <span>
+              Additional information
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="notes">
+
+          @if (currentCustomer.notes) {
+
+            {{ currentCustomer.notes }}
+
+          } @else {
+
+            <span>
+              No notes added.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Audit -->
+
+      <section class="details-card full-card">
+
+        <div class="card-header">
+
+          <div class="card-icon gray">
+            <i class="bi bi-clock-history"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Record Information
+            </h2>
+
+            <span>
+              Customer audit information
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="audit-grid">
+
+          <div>
+
+            <span>
+              Created
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.createdAt
+                  | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Updated
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.updatedAt
+                  | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Created By
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.createdBy?.name ||
+                '—'
+              }}
+            </strong>
+
+            @if (
+              currentCustomer.createdBy?.email
+            ) {
+
+              <small>
+                {{
+                  currentCustomer.createdBy?.email
+                }}
+              </small>
+
+            }
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Updated By
+            </span>
+
+            <strong>
+              {{
+                currentCustomer.updatedBy?.name ||
+                '—'
+              }}
+            </strong>
+
+            @if (
+              currentCustomer.updatedBy?.email
+            ) {
+
+              <small>
+                {{
+                  currentCustomer.updatedBy?.email
+                }}
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- Confirmation -->
+
+    @if (confirmOpen()) {
+
+      <app-confirm-dialog
+
+        [open]="confirmOpen()"
+
+        [title]="confirmTitle"
+
+        [message]="confirmMessage"
+
+        [confirmText]="confirmButtonText"
+
+        [cancelText]="'Cancel'"
+
+        [variant]="confirmVariant"
+
+        [loading]="actionLoading()"
+
+        (confirmed)="confirmOperation()"
+
+        (cancelled)="cancelConfirmation()"
+
+      />
+
+    }
+
+  }
+
+</div>

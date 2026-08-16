@@ -1,0 +1,423 @@
+<div class="invoice-dashboard-page">
+
+  <app-page-header
+    title="Invoice Dashboard"
+    description="Monitor invoice status, payment position and recent billing activity."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadDashboard()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading invoice overview...
+
+    </div>
+
+  } @else {
+
+    <section class="kpi-grid">
+
+      <button
+        type="button"
+        class="kpi-card total"
+        (click)="openInvoices()"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Total Invoices
+          </span>
+
+          <strong>
+            {{ totalInvoices() | number }}
+          </strong>
+
+          <small>
+            All invoice records
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card unpaid"
+        (click)="openInvoices('Unpaid')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-clock"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Unpaid
+          </span>
+
+          <strong>
+            {{ unpaidInvoices() | number }}
+          </strong>
+
+          <small>
+            Awaiting payment
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card partial"
+        (click)="openInvoices('PartiallyPaid')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-hourglass-split"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Partially Paid
+          </span>
+
+          <strong>
+            {{ partiallyPaidInvoices() | number }}
+          </strong>
+
+          <small>
+            Payment in progress
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card paid"
+        (click)="openInvoices('Paid')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Paid
+          </span>
+
+          <strong>
+            {{ paidInvoices() | number }}
+          </strong>
+
+          <small>
+            {{ paidRate }}% of all invoices
+          </small>
+
+        </div>
+
+      </button>
+
+    </section>
+
+
+    <section class="status-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            PAYMENT POSITION
+          </span>
+
+          <h2>
+            Invoice Status
+          </h2>
+
+          <p>
+            Overview of the current invoice lifecycle.
+          </p>
+
+        </div>
+
+
+        <a
+          routerLink="/admin/invoices"
+          class="view-all"
+        >
+
+          View All
+
+          <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+      </div>
+
+
+      <div class="status-grid">
+
+        <button
+          type="button"
+          class="status-box unpaid"
+          (click)="openInvoices('Unpaid')"
+        >
+
+          <div class="status-count">
+            {{ unpaidInvoices() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Unpaid
+            </strong>
+
+            <span>
+              No payment recorded
+            </span>
+
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="status-box partial"
+          (click)="openInvoices('PartiallyPaid')"
+        >
+
+          <div class="status-count">
+            {{ partiallyPaidInvoices() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Partially Paid
+            </strong>
+
+            <span>
+              Partial payment recorded
+            </span>
+
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="status-box paid"
+          (click)="openInvoices('Paid')"
+        >
+
+          <div class="status-count">
+            {{ paidInvoices() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Paid
+            </strong>
+
+            <span>
+              Fully paid
+            </span>
+
+          </div>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="status-box cancelled"
+          (click)="openInvoices('Cancelled')"
+        >
+
+          <div class="status-count">
+            {{ cancelledInvoices() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Cancelled
+            </strong>
+
+            <span>
+              Cancelled invoices
+            </span>
+
+          </div>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <section class="recent-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            ACTIVITY
+          </span>
+
+          <h2>
+            Recent Invoices
+          </h2>
+
+          <p>
+            Latest invoices generated by the system.
+          </p>
+
+        </div>
+
+      </div>
+
+
+@if (recentInvoices().length) {
+
+  <div class="invoice-list">
+
+    @for (invoice of recentInvoices(); track invoice._id) {
+
+      <a
+        class="invoice-row"
+        [routerLink]="[
+          '/admin/invoices',
+          invoice._id
+        ]"
+      >
+
+        <div class="invoice-leading">
+
+          <div class="invoice-icon">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+
+          <div>
+            <strong>
+              {{ invoice.invoiceNumber }}
+            </strong>
+
+            <span>
+              {{ invoiceCustomerName(invoice) }}
+            </span>
+          </div>
+
+        </div>
+
+        <div class="invoice-middle">
+
+          <span>
+            {{ invoice.total | number:'1.2-2' }}
+            EGP
+          </span>
+
+          <small>
+            Remaining:
+            {{ invoice.remainingAmount | number:'1.2-2' }}
+            EGP
+          </small>
+
+        </div>
+
+        <div class="invoice-status">
+
+          <span
+            class="status"
+            [class]="statusClass(invoice.status)"
+          >
+            {{ invoice.status }}
+          </span>
+
+        </div>
+
+        <i class="bi bi-chevron-right arrow"></i>
+
+      </a>
+
+    }
+
+  </div>
+
+} @else {
+
+        <div class="empty-state">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+          <strong>
+            No invoices yet
+          </strong>
+
+          <span>
+            Generate an invoice from a confirmed sale.
+          </span>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</div>

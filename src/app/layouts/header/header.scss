@@ -1,0 +1,554 @@
+:host {
+  display: block;
+}
+
+.app-header {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  height:
+    var(--header-height);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding:
+    0 28px;
+
+   background:
+    rgba(255, 255, 255, .82);
+
+  border-bottom:
+    1px solid rgba(226, 232, 240, .80);
+
+  backdrop-filter:
+    blur(18px);
+
+  box-shadow:
+    0 1px 0 rgba(15, 23, 42, .02);
+  border-bottom:
+    1px solid var(--color-border);
+
+}
+
+/* =========================================================
+   Left
+   ========================================================= */
+
+.header-left {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  min-width: 0;
+
+}
+
+.page-heading {
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+}
+
+.page-heading h1 {
+
+  margin: 0;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    18px;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.3;
+
+}
+
+.page-heading span {
+
+  margin-top: 2px;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    11px;
+
+}
+
+/* =========================================================
+   Header Buttons
+   ========================================================= */
+
+.header-icon-button {
+
+  position: relative;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    10px;
+
+  background:
+    var(--color-surface);
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    17px;
+
+  transition:
+    all var(--transition-fast);
+
+}
+
+.header-icon-button:hover {
+
+  color:
+    var(--color-primary);
+
+  border-color:
+    #bfdbfe;
+
+  background:
+    var(--color-primary-soft);
+
+}
+
+.mobile-toggle {
+
+  display: none;
+
+}
+
+/* =========================================================
+   Right
+   ========================================================= */
+
+.header-right {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+}
+
+/* =========================================================
+   Search
+   ========================================================= */
+
+.header-search {
+
+  width: 260px;
+
+  background:
+    #f8fafc;
+
+  border:
+    1px solid #e7ebf3;
+
+  border-radius:
+    12px;
+
+  transition:
+    all var(--transition-fast);
+
+  height:
+    40px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    0 10px;
+
+  color:
+    var(--color-text-muted);
+
+}
+.header-search:focus-within {
+
+  border-color:
+    #c7d2fe;
+
+  background:
+    #fff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(79, 70, 229, .08);
+
+}
+.header-search input {
+
+  flex: 1;
+
+  min-width: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color:
+    var(--color-text);
+
+  font-size:
+    13px;
+
+}
+
+.header-search input::placeholder {
+
+  color:
+    var(--color-text-muted);
+
+}
+
+.search-shortcut {
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    5px;
+
+  background:
+    white;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    11px;
+
+}
+
+/* =========================================================
+   Notification
+   ========================================================= */
+
+.notification-button {
+
+  border:
+    0;
+
+  background:
+    transparent;
+
+}
+
+.notification-button:hover {
+
+  border:
+    0;
+
+  background:
+    var(--color-primary-soft);
+
+}
+
+/* =========================================================
+   Notification
+   ========================================================= */
+
+.notification-button {
+  border: 0;
+
+  background:
+    transparent;
+}
+
+
+.notification-button:hover {
+  border: 0;
+
+  background:
+    var(--color-primary-soft);
+}
+
+
+.notification-badge {
+  position: absolute;
+
+  top: 2px;
+  right: 1px;
+
+  min-width: 17px;
+  height: 17px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 4px;
+
+  border:
+    2px solid white;
+
+  border-radius: 20px;
+
+  background:
+    #dc2626;
+
+  color: white;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  box-shadow:
+    0 2px 6px
+    rgba(220, 38, 38, .25);
+}
+
+/* =========================================================
+   Divider
+   ========================================================= */
+
+.header-divider {
+
+  width: 1px;
+
+  height: 28px;
+
+  background:
+    var(--color-border);
+
+}
+
+/* =========================================================
+   User
+   ========================================================= */
+
+.user-menu {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 4px;
+
+  border: 0;
+
+  background: transparent;
+
+  text-align: left;
+
+}
+
+.user-avatar {
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius:
+    10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eef2ff,
+      #e0e7ff
+    );
+
+  color:
+    #4f46e5;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(79, 70, 229, .08);
+  font-size:
+    13px;
+
+  font-weight:
+    700;
+
+}
+
+.user-info {
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+.user-info strong {
+
+  color:
+    var(--color-text);
+
+  font-size:
+    12px;
+
+  font-weight:
+    600;
+
+}
+
+.user-info span {
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    10px;
+
+}
+
+.user-arrow {
+
+  margin-left:
+    3px;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    10px;
+
+}
+
+/* =========================================================
+   Tablet
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+  .app-header {
+
+    padding:
+      0 20px;
+
+  }
+
+  .header-search {
+
+    width:
+      190px;
+
+  }
+
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+  .app-header {
+
+    height:
+      64px;
+
+    padding:
+      0 14px;
+
+  }
+
+  .desktop-toggle {
+
+    display:
+      none;
+
+  }
+
+  .mobile-toggle {
+
+    display:
+      flex;
+
+  }
+
+  .page-heading span {
+
+    display:
+      none;
+
+  }
+
+  .page-heading h1 {
+
+    font-size:
+      16px;
+
+  }
+
+  .header-search {
+
+    display:
+      none;
+
+  }
+
+  .user-info,
+  .user-arrow,
+  .header-divider {
+
+    display:
+      none;
+
+  }
+
+  .header-right {
+
+    gap:
+      4px;
+
+  }
+
+}

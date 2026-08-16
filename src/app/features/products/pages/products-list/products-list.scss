@@ -1,0 +1,410 @@
+:host {
+  display: block;
+}
+
+.products-page {
+  width: 100%;
+}
+
+.products-card {
+
+  padding: 18px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--color-surface);
+
+  box-shadow:
+    var(--shadow-sm);
+
+}
+
+/* Filters */
+
+.filters {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 18px;
+
+}
+
+.search-box,
+.select-box {
+
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    0 11px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--color-background);
+
+  color:
+    var(--color-text-muted);
+
+}
+
+.search-box {
+  width: 280px;
+}
+
+.select-box {
+  width: 180px;
+}
+
+.search-box:focus-within,
+.select-box:focus-within {
+
+  border-color:
+    #93c5fd;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, .08);
+
+}
+
+.search-box input,
+.select-box select {
+
+  width: 100%;
+
+  min-width: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text);
+
+  font-size: 11px;
+
+}
+
+.filter-actions {
+
+  display: flex;
+
+  gap: 6px;
+
+  margin-left: auto;
+
+}
+
+.primary-button,
+.secondary-button,
+.icon-button {
+
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    0 12px;
+
+  border-radius: 9px;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+}
+
+.primary-button {
+
+  border: 0;
+
+  background:
+    var(--color-primary);
+
+  color: white;
+
+}
+
+.secondary-button,
+.icon-button {
+
+  border:
+    1px solid var(--color-border);
+
+  background: white;
+
+  color:
+    var(--color-text-secondary);
+
+}
+
+.icon-button {
+
+  width: 40px;
+
+  padding: 0;
+
+}
+
+/* Summary */
+
+.summary-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+}
+
+.summary-card {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius: 10px;
+
+  background: white;
+
+}
+
+.summary-icon {
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+}
+
+.summary-icon.products {
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+}
+
+.summary-icon.active {
+
+  background:
+    var(--color-success-soft);
+
+  color:
+    var(--color-success);
+
+}
+
+.summary-icon.inactive {
+
+  background:
+    var(--color-danger-soft);
+
+  color:
+    var(--color-danger);
+
+}
+
+.summary-icon.categories {
+
+  background:
+    var(--color-warning-soft);
+
+  color:
+    var(--color-warning);
+
+}
+
+.summary-card small {
+
+  display: block;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 11px;
+
+}
+
+.summary-card strong {
+
+  display: block;
+
+  margin-top: 2px;
+
+  color:
+    var(--color-text);
+
+  font-size: 17px;
+
+}
+
+/* Error */
+
+.error-box {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 14px;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: 9px;
+
+  background:
+    #fef2f2;
+
+  color:
+    #b91c1c;
+
+  font-size: 11px;
+
+}
+
+.error-box button {
+
+  margin-left: auto;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #b91c1c;
+
+  font-weight: 600;
+
+}
+
+/* Responsive */
+
+@media (max-width: 1199.98px) {
+
+  .filters {
+
+    flex-wrap: wrap;
+
+  }
+
+  .search-box {
+
+    flex: 1;
+
+    min-width: 220px;
+
+  }
+
+  .filter-actions {
+
+    margin-left: 0;
+
+  }
+
+}
+
+@media (max-width: 991.98px) {
+
+  .summary-grid {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+  }
+
+}
+
+@media (max-width: 575.98px) {
+
+  .products-card {
+
+    padding: 12px;
+
+  }
+
+  .filters {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+  .search-box,
+  .select-box {
+
+    width: 100%;
+
+  }
+
+  .filter-actions {
+
+    width: 100%;
+
+  }
+
+  .primary-button,
+  .secondary-button {
+
+    flex: 1;
+
+  }
+
+  .summary-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}

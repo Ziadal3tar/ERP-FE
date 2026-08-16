@@ -1,0 +1,240 @@
+<div class="category-details-page">
+
+  <app-page-header
+    title="Category Details"
+    description="View category information and status."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading">
+      Loading category...
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-box">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      {{ error() }}
+
+    </div>
+
+  } @else if (category(); as currentCategory) {
+
+    <section class="category-hero">
+
+      <div class="category-icon">
+
+        <i class="bi bi-grid"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span>
+          PRODUCT CATEGORY
+        </span>
+
+        <h2>
+          {{ currentCategory.name }}
+        </h2>
+
+        <p>
+          {{
+            currentCategory.description ||
+            'No description provided.'
+          }}
+        </p>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <span
+          class="status"
+          [class.active]="currentCategory.isActive"
+        >
+
+          <i
+            class="bi"
+            [class.bi-check-circle-fill]="currentCategory.isActive"
+            [class.bi-x-circle-fill]="!currentCategory.isActive"
+          ></i>
+
+          {{
+            currentCategory.isActive
+              ? 'Active'
+              : 'Inactive'
+          }}
+
+        </span>
+
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="edit()"
+        >
+
+          <i class="bi bi-pencil"></i>
+
+          Edit
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <div class="details-grid">
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Category Information
+            </h3>
+
+            <span>
+              Basic category details.
+            </span>
+
+          </div>
+
+          <i class="bi bi-info-circle"></i>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div>
+
+            <small>
+              Name
+            </small>
+
+            <strong>
+              {{ currentCategory.name }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <small>
+              Status
+            </small>
+
+            <strong>
+              {{
+                currentCategory.isActive
+                  ? 'Active'
+                  : 'Inactive'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <small>
+              Created
+            </small>
+
+            <strong>
+              {{
+                currentCategory.createdAt
+                  | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <small>
+              Last Updated
+            </small>
+
+            <strong>
+              {{
+                currentCategory.updatedAt
+                  ? (currentCategory.updatedAt | date:'medium')
+                  : '—'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Description
+            </h3>
+
+            <span>
+              Category description.
+            </span>
+
+          </div>
+
+          <i class="bi bi-text-paragraph"></i>
+
+        </div>
+
+
+        <div class="description">
+
+          {{
+            currentCategory.description ||
+            'No description has been added to this category.'
+          }}
+
+        </div>
+
+      </section>
+
+
+      <div class="footer">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back to Categories
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

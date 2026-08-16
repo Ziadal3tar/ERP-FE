@@ -1,0 +1,41 @@
+<section class="page-header">
+
+  <div class="page-heading">
+
+    <h1>
+      {{ title() }}
+    </h1>
+
+    @if (description()) {
+
+      <p>
+        {{ description() }}
+      </p>
+
+    }
+
+  </div>
+
+
+  @if (actionLabel()) {
+
+    <button
+      type="button"
+      class="primary-action"
+      (click)="onAction()"
+    >
+
+      <i
+        class="bi"
+        [class]="actionIcon()"
+      ></i>
+
+      <span>
+        {{ actionLabel() }}
+      </span>
+
+    </button>
+
+  }
+
+</section>

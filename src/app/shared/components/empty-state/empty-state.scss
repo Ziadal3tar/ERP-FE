@@ -1,0 +1,65 @@
+:host {
+  display: block;
+}
+
+.empty-state {
+
+  min-height: 220px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 30px;
+
+  text-align: center;
+
+}
+
+.empty-icon {
+
+  width: 54px;
+
+  height: 54px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 7px;
+
+  border-radius: 14px;
+
+  background: #f1f5f9;
+
+  color: #94a3b8;
+
+  font-size: 22px;
+
+}
+
+.empty-state strong {
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+
+}
+
+.empty-state span {
+
+  max-width: 360px;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+
+}

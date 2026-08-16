@@ -1,0 +1,336 @@
+<div class="notification-list-page">
+
+  <app-page-header
+    title="Notifications"
+    description="Stay updated with important activity and system events."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadNotifications()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="notification-card">
+
+    <!-- =====================================================
+         Header
+         ===================================================== -->
+
+    <div class="notification-header">
+
+      <div>
+
+        <span class="eyebrow">
+          ACTIVITY CENTER
+        </span>
+
+        <h2>
+          Your Notifications
+        </h2>
+
+        <p>
+          Review system events and important updates.
+        </p>
+
+      </div>
+
+
+      @if (hasUnread()) {
+
+        <button
+          type="button"
+          class="read-all-button"
+          (click)="markAllAsRead()"
+        >
+
+          <i class="bi bi-check2-all"></i>
+
+          Mark all as read
+
+        </button>
+
+      }
+
+    </div>
+
+
+    <!-- =====================================================
+         Filters
+         ===================================================== -->
+
+    <div class="filter-tabs">
+
+      <button
+        type="button"
+        [class.active]="
+          filter() === 'all'
+        "
+        (click)="setFilter('all')"
+      >
+
+        All
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="
+          filter() === 'unread'
+        "
+        (click)="setFilter('unread')"
+      >
+
+        Unread
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="
+          filter() === 'read'
+        "
+        (click)="setFilter('read')"
+      >
+
+        Read
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         Loading
+         ===================================================== -->
+
+    @if (loading()) {
+
+      <div class="loading-state">
+
+        <div class="spinner"></div>
+
+        Loading notifications...
+
+      </div>
+
+    } @else if (notifications().length) {
+
+
+      <!-- =================================================
+           List
+           ================================================= -->
+
+      <div class="notifications">
+
+        @for (
+          notification of notifications();
+          track notification._id
+        ) {
+
+          <article
+            class="notification-item"
+            [class.unread]="
+              !notification.isRead
+            "
+            (click)="
+              markAsRead(notification)
+            "
+          >
+
+            <div
+              class="notification-icon"
+              [class]="
+                typeClass(
+                  notification.type
+                )
+              "
+            >
+
+              <i
+                class="bi"
+                [class]="
+                  typeIcon(
+                    notification.type
+                  )
+                "
+              ></i>
+
+            </div>
+
+
+            <div class="notification-content">
+
+              <div class="notification-top">
+
+                <div>
+
+                  <strong>
+                    {{ notification.title }}
+                  </strong>
+
+                  @if (
+                    !notification.isRead
+                  ) {
+
+                    <span class="unread-dot"></span>
+
+                  }
+
+                </div>
+
+
+                <span class="notification-time">
+
+                  {{
+                    notification.createdAt
+                      | date:'medium'
+                  }}
+
+                </span>
+
+              </div>
+
+
+              <p>
+                {{ notification.message }}
+              </p>
+
+
+              <div class="notification-meta">
+
+                <span
+                  class="type-badge"
+                  [class]="
+                    typeClass(
+                      notification.type
+                    )
+                  "
+                >
+
+                  {{ notification.type }}
+
+                </span>
+
+
+                @if (
+                  notification.module
+                ) {
+
+                  <span class="module-badge">
+
+                    {{ notification.module }}
+
+                  </span>
+
+                }
+
+
+                @if (
+                  notification.readAt
+                ) {
+
+                  <span class="read-state">
+
+                    <i class="bi bi-check2"></i>
+
+                    Read
+
+                  </span>
+
+                }
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="delete-button"
+              title="Delete notification"
+              (click)="
+                $event.stopPropagation();
+                deleteNotification(notification)
+              "
+            >
+
+              <i class="bi bi-trash3"></i>
+
+            </button>
+
+          </article>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+           Pagination
+           ================================================= -->
+
+      <app-pagination
+
+        [page]="page()"
+
+        [total]="total()"
+
+        [totalPages]="totalPages()"
+
+        (pageChange)="changePage($event)"
+
+      />
+
+    } @else {
+
+      <!-- =================================================
+           Empty
+           ================================================= -->
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i class="bi bi-bell"></i>
+
+        </div>
+
+        <strong>
+          You're all caught up
+        </strong>
+
+        <span>
+
+          There are no notifications in this view.
+
+        </span>
+
+      </div>
+
+    }
+
+  </section>
+
+</div>

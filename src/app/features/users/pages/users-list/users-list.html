@@ -1,0 +1,118 @@
+<div class="users-page">
+
+  <app-page-header
+    title="Users"
+    description="Manage system users, roles and account status."
+    actionLabel="Add User"
+    actionIcon="bi-plus-lg"
+    (actionClick)="createUser()"
+  />
+
+
+  <section class="users-card">
+
+    <!-- ===================================================
+         Toolbar
+         =================================================== -->
+
+    <div class="toolbar">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search users..."
+          (keyup.enter)="applySearch()"
+        />
+
+      </div>
+
+
+      <div class="toolbar-actions">
+
+        <button
+          type="button"
+          class="toolbar-button"
+          (click)="applySearch()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Search
+
+        </button>
+
+
+        <button
+          type="button"
+          class="toolbar-button"
+          (click)="refresh()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         Error
+         =================================================== -->
+
+    @if (error()) {
+
+      <div class="users-error">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         Table
+         =================================================== -->
+
+    <app-data-table
+      [columns]="columns"
+      [data]="users()"
+      [loading]="loading()"
+      [rowClickable]="true"
+      emptyTitle="No users found"
+      emptyMessage="Try changing your search or create a new user."
+      (rowClick)="openUser($event)"
+    />
+
+
+    <!-- ===================================================
+         Pagination
+         =================================================== -->
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

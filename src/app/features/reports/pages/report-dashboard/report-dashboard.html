@@ -1,0 +1,457 @@
+<div class="report-dashboard-page">
+
+  <app-page-header
+    title="Reports"
+    description="Monitor business performance, sales, purchases and inventory."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadDashboard()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading reports...
+
+    </div>
+
+  } @else if (summary(); as data) {
+
+    <!-- =====================================================
+         Main KPIs
+         ===================================================== -->
+
+    <section class="kpi-grid">
+
+      <!-- Products -->
+
+      <div class="kpi-card blue">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Active Products
+          </span>
+
+          <strong>
+            {{ data.products | number }}
+          </strong>
+
+          <small>
+            Products currently active
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Customers -->
+
+      <div class="kpi-card green">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-people"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Active Customers
+          </span>
+
+          <strong>
+            {{ data.customers | number }}
+          </strong>
+
+          <small>
+            Active customer accounts
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Suppliers -->
+
+      <div class="kpi-card purple">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-truck"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Active Suppliers
+          </span>
+
+          <strong>
+            {{ data.suppliers | number }}
+          </strong>
+
+          <small>
+            Active supplier accounts
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Stock -->
+
+      <div class="kpi-card orange">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-boxes"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Stock Quantity
+          </span>
+
+          <strong>
+            {{ data.stockQuantity | number }}
+          </strong>
+
+          <small>
+            Total quantity in inventory
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Sales / Purchases
+         ===================================================== -->
+
+    <section class="performance-grid">
+
+      <!-- Sales -->
+
+      <a
+        routerLink="/admin/reports/sales"
+        class="performance-card sales"
+      >
+
+        <div class="performance-header">
+
+          <div>
+
+            <span class="eyebrow">
+              SALES
+            </span>
+
+            <h2>
+              Sales Performance
+            </h2>
+
+          </div>
+
+          <div class="performance-icon">
+
+            <i class="bi bi-graph-up-arrow"></i>
+
+          </div>
+
+        </div>
+
+
+        <div class="performance-value">
+
+          <strong>
+
+            {{
+              data.sales.total
+                | number:'1.2-2'
+            }}
+
+          </strong>
+
+          <span>
+            EGP
+          </span>
+
+        </div>
+
+
+        <div class="performance-meta">
+
+          <span>
+
+            <i class="bi bi-receipt"></i>
+
+            {{ data.sales.count | number }}
+
+            confirmed sales
+
+          </span>
+
+          <i class="bi bi-arrow-right"></i>
+
+        </div>
+
+      </a>
+
+
+      <!-- Purchases -->
+
+      <a
+        routerLink="/admin/reports/purchases"
+        class="performance-card purchases"
+      >
+
+        <div class="performance-header">
+
+          <div>
+
+            <span class="eyebrow">
+              PURCHASES
+            </span>
+
+            <h2>
+              Purchase Performance
+            </h2>
+
+          </div>
+
+          <div class="performance-icon">
+
+            <i class="bi bi-cart-check"></i>
+
+          </div>
+
+        </div>
+
+
+        <div class="performance-value">
+
+          <strong>
+
+            {{
+              data.purchases.total
+                | number:'1.2-2'
+            }}
+
+          </strong>
+
+          <span>
+            EGP
+          </span>
+
+        </div>
+
+
+        <div class="performance-meta">
+
+          <span>
+
+            <i class="bi bi-receipt"></i>
+
+            {{ data.purchases.count | number }}
+
+            received purchases
+
+          </span>
+
+          <i class="bi bi-arrow-right"></i>
+
+        </div>
+
+      </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         Report Navigation
+         ===================================================== -->
+
+    <section class="reports-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            REPORT CENTER
+          </span>
+
+          <h2>
+            Business Reports
+          </h2>
+
+          <p>
+            Explore detailed operational reports.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="report-links">
+
+        <a
+          routerLink="/admin/reports/sales"
+          class="report-link"
+        >
+
+          <div class="report-link-icon blue">
+
+            <i class="bi bi-graph-up"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Sales Report
+            </strong>
+
+            <span>
+              Confirmed sales, totals, discounts and tax.
+            </span>
+
+          </div>
+
+          <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+
+        <a
+          routerLink="/admin/reports/purchases"
+          class="report-link"
+        >
+
+          <div class="report-link-icon purple">
+
+            <i class="bi bi-cart-check"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Purchases Report
+            </strong>
+
+            <span>
+              Received purchases and financial totals.
+            </span>
+
+          </div>
+
+          <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+
+        <a
+          routerLink="/admin/reports/stock"
+          class="report-link"
+        >
+
+          <div class="report-link-icon green">
+
+            <i class="bi bi-boxes"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Stock Report
+            </strong>
+
+            <span>
+              Inventory quantities by product and warehouse.
+            </span>
+
+          </div>
+
+          <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+
+        <a
+          routerLink="/admin/reports/low-stock"
+          class="report-link"
+        >
+
+          <div class="report-link-icon orange">
+
+            <i class="bi bi-exclamation-triangle"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Low Stock
+            </strong>
+
+            <span>
+              Products at or below their minimum stock.
+            </span>
+
+          </div>
+
+          <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

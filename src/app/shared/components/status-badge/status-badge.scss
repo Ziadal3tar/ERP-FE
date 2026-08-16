@@ -1,0 +1,55 @@
+:host {
+  display: inline-flex;
+}
+
+.status-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 24px;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+
+  font-weight: 650;
+
+  white-space: nowrap;
+
+}
+
+.success {
+
+  color: #15803d;
+
+  background: #f0fdf4;
+
+}
+
+.warning {
+
+  color: #b45309;
+
+  background: #fffbeb;
+
+}
+
+.danger {
+
+  color: #b91c1c;
+
+  background: #fef2f2;
+
+}
+
+.neutral {
+
+  color: #475569;
+
+  background: #f1f5f9;
+
+}

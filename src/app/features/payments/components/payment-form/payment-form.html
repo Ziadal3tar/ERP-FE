@@ -1,0 +1,344 @@
+<div class="payment-overlay">
+
+  <div
+    class="payment-dialog"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- =====================================================
+         Header
+         ===================================================== -->
+
+    <div class="dialog-header">
+
+      <div>
+
+        <span class="eyebrow">
+          RECEIVE PAYMENT
+        </span>
+
+        <h2>
+          Make Payment
+        </h2>
+
+        <p>
+          Record a payment against this invoice.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="close-button"
+        [disabled]="loading()"
+        (click)="cancel()"
+      >
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         Remaining
+         ===================================================== -->
+
+    <div class="remaining-card">
+
+      <div>
+
+        <span>
+          REMAINING AMOUNT
+        </span>
+
+        <strong>
+
+          {{
+            remainingAmount()
+              | currency:'EGP':'symbol':'1.2-2'
+          }}
+
+        </strong>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="fillRemaining()"
+        [disabled]="
+          loading() ||
+          remainingAmount() <= 0
+        "
+      >
+
+        Pay Full
+
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         Form
+         ===================================================== -->
+
+    <form
+      class="payment-form"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      novalidate
+    >
+
+      <!-- Amount -->
+
+      <div class="field">
+
+        <label>
+          Payment Amount
+          <span>*</span>
+        </label>
+
+        <input
+          type="number"
+          min="0.01"
+          step="0.01"
+          [formControl]="
+            form.controls.amount
+          "
+          placeholder="0.00"
+        />
+
+
+        @if (
+          form.controls.amount.touched &&
+          form.controls.amount.errors?.['required']
+        ) {
+
+          <small>
+            Payment amount is required.
+          </small>
+
+        }
+
+
+        @if (
+          form.controls.amount.touched &&
+          form.controls.amount.errors?.['min']
+        ) {
+
+          <small>
+            Amount must be greater than zero.
+          </small>
+
+        }
+
+
+        @if (
+          form.controls.amount.errors?.[
+            'exceedsRemaining'
+          ]
+        ) {
+
+          <small>
+            Payment cannot exceed the remaining amount.
+          </small>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+           Payment Method
+           ================================================= -->
+
+      <div class="field">
+
+        <label>
+          Payment Method
+          <span>*</span>
+        </label>
+
+
+        <div class="method-grid">
+
+          @for (
+            method of methods;
+            track method
+          ) {
+
+            <button
+              type="button"
+              class="method-option"
+              [class.selected]="
+                form.controls.method.value ===
+                method
+              "
+              [disabled]="loading()"
+              (click)="
+                form.controls.method.setValue(
+                  method
+                )
+              "
+            >
+
+              @switch (method) {
+
+                @case ('Cash') {
+
+                  <i class="bi bi-cash-stack"></i>
+
+                }
+
+                @case ('Card') {
+
+                  <i class="bi bi-credit-card"></i>
+
+                }
+
+                @case ('Bank') {
+
+                  <i class="bi bi-bank"></i>
+
+                }
+
+              }
+
+
+              <span>
+                {{ method }}
+              </span>
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- Reference -->
+
+      <div class="field">
+
+        <label>
+          Reference
+        </label>
+
+        <input
+          type="text"
+          [formControl]="
+            form.controls.reference
+          "
+          placeholder="Transaction / receipt reference"
+        />
+
+
+        <span class="hint">
+          Optional · Maximum 100 characters.
+        </span>
+
+
+        @if (
+          form.controls.reference.touched &&
+          form.controls.reference.errors?.['maxlength']
+        ) {
+
+          <small>
+            Reference cannot exceed 100 characters.
+          </small>
+
+        }
+
+      </div>
+
+
+      <!-- Notes -->
+
+      <div class="field">
+
+        <label>
+          Notes
+        </label>
+
+        <textarea
+          rows="3"
+          [formControl]="
+            form.controls.notes
+          "
+          placeholder="Additional payment notes..."
+        ></textarea>
+
+
+        <span class="hint">
+          Optional · Maximum 500 characters.
+        </span>
+
+
+        @if (
+          form.controls.notes.touched &&
+          form.controls.notes.errors?.['maxlength']
+        ) {
+
+          <small>
+            Notes cannot exceed 500 characters.
+          </small>
+
+        }
+
+      </div>
+
+
+      <!-- Actions -->
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="loading()"
+          (click)="cancel()"
+        >
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="
+            loading() ||
+            remainingAmount() <= 0
+          "
+        >
+
+          @if (loading()) {
+
+            <span class="button-spinner"></span>
+
+            Processing...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            Record Payment
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

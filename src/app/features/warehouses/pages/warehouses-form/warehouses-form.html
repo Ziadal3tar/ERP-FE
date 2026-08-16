@@ -1,0 +1,243 @@
+<div class="warehouse-form-page">
+
+  <app-page-header
+    [title]="
+      editing()
+        ? 'Edit Warehouse'
+        : 'Create Warehouse'
+    "
+    [description]="
+      editing()
+        ? 'Update warehouse information.'
+        : 'Add a new storage location to your ERP system.'
+    "
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading">
+      Loading warehouse...
+    </div>
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+
+      @if (error()) {
+
+        <div class="error-box">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          {{ error() }}
+
+        </div>
+
+      }
+
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon">
+
+            <i class="bi bi-building"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Warehouse Information
+            </h2>
+
+            <p>
+              Define the warehouse identity and location.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label>
+              Warehouse Name
+            </label>
+
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Main Warehouse"
+            />
+
+            @if (
+              form.controls.name.touched &&
+              form.controls.name.errors?.['required']
+            ) {
+
+              <small>
+                Warehouse name is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Warehouse Code
+            </label>
+
+            <input
+              type="text"
+              formControlName="code"
+              placeholder="e.g. WH-MAIN"
+            />
+
+            <span class="hint">
+              Use a unique short identifier.
+            </span>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Location
+            </label>
+
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="e.g. Cairo, Egypt"
+            />
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Manager
+            </label>
+
+            <input
+              type="text"
+              formControlName="manager"
+              placeholder="Warehouse manager"
+            />
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              rows="5"
+              formControlName="description"
+              placeholder="Describe the warehouse..."
+            ></textarea>
+
+            <span class="hint">
+              Optional. Maximum 500 characters.
+            </span>
+
+          </div>
+
+
+          <!-- <div class="status-field full">
+
+            <div>
+
+              <strong>
+                Warehouse Status
+              </strong>
+
+              <span>
+                {{
+                  form.controls.isActive.value
+                    ? 'This warehouse is available for operations.'
+                    : 'This warehouse is currently inactive.'
+                }}
+              </span>
+
+            </div>
+
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                formControlName="isActive"
+              />
+
+              <span></span>
+
+            </label>
+
+          </div> -->
+
+        </div>
+
+      </section>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            Saving...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            {{
+              editing()
+                ? 'Save Changes'
+                : 'Create Warehouse'
+            }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

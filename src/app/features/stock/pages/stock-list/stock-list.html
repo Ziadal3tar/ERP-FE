@@ -1,0 +1,426 @@
+<div class="stock-list-page">
+
+  <!-- =========================================================
+       Header
+       ========================================================= -->
+
+  <app-page-header
+    title="Stock Inventory"
+    description="Monitor product quantities across all warehouses and keep your inventory under control."
+  />
+
+
+  <div class="header-actions">
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i
+        class="bi bi-arrow-clockwise"
+        [class.spinning]="loading()"
+      ></i>
+
+      Refresh
+
+    </button>
+
+
+    <a
+      routerLink="/admin/stock/in"
+      class="primary-button"
+    >
+
+      <i class="bi bi-plus-lg"></i>
+
+      Stock In
+
+    </a>
+
+  </div>
+
+
+  <!-- =========================================================
+       Error
+       ========================================================= -->
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+
+      <div class="error-message">
+
+        <strong>
+          Unable to load inventory
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =========================================================
+       Filters
+       ========================================================= -->
+       <section class="filters-card">
+
+
+    <div class="filters-header">
+
+      <div class="filters-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            Inventory Filters
+          </h2>
+
+          <span>
+            Find exactly what you need
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+<div class="quick-statuses">
+
+      <button
+        type="button"
+        [class.active]="
+          filterForm.controls.status.value === 'all'
+        "
+        (click)="
+          filterForm.controls.status.setValue('all');
+          applyFilters()
+        "
+      >
+        All
+      </button>
+
+      <button
+        type="button"
+        [class.active]="
+          filterForm.controls.status.value === 'healthy'
+        "
+        (click)="
+          filterForm.controls.status.setValue('healthy');
+          applyFilters()
+        "
+      >
+        Healthy
+      </button>
+
+      <button
+        type="button"
+        [class.active]="
+          filterForm.controls.status.value === 'low'
+        "
+        (click)="
+          filterForm.controls.status.setValue('low');
+          applyFilters()
+        "
+      >
+        Low Stock
+      </button>
+
+      <button
+        type="button"
+        [class.active]="
+          filterForm.controls.status.value === 'out'
+        "
+        (click)="
+          filterForm.controls.status.setValue('out');
+          applyFilters()
+        "
+      >
+        Out of Stock
+      </button>
+
+    </div>
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <!-- Search -->
+
+      <div class="filter-field search-field">
+
+        <label>
+          Search
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="bi bi-search"></i>
+
+
+          <input
+            type="search"
+            formControlName="search"
+            placeholder="Search product or SKU..."
+            (input)="onSearch(
+              filterForm.controls.search.value
+            )"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- Product -->
+
+      <div class="filter-field">
+
+        <label>
+          Product
+        </label>
+
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-box-seam"></i>
+
+
+          <select
+            formControlName="product"
+            (change)="applyFilters()"
+          >
+
+            <option value="">
+              All Products
+            </option>
+
+
+            @for (
+              product of products();
+              track product._id
+            ) {
+
+              <option
+                [value]="product._id"
+              >
+
+                {{ product.name }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Warehouse -->
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-building"></i>
+
+
+          <select
+            formControlName="warehouse"
+            (change)="applyFilters()"
+          >
+
+            <option value="">
+              All Warehouses
+            </option>
+
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="filter-field">
+
+        <label>
+          Stock Status
+        </label>
+
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-activity"></i>
+
+
+          <select
+            formControlName="status"
+            (change)="applyFilters()"
+          >
+
+            <option value="all">
+              All Status
+            </option>
+
+            <option value="healthy">
+              Healthy
+            </option>
+
+            <option value="low">
+              Low Stock
+            </option>
+
+            <option value="out">
+              Out of Stock
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <!-- =========================================================
+       Table
+       ========================================================= -->
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Inventory Records
+        </h2>
+
+        <span>
+
+          @if (total()) {
+
+            {{ total() }} inventory records
+
+          } @else {
+
+            No inventory records
+
+          }
+
+        </span>
+
+      </div>
+
+
+      <a
+        routerLink="/admin/stock/movements"
+        class="history-link"
+      >
+
+        <i class="bi bi-clock-history"></i>
+
+        Stock Movements
+
+      </a>
+
+    </div>
+
+
+<app-data-table
+  [columns]="columns"
+  [data]="stocks()"
+  [actions]="actions"
+  [loading]="loading()"
+  emptyTitle="No inventory found"
+  emptyMessage="There are no stock records matching your current filters."
+
+  (actionClick)="handleTableAction($event)"
+/>
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

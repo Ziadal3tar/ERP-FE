@@ -1,0 +1,229 @@
+<div class="warehouses-page">
+
+  <app-page-header
+    title="Warehouses"
+    description="Manage storage locations and warehouse operations."
+    actionLabel="New Warehouse"
+    actionIcon="bi-building-add"
+    (actionClick)="createWarehouse()"
+  />
+
+
+  <section class="warehouses-card">
+
+    <div class="filters">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search warehouse or code..."
+          (keyup.enter)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="select-box">
+
+        <i class="bi bi-toggle-on"></i>
+
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Status
+          </option>
+
+          @for (
+            status of statuses;
+            track status.value
+          ) {
+
+            <option
+              [value]="status.value"
+            >
+              {{ status.label }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Filter
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="clearFilters()"
+        >
+
+          Clear
+
+        </button>
+
+
+        <button
+          type="button"
+          class="icon-button"
+          (click)="refresh()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    @if (error()) {
+
+      <div class="error-box">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    @if (!loading()) {
+
+      <div class="summary-grid">
+
+        <div class="summary-card">
+
+          <span class="summary-icon warehouse">
+
+            <i class="bi bi-building"></i>
+
+          </span>
+
+          <div>
+
+            <small>
+              Total Warehouses
+            </small>
+
+            <strong>
+              {{ total() }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span class="summary-icon active">
+
+            <i class="bi bi-check-circle"></i>
+
+          </span>
+
+          <div>
+
+            <small>
+              Active
+            </small>
+
+            <strong>
+              {{
+                warehouses()
+                  .filter(w => w.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span class="summary-icon inactive">
+
+            <i class="bi bi-slash-circle"></i>
+
+          </span>
+
+          <div>
+
+            <small>
+              Inactive
+            </small>
+
+            <strong>
+              {{
+                warehouses()
+                  .filter(w => !w.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="warehouses()"
+      [loading]="loading()"
+      emptyTitle="No warehouses found"
+      [rowClickable]="true"
+      emptyMessage="Create your first warehouse to start managing stock locations."
+      (rowClick)="openWarehouse($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

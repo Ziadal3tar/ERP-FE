@@ -1,0 +1,189 @@
+<div class="categories-page">
+
+  <app-page-header
+    title="Categories"
+    description="Organize your products into manageable categories."
+    actionLabel="New Category"
+    actionIcon="bi-plus-lg"
+    (actionClick)="createCategory()"
+  />
+
+  <section class="categories-card">
+
+    <div class="toolbar">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search categories..."
+          (keyup.enter)="searchCategories()"
+        />
+
+      </div>
+
+
+      <div class="toolbar-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="searchCategories()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Search
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
+
+
+        <button
+          type="button"
+          class="icon-button"
+          (click)="refresh()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    @if (error()) {
+
+      <div class="error-box">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    @if (!loading()) {
+
+      <div class="category-summary">
+
+        <div>
+
+          <span class="summary-icon">
+            <i class="bi bi-grid"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Total Categories
+            </small>
+
+            <strong>
+              {{ total() }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <span class="summary-icon active">
+            <i class="bi bi-check-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Active
+            </small>
+
+            <strong>
+              {{
+                categories()
+                  .filter(c => c.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <span class="summary-icon inactive">
+            <i class="bi bi-slash-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Inactive
+            </small>
+
+            <strong>
+              {{
+                categories()
+                  .filter(c => !c.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="categories()"
+      [loading]="loading()"
+      [rowClickable]="true"
+      emptyTitle="No categories found"
+      emptyMessage="Create your first product category."
+      (rowClick)="openCategory($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

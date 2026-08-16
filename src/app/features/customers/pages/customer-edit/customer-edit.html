@@ -1,0 +1,77 @@
+<div class="customer-page">
+
+  <app-page-header
+    title="Edit Customer"
+    description="Update customer information and credit settings."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading customer...
+
+    </div>
+
+  } @else if (customer(); as currentCustomer) {
+
+    <section class="form-card">
+
+      <div class="form-card-header">
+
+        <div class="icon">
+
+          <i class="bi bi-pencil-square"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Customer Information
+          </h2>
+
+          <p>
+            Update the customer details below.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <app-customer-form
+
+        [customer]="currentCustomer"
+
+        [loading]="saving()"
+
+        (submitted)="submit($event)"
+
+        (cancelled)="cancel()"
+
+      />
+
+    </section>
+
+  }
+
+</div>

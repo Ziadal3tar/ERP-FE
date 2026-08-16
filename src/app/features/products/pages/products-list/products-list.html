@@ -1,0 +1,277 @@
+<div class="products-page">
+
+  <app-page-header
+    title="Products"
+    description="Manage your products, pricing and inventory information."
+    actionLabel="New Product"
+    actionIcon="bi-plus-lg"
+    (actionClick)="createProduct()"
+  />
+
+
+  <section class="products-card">
+
+    <!-- Filters -->
+
+    <div class="filters">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search product or SKU..."
+          (keyup.enter)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="select-box">
+
+        <i class="bi bi-grid"></i>
+
+        <select
+          [(ngModel)]="selectedCategory"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Categories
+          </option>
+
+          @for (
+            category of categories();
+            track category._id
+          ) {
+
+            <option
+              [value]="category._id"
+            >
+              {{ category.name }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="select-box">
+
+        <i class="bi bi-toggle-on"></i>
+
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Status
+          </option>
+
+          <option value="true">
+            Active
+          </option>
+
+          <option value="false">
+            Inactive
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Filter
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+
+
+        <button
+          type="button"
+          class="icon-button"
+          (click)="refresh()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Error -->
+
+    @if (error()) {
+
+      <div class="error-box">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- Summary -->
+
+    @if (!loading()) {
+
+      <div class="summary-grid">
+
+        <div class="summary-card">
+
+          <span class="summary-icon products">
+            <i class="bi bi-box-seam"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Total Products
+            </small>
+
+            <strong>
+              {{ total() }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span class="summary-icon active">
+            <i class="bi bi-check-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Active
+            </small>
+
+            <strong>
+              {{
+                products()
+                  .filter(p => p.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span class="summary-icon inactive">
+            <i class="bi bi-slash-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Inactive
+            </small>
+
+            <strong>
+              {{
+                products()
+                  .filter(p => !p.isActive)
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <span class="summary-icon categories">
+            <i class="bi bi-grid"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Categories
+            </small>
+
+            <strong>
+              {{ categories().length }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <!-- Table -->
+
+    <app-data-table
+      [columns]="columns"
+      [data]="products()"
+      [loading]="loading()"
+      [rowClickable]="true"
+
+      emptyTitle="No products found"
+      emptyMessage="Create your first product to start managing inventory."
+      (rowClick)="openProduct($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

@@ -1,0 +1,242 @@
+<div class="payment-list-page">
+
+  <app-page-header
+    title="Payments"
+    description="Track customer payments and invoice settlement activity."
+  />
+
+
+  <div class="page-actions">
+<a
+      routerLink="/admin/payments/dashboard"
+      class="dashboard-button"
+    >
+
+      <i class="bi bi-speedometer2"></i>
+
+      Dashboard
+
+    </a>
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-triangle-fill"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Payment Filters
+          </h2>
+
+          <span>
+            Filter payments by invoice or customer.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <div class="filter-field">
+
+        <label>
+          Invoice
+        </label>
+
+        <select
+          formControlName="invoice"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Invoices
+          </option>
+
+          @for (
+            invoice of invoices();
+            track invoice._id
+          ) {
+
+            <option
+              [value]="invoice._id"
+            >
+
+              {{ invoice.invoiceNumber }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Customer
+        </label>
+
+        <select
+          formControlName="customer"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Customers
+          </option>
+
+          @for (
+            customer of customers();
+            track customer._id
+          ) {
+
+            <option
+              [value]="customer._id"
+            >
+
+              {{ customer.name }}
+
+              ·
+
+              {{ customer.code }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Payment History
+        </h2>
+
+        <span>
+          {{ total() }} payments
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="payments()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No payments found"
+
+      emptyMessage="There are no payments matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

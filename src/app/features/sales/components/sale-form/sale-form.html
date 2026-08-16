@@ -1,0 +1,956 @@
+<div class="sale-form">
+
+  @if (dataLoading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading customers, products and warehouses...
+
+    </div>
+
+  } @else {
+
+    @if (dataError()) {
+
+      <div class="error-banner">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ dataError() }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         Sale Information
+         ===================================================== -->
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon blue">
+
+          <i class="bi bi-receipt"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Sale Information
+          </h2>
+
+          <span>
+            Select the customer and warehouse for this sale.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="fields-grid">
+
+        <!-- Customer -->
+
+        <div class="field">
+
+          <label>
+            Customer
+            <span>*</span>
+          </label>
+
+
+          <select
+            [formControl]="
+              form.controls.customer
+            "
+            (change)="paymentMethodChanged()"
+          >
+
+            <option value="">
+              Select customer
+            </option>
+
+
+            @for (
+              customer of customers();
+              track customer._id
+            ) {
+
+              <option
+                [value]="customer._id"
+              >
+
+                {{ customer.name }}
+
+                ·
+
+                {{ customer.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+
+          @if (
+
+            form.controls.customer.touched &&
+
+            form.controls.customer.errors?.['required']
+
+          ) {
+
+            <small>
+              Customer is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Warehouse -->
+
+        <div class="field">
+
+          <label>
+            Warehouse
+            <span>*</span>
+          </label>
+
+
+          <select
+            [formControl]="
+              form.controls.warehouse
+            "
+          >
+
+            <option value="">
+              Select warehouse
+            </option>
+
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+                ·
+
+                {{ warehouse.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+
+          @if (
+
+            form.controls.warehouse.touched &&
+
+            form.controls.warehouse.errors?.['required']
+
+          ) {
+
+            <small>
+              Warehouse is required.
+            </small>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- Customer Credit Preview -->
+
+      @if (selectedCustomer; as customer) {
+
+        <div class="customer-credit-preview">
+
+          <div class="credit-preview-icon">
+
+            <i
+              class="bi bi-credit-card-2-front"
+            ></i>
+
+          </div>
+
+
+          <div class="credit-preview-content">
+
+            <span>
+              CUSTOMER CREDIT
+            </span>
+
+
+            <strong>
+              {{ customer.name }}
+            </strong>
+
+
+            <small>
+
+              Credit Limit:
+
+              {{
+                customer.creditLimit
+                  | currency:'EGP':'symbol':'1.2-2'
+              }}
+
+            </small>
+
+          </div>
+
+
+          <div
+            class="credit-preview-status"
+
+            [class.available]="
+              creditAvailable
+            "
+
+            [class.unavailable]="
+              !creditAvailable
+            "
+          >
+
+            <i
+              class="bi"
+
+              [class.bi-check-circle-fill]="
+                creditAvailable
+              "
+
+              [class.bi-x-circle-fill]="
+                !creditAvailable
+              "
+            ></i>
+
+
+            {{
+              creditAvailable
+                ? 'Credit Available'
+                : 'Credit Unavailable'
+            }}
+
+          </div>
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- =====================================================
+         Payment Method
+         ===================================================== -->
+
+    <section class="form-section payment-section">
+
+      <div class="section-header">
+
+        <div class="section-icon purple">
+
+          <i class="bi bi-wallet2"></i>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            Payment Method
+          </h2>
+
+          <span>
+            Choose how the customer will pay for this sale.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="payment-methods">
+
+        @for (
+          method of paymentMethods;
+          track method
+        ) {
+
+          <label
+
+            class="payment-option"
+
+            [class.selected]="
+              form.controls.paymentMethod.value ===
+              method
+            "
+
+            [class.disabled]="
+              method === 'Credit' &&
+              !creditAvailable
+            "
+          >
+
+            <input
+
+              type="radio"
+
+              [value]="method"
+
+              [formControl]="
+                form.controls.paymentMethod
+              "
+
+              [disabled]="
+                method === 'Credit' &&
+                !creditAvailable
+              "
+
+              (change)="
+                paymentMethodChanged()
+              "
+
+            />
+
+
+            <span class="payment-icon">
+
+              @switch (method) {
+
+                @case ('Cash') {
+
+                  <i
+                    class="bi bi-cash-stack"
+                  ></i>
+
+                }
+
+                @case ('Card') {
+
+                  <i
+                    class="bi bi-credit-card"
+                  ></i>
+
+                }
+
+                @case ('Bank') {
+
+                  <i
+                    class="bi bi-bank"
+                  ></i>
+
+                }
+
+                @case ('Credit') {
+
+                  <i
+                    class="bi bi-person-badge"
+                  ></i>
+
+                }
+
+              }
+
+            </span>
+
+
+            <span class="payment-text">
+
+              <strong>
+                {{ method }}
+              </strong>
+
+
+              @if (
+
+                method === 'Credit' &&
+
+                !creditAvailable
+
+              ) {
+
+                <small>
+                  No credit limit
+                </small>
+
+              }
+
+            </span>
+
+          </label>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Sale Items
+         ===================================================== -->
+
+    <section class="form-section">
+
+      <div
+        class="section-header items-header"
+      >
+
+        <div class="section-title-row">
+
+          <div class="section-icon green">
+
+            <i class="bi bi-box-seam"></i>
+
+          </div>
+
+
+          <div>
+
+            <h2>
+              Sale Items
+            </h2>
+
+            <span>
+              Add the products sold to the customer.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+
+          type="button"
+
+          class="add-item-button"
+
+          (click)="addItem()"
+        >
+
+          <i class="bi bi-plus-lg"></i>
+
+          Add Item
+
+        </button>
+
+      </div>
+
+
+      <div class="items-table">
+
+        <!-- Header -->
+
+        <div class="items-header-row">
+
+          <span>
+            Product
+          </span>
+
+
+          <span>
+            Quantity
+          </span>
+
+
+          <span>
+            Unit Price
+          </span>
+
+
+          <span>
+            Total
+          </span>
+
+
+          <span></span>
+
+        </div>
+
+
+        <!-- Rows -->
+
+        <div class="items-body">
+
+          @for (
+
+            item of items.controls;
+
+            track trackItem($index)
+
+          ) {
+
+            <div class="item-row">
+
+              <!-- Product -->
+
+<div class="item-product">
+
+  <select
+    [formControl]="item.controls.product"
+  >
+
+    <option value="">
+      Select product
+    </option>
+
+    @for (
+      product of products();
+      track product._id
+    ) {
+
+      @if (
+        !isProductUsed(
+          product._id,
+          $index
+        )
+        ||
+        item.controls.product.value === product._id
+      ) {
+
+        <option
+          [value]="product._id"
+        >
+          {{ product.name }}
+
+          @if (product.sku) {
+            · {{ product.sku }}
+          }
+
+        </option>
+
+      }
+
+    }
+
+  </select>
+
+
+  @if (
+    item.controls.product.touched &&
+    item.controls.product.errors?.['required']
+  ) {
+
+    <small>
+      Product is required.
+    </small>
+
+  }
+
+</div>
+
+
+              <!-- Quantity -->
+
+              <div class="item-field">
+
+                <input
+
+                  type="number"
+
+                  min="0.01"
+
+                  step="0.01"
+
+                  [formControl]="
+                    item.controls.quantity
+                  "
+
+                />
+
+
+                @if (
+
+                  item.controls.quantity.touched &&
+
+                  item.controls.quantity.errors
+
+                ) {
+
+                  <small>
+                    Quantity must be greater than zero.
+                  </small>
+
+                }
+
+              </div>
+
+
+              <!-- Unit Price -->
+
+              <div class="item-field">
+
+                <input
+
+                  type="number"
+
+                  min="0"
+
+                  step="0.01"
+
+                  [formControl]="
+                    item.controls.unitPrice
+                  "
+
+                />
+
+
+                @if (
+
+                  item.controls.unitPrice.touched &&
+
+                  item.controls.unitPrice.errors
+
+                ) {
+
+                  <small>
+                    Unit price cannot be negative.
+                  </small>
+
+                }
+
+              </div>
+
+
+              <!-- Item Total -->
+
+              <div class="item-total">
+
+                {{
+                  itemTotal($index)
+                    | currency:
+                      'EGP':
+                      'symbol':
+                      '1.2-2'
+                }}
+
+              </div>
+
+
+              <!-- Remove -->
+
+              <button
+
+                type="button"
+
+                class="remove-item-button"
+
+                [disabled]="
+                  items.length === 1
+                "
+
+                (click)="
+                  removeItem($index)
+                "
+
+              >
+
+                <i
+                  class="bi bi-trash3"
+                ></i>
+
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Summary
+         ===================================================== -->
+
+    <section class="totals-section">
+
+      <!-- Notes -->
+
+      <div class="totals-left">
+
+        <div class="summary-info">
+
+          <i class="bi bi-calculator"></i>
+
+
+          <div>
+
+            <strong>
+              Sale Summary
+            </strong>
+
+
+            <span>
+
+              {{ items.length }} products
+
+              ·
+
+              {{ totalItems | number }} units
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="field notes-field">
+
+          <label>
+            Notes
+          </label>
+
+
+          <textarea
+
+            rows="4"
+
+            [formControl]="
+              form.controls.notes
+            "
+
+            placeholder="Add notes about this sale..."
+
+          ></textarea>
+
+
+          <span class="hint">
+            Maximum 500 characters.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Totals -->
+
+      <div class="totals-card">
+
+        <!-- Subtotal -->
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+
+          <strong>
+
+            {{
+              subtotal
+                | currency:
+                  'EGP':
+                  'symbol':
+                  '1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <!-- Discount -->
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+
+          <div class="money-input">
+
+            <span>
+              −
+            </span>
+
+
+            <input
+
+              type="number"
+
+              min="0"
+
+              step="0.01"
+
+              [formControl]="
+                form.controls.discount
+              "
+
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Tax -->
+
+        <div class="summary-row">
+
+          <span>
+            Tax
+          </span>
+
+
+          <div class="money-input">
+
+            <span>
+              +
+            </span>
+
+
+            <input
+
+              type="number"
+
+              min="0"
+
+              step="0.01"
+
+              [formControl]="
+                form.controls.tax
+              "
+
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="total-divider"></div>
+
+
+        <!-- Total -->
+
+        <div class="summary-total">
+
+          <span>
+            Grand Total
+          </span>
+
+
+          <strong>
+
+            {{
+              total
+                | currency:
+                  'EGP':
+                  'symbol':
+                  '1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        @if (total < 0) {
+
+          <small class="negative-total">
+
+            Sale total cannot be negative.
+
+          </small>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Actions
+         ===================================================== -->
+
+    <div class="form-actions">
+
+      <button
+
+        type="button"
+
+        class="secondary-button"
+
+        [disabled]="loading()"
+
+        (click)="cancel()"
+
+      >
+
+        Cancel
+
+      </button>
+
+
+      <button
+
+        type="button"
+
+        class="primary-button"
+
+        [disabled]="
+          loading() ||
+          dataLoading() ||
+          total < 0
+        "
+
+        (click)="submit()"
+
+      >
+
+        @if (loading()) {
+
+          <span
+            class="button-spinner"
+          ></span>
+
+          Creating...
+
+        } @else {
+
+          <i class="bi bi-check-lg"></i>
+
+          Create Sale
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>

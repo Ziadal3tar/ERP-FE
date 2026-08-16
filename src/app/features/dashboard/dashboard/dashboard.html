@@ -1,0 +1,1354 @@
+<div class="dashboard-page">
+
+  <section class="dashboard-heading">
+
+    <div class="heading-content">
+
+      <span class="eyebrow">
+        OVERVIEW
+      </span>
+
+      <h2>
+        Dashboard
+      </h2>
+
+      <p>
+        Monitor your business performance and daily activity.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+
+      [disabled]="
+        summaryLoading() ||
+        lowStockLoading() ||
+        recentSalesLoading() ||
+        recentPurchasesLoading()
+      "
+
+      (click)="refresh()"
+    >
+
+      <i
+        class="bi bi-arrow-clockwise"
+        [class.spin]="
+          summaryLoading() ||
+          lowStockLoading() ||
+          recentSalesLoading() ||
+          recentPurchasesLoading()
+        "
+      ></i>
+
+      <span>
+        Refresh
+      </span>
+
+    </button>
+
+  </section>
+
+
+  @if (summaryError()) {
+
+    <div class="dashboard-error">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle"></i>
+
+      </div>
+
+
+      <div class="error-content">
+
+        <strong>
+          Something went wrong
+        </strong>
+
+        <p>
+          {{ summaryError() }}
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       KPI Cards
+       ===================================================== -->
+
+  <section class="stats-grid">
+
+    <!-- Sales -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/reports/sales"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon sales">
+
+          <i class="bi bi-graph-up-arrow"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Total Sales
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.sales?.total ?? 0
+              | number:'1.0-2'
+          }}
+
+          EGP
+
+        </strong>
+
+
+        <span class="stat-description">
+
+          {{ summary()?.sales?.count ?? 0 }}
+
+          confirmed sales
+
+        </span>
+
+      }
+
+    </article>
+
+
+    <!-- Purchases -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/reports/purchases"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon purchases">
+
+          <i class="bi bi-cart-check"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Total Purchases
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.purchases?.total ?? 0
+              | number:'1.0-2'
+          }}
+
+          EGP
+
+        </strong>
+
+
+        <span class="stat-description">
+
+          {{ summary()?.purchases?.count ?? 0 }}
+
+          received purchases
+
+        </span>
+
+      }
+
+    </article>
+
+
+    <!-- Customers -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/customers"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon customers">
+
+          <i class="bi bi-people"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Customers
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.customers ?? 0
+              | number
+          }}
+
+        </strong>
+
+
+        <span class="stat-description">
+          Active customers
+        </span>
+
+      }
+
+    </article>
+
+
+    <!-- Products -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/products"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon products">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Products
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.products ?? 0
+              | number
+          }}
+
+        </strong>
+
+
+        <span class="stat-description">
+          Active products
+        </span>
+
+      }
+
+    </article>
+
+
+    <!-- Suppliers -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/suppliers"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon suppliers">
+
+          <i class="bi bi-truck"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Suppliers
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.suppliers ?? 0
+              | number
+          }}
+
+        </strong>
+
+
+        <span class="stat-description">
+          Active suppliers
+        </span>
+
+      }
+
+    </article>
+
+
+    <!-- Stock -->
+
+    <article
+      class="stat-card clickable-card"
+      routerLink="/admin/reports/stock"
+    >
+
+      <div class="stat-top">
+
+        <div class="stat-icon stock">
+
+          <i class="bi bi-boxes"></i>
+
+        </div>
+
+        <span class="stat-label">
+          Total Stock
+        </span>
+
+      </div>
+
+
+      @if (summaryLoading()) {
+
+        <div class="skeleton stat-value-skeleton"></div>
+
+        <div class="skeleton stat-description-skeleton"></div>
+
+      } @else {
+
+        <strong class="stat-value">
+
+          {{
+            summary()?.stockQuantity ?? 0
+              | number:'1.0-2'
+          }}
+
+        </strong>
+
+
+        <span class="stat-description">
+          Across all warehouses
+        </span>
+
+      }
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       Performance Summary
+       ===================================================== -->
+
+  <!-- <section class="summary-grid">
+
+
+
+    <article class="dashboard-card summary-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <h3>
+            Sales Performance
+          </h3>
+
+          <span>
+            Confirmed sales
+          </span>
+
+        </div>
+
+        <div class="card-header-icon sales">
+
+          <i class="bi bi-graph-up-arrow"></i>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-content">
+
+        @if (salesLoading()) {
+
+          <div class="skeleton summary-value-skeleton"></div>
+
+          <div class="skeleton summary-meta-skeleton"></div>
+
+        } @else {
+
+          <div class="summary-number">
+
+            {{ salesReport()?.totalSales ?? 0 | number:'1.0-2' }}
+
+          </div>
+
+
+          <div class="summary-meta">
+
+            <span>
+
+              <i class="bi bi-receipt"></i>
+
+              {{ salesReport()?.count ?? 0 }}
+
+              transactions
+
+            </span>
+
+
+            <span>
+
+              <i class="bi bi-percent"></i>
+
+              Tax:
+
+              {{ salesReport()?.tax ?? 0 | number:'1.0-2' }}
+
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+
+
+
+    <article class="dashboard-card summary-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <h3>
+            Purchase Performance
+          </h3>
+
+          <span>
+            Received purchases
+          </span>
+
+        </div>
+
+        <div class="card-header-icon purchases">
+
+          <i class="bi bi-cart-check"></i>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-content">
+
+        @if (purchasesLoading()) {
+
+          <div class="skeleton summary-value-skeleton"></div>
+
+          <div class="skeleton summary-meta-skeleton"></div>
+
+        } @else {
+
+          <div class="summary-number">
+
+            {{ purchasesReport()?.totalPurchases ?? 0 | number:'1.0-2' }}
+
+          </div>
+
+
+          <div class="summary-meta">
+
+            <span>
+
+              <i class="bi bi-receipt"></i>
+
+              {{ purchasesReport()?.count ?? 0 }}
+
+              transactions
+
+            </span>
+
+
+            <span>
+
+              <i class="bi bi-percent"></i>
+
+              Tax:
+
+              {{ purchasesReport()?.tax ?? 0 | number:'1.0-2' }}
+
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+  </section> -->
+
+
+
+<section class="quick-actions">
+
+  <div>
+
+    <span class="eyebrow">
+      QUICK ACTIONS
+    </span>
+
+    <h2>
+      Common Operations
+    </h2>
+
+  </div>
+
+
+  <div class="quick-grid">
+
+    <a
+      routerLink="/admin/sales/create"
+      class="quick-card primary"
+    >
+
+      <i class="bi bi-cart-plus"></i>
+
+      <span>
+        New Sale
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/purchases/create"
+      class="quick-card"
+    >
+
+      <i class="bi bi-bag-plus"></i>
+
+      <span>
+        New Purchase
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/stock/in"
+      class="quick-card"
+    >
+
+      <i class="bi bi-box-arrow-in-down"></i>
+
+      <span>
+        Stock In
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/stock/transfer"
+      class="quick-card"
+    >
+
+      <i class="bi bi-arrow-left-right"></i>
+
+      <span>
+        Transfer Stock
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/customers/create"
+      class="quick-card"
+    >
+
+      <i class="bi bi-person-plus"></i>
+
+      <span>
+        New Customer
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/suppliers/create"
+      class="quick-card"
+    >
+
+      <i class="bi bi-truck"></i>
+
+      <span>
+        New Supplier
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/reports"
+      class="quick-card"
+    >
+
+      <i class="bi bi-bar-chart"></i>
+
+      <span>
+        Reports
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/admin/notifications"
+      class="quick-card"
+    >
+
+      <i class="bi bi-bell"></i>
+
+      <span>
+        Notifications
+      </span>
+
+    </a>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- =====================================================
+       Low Stock
+       ===================================================== -->
+<section class="dashboard-card">
+
+  <div class="card-header">
+
+    <div>
+
+      <h3>
+        Stock Alerts
+      </h3>
+
+      <span>
+        Products that require attention
+      </span>
+
+    </div>
+
+
+    <div class="card-header-actions">
+
+      <div class="alert-summary">
+
+        <span class="alert-count danger">
+          {{ outOfStockCount() }}
+          out of stock
+        </span>
+
+        <span class="alert-count warning">
+          {{ lowStockCount() }}
+          low stock
+        </span>
+
+      </div>
+
+
+      <a
+        routerLink="/admin/reports/low-stock"
+        class="card-link"
+      >
+
+        View report
+
+        <i class="bi bi-arrow-right"></i>
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+  @if (lowStockLoading()) {
+
+    <div class="table-loading">
+
+      <div class="loading-spinner"></div>
+
+      <span>
+        Loading stock alerts...
+      </span>
+
+    </div>
+
+  } @else if (lowStockError()) {
+
+    <div class="empty-state">
+
+      <div class="empty-icon danger">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+      </div>
+
+      <strong>
+        Unable to load stock alerts
+      </strong>
+
+      <span>
+        {{ lowStockError() }}
+      </span>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  } @else if (lowStock().length === 0) {
+
+    <div class="empty-state">
+
+      <div class="empty-icon success">
+
+        <i class="bi bi-check-circle"></i>
+
+      </div>
+
+      <strong>
+        Stock looks good
+      </strong>
+
+      <span>
+        No products are currently below their minimum stock.
+      </span>
+
+    </div>
+
+  } @else {
+
+    <div class="table-responsive">
+
+      <table class="dashboard-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Product
+            </th>
+
+            <th>
+              SKU
+            </th>
+
+            <th>
+              Current
+            </th>
+
+            <th>
+              Minimum
+            </th>
+
+            <th>
+              Status
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            item of lowStock();
+            track item._id
+          ) {
+
+            <tr>
+
+              <td>
+
+                <div class="product-cell">
+
+                  <div class="product-avatar">
+
+                    <i class="bi bi-box"></i>
+
+                  </div>
+
+
+                  <div>
+
+                    <strong>
+                      {{ item.product.name }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <td>
+                {{ item.product.sku }}
+              </td>
+
+
+              <td>
+
+                <strong
+                  [class.quantity-danger]="
+                    item.quantity <= 0
+                  "
+                >
+
+                  {{ item.quantity }}
+
+                </strong>
+
+              </td>
+
+
+              <td>
+                {{ item.product.minStock }}
+              </td>
+
+
+              <td>
+
+                @if (
+                  item.quantity <= 0
+                ) {
+
+                  <span
+                    class="status-badge danger"
+                  >
+
+                    <span class="badge-dot"></span>
+
+                    Out of Stock
+
+                  </span>
+
+                } @else {
+
+                  <span
+                    class="status-badge warning"
+                  >
+
+                    <span class="badge-dot"></span>
+
+                    Low Stock
+
+                  </span>
+
+                }
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>
+
+  <!-- =====================================================
+       Recent Sales
+       ===================================================== -->
+
+  <section class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h3>
+          Recent Sales
+        </h3>
+
+        <span>
+          Latest sales transactions
+        </span>
+
+      </div>
+
+
+      <a
+        routerLink="/admin/sales"
+        class="card-link"
+      >
+
+        View all
+
+        <i class="bi bi-arrow-right"></i>
+
+      </a>
+
+    </div>
+
+
+    @if (recentSalesLoading()) {
+
+      <div class="table-loading">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+          Loading sales...
+        </span>
+
+      </div>
+
+    } @else if (recentSales().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i class="bi bi-receipt"></i>
+
+        </div>
+
+        <strong>
+          No sales yet
+        </strong>
+
+        <span>
+          New sales will appear here.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="table-responsive">
+
+        <table class="dashboard-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Customer
+              </th>
+
+              <th>
+                Total
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Status
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              sale of recentSales();
+              track sale._id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="customer-cell">
+
+                    <div class="customer-avatar">
+
+                      {{ sale.customer.name.charAt(0) }}
+
+                    </div>
+
+
+                    <div>
+
+                      <strong>
+                        {{ sale.customer.name }}
+                      </strong>
+
+                      <small>
+                        {{ sale.customer.code }}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <strong class="amount-cell">
+
+                    {{ sale.total | number:'1.0-2' }}
+
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span class="payment-method">
+
+                    {{ sale.paymentMethod }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="status-badge success">
+
+                    <span class="badge-dot"></span>
+
+                    {{ sale.status }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- =====================================================
+       Recent Purchases
+       ===================================================== -->
+
+  <section class="dashboard-card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h3>
+          Recent Purchases
+        </h3>
+
+        <span>
+          Latest purchase transactions
+        </span>
+
+      </div>
+
+
+      <a
+        routerLink="/admin/purchases"
+        class="card-link"
+      >
+
+        View all
+
+        <i class="bi bi-arrow-right"></i>
+
+      </a>
+
+    </div>
+
+
+    @if (recentPurchasesLoading()) {
+
+      <div class="table-loading">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+          Loading purchases...
+        </span>
+
+      </div>
+
+    } @else if (recentPurchases().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i class="bi bi-cart"></i>
+
+        </div>
+
+        <strong>
+          No purchases yet
+        </strong>
+
+        <span>
+          New purchases will appear here.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="table-responsive">
+
+        <table class="dashboard-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Supplier
+              </th>
+
+              <th>
+                Warehouse
+              </th>
+
+              <th>
+                Total
+              </th>
+
+              <th>
+                Status
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              purchase of recentPurchases();
+              track purchase._id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="customer-cell">
+
+                    <div class="customer-avatar supplier">
+
+                      {{ purchase.supplier.name.charAt(0) }}
+
+                    </div>
+
+
+                    <div>
+
+                      <strong>
+                        {{ purchase.supplier.name }}
+                      </strong>
+
+                      <small>
+                        {{ purchase.supplier.code }}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="warehouse-name">
+
+                    <i class="bi bi-building"></i>
+
+                    {{ purchase.warehouse.name }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <strong class="amount-cell">
+
+                    {{ purchase.total | number:'1.0-2' }}
+
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span class="status-badge success">
+
+                    <span class="badge-dot"></span>
+
+                    {{ purchase.status }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </section>
+</div>

@@ -1,0 +1,445 @@
+<div class="sales-dashboard-page">
+
+  <app-page-header
+    title="Sales Dashboard"
+    description="Monitor sales activity, order status and recent transactions."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadDashboard()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading sales overview...
+
+    </div>
+
+  } @else {
+
+    <!-- =====================================================
+         KPI Cards
+         ===================================================== -->
+
+    <section class="kpi-grid">
+
+      <button
+        type="button"
+        class="kpi-card total"
+        (click)="openSales()"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-receipt"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Total Sales
+          </span>
+
+          <strong>
+            {{ totalSales() | number }}
+          </strong>
+
+          <small>
+            All sales records
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card draft"
+        (click)="openSales('Draft')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Draft
+          </span>
+
+          <strong>
+            {{ draftSales() | number }}
+          </strong>
+
+          <small>
+            Awaiting confirmation
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card confirmed"
+        (click)="openSales('Confirmed')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Confirmed
+          </span>
+
+          <strong>
+            {{ confirmedSales() | number }}
+          </strong>
+
+          <small>
+            {{ confirmationRate }}% of all sales
+          </small>
+
+        </div>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="kpi-card cancelled"
+        (click)="openSales('Cancelled')"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-x-circle"></i>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span>
+            Cancelled
+          </span>
+
+          <strong>
+            {{ cancelledSales() | number }}
+          </strong>
+
+          <small>
+            Cancelled sales
+          </small>
+
+        </div>
+
+      </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         Workflow
+         ===================================================== -->
+
+    <section class="workflow-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            SALES PIPELINE
+          </span>
+
+          <h2>
+            Sales Workflow
+          </h2>
+
+          <p>
+            Track the current lifecycle of your sales.
+          </p>
+
+        </div>
+
+
+        <a
+          routerLink="/admin/sales/create"
+          class="create-button"
+        >
+
+          <i class="bi bi-plus-lg"></i>
+
+          New Sale
+
+        </a>
+
+      </div>
+
+
+      <div class="pipeline">
+
+        <div
+          class="pipeline-step"
+          (click)="openSales('Draft')"
+        >
+
+          <div class="pipeline-number draft">
+            {{ draftSales() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Draft
+            </strong>
+
+            <span>
+              Awaiting confirmation
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow">
+          <i class="bi bi-arrow-right"></i>
+        </div>
+
+
+        <div
+          class="pipeline-step"
+          (click)="openSales('Confirmed')"
+        >
+
+          <div class="pipeline-number confirmed">
+            {{ confirmedSales() }}
+          </div>
+
+          <div>
+
+            <strong>
+              Confirmed
+            </strong>
+
+            <span>
+              Stock deducted
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow">
+          <i class="bi bi-arrow-right"></i>
+        </div>
+
+
+        <div class="stock-result">
+
+          <div class="pipeline-number stock">
+
+            <i class="bi bi-box-arrow-up"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Stock OUT
+            </strong>
+
+            <span>
+              Inventory updated on confirmation
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Recent Sales
+         ===================================================== -->
+
+<section class="recent-card">
+
+  <div class="section-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ACTIVITY
+      </span>
+
+      <h2>
+        Recent Sales
+      </h2>
+
+      <p>
+        Latest sales activity from the system.
+      </p>
+
+    </div>
+
+
+    <a
+      routerLink="/admin/sales"
+      class="view-all"
+    >
+      View All
+
+      <i class="bi bi-arrow-right"></i>
+    </a>
+
+  </div>
+
+
+  @if (recentSales().length > 0) {
+
+    <div class="sales-list">
+
+      @for (
+        sale of recentSales();
+        track sale._id
+      ) {
+
+        <a
+          class="sale-row"
+          [routerLink]="[
+            '/admin/sales',
+            sale._id
+          ]"
+        >
+
+          <div class="sale-leading">
+
+            <div class="sale-icon">
+
+              <i class="bi bi-receipt"></i>
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                {{ saleNumber(sale) }}
+              </strong>
+
+              <span>
+                {{ customerName(sale) }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="sale-middle">
+
+            <span>
+              {{ warehouseName(sale) }}
+            </span>
+
+            <small>
+              {{ sale.items.length }}
+              items
+            </small>
+
+          </div>
+
+
+          <div class="sale-total">
+
+            <strong>
+              {{ sale.total | number:'1.2-2' }}
+              EGP
+            </strong>
+
+            <span
+              class="status"
+              [class.draft]="sale.status === 'Draft'"
+              [class.confirmed]="sale.status === 'Confirmed'"
+              [class.cancelled]="sale.status === 'Cancelled'"
+            >
+
+              {{ sale.status }}
+
+            </span>
+
+          </div>
+
+
+          <i
+            class="bi bi-chevron-right arrow"
+          ></i>
+
+        </a>
+
+      }
+
+    </div>
+
+  } @else {
+
+    <div class="empty-state">
+
+      <i class="bi bi-receipt"></i>
+
+      <strong>
+        No sales yet
+      </strong>
+
+      <span>
+        Create your first sale to see activity here.
+      </span>
+
+    </div>
+
+  }
+
+</section>
+  }
+
+</div>

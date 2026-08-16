@@ -1,0 +1,478 @@
+<div class="product-form-page">
+
+  <app-page-header
+    [title]="editing() ? 'Edit Product' : 'Create Product'"
+    [description]="
+      editing()
+        ? 'Update product information and pricing.'
+        : 'Add a new product to your inventory catalog.'
+    "
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading product...
+
+    </div>
+
+  } @else {
+
+    <form
+      class="product-form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+
+      @if (error()) {
+
+        <div class="error-box">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ error() }}
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- =================================================
+           Basic Information
+           ================================================= -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon">
+
+            <i class="bi bi-box-seam"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Product Information
+            </h2>
+
+            <p>
+              Basic information used to identify the product.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- Product Name -->
+
+          <div class="field">
+
+            <label>
+              Product Name
+            </label>
+
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Wireless Headphones"
+            />
+
+            @if (
+              form.controls.name.touched &&
+              form.controls.name.errors?.['required']
+            ) {
+
+              <small>
+                Product name is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- SKU -->
+
+          <div class="field">
+
+            <label>
+              SKU
+            </label>
+
+            <input
+              type="text"
+              formControlName="sku"
+              placeholder="e.g. WH-1000XM5"
+            />
+
+            <span class="hint">
+              Unique product identifier.
+            </span>
+
+            @if (
+              form.controls.sku.touched &&
+              form.controls.sku.errors?.['required']
+            ) {
+
+              <small>
+                SKU is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- Category -->
+
+          <div class="field">
+
+            <label>
+              Category
+            </label>
+
+            <select
+              formControlName="category"
+            >
+
+              <option value="">
+                Select category
+              </option>
+
+              @for (
+                category of categories();
+                track category._id
+              ) {
+
+                <option
+                  [value]="category._id"
+                >
+                  {{ category.name }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (
+              form.controls.category.touched &&
+              form.controls.category.errors?.['required']
+            ) {
+
+              <small>
+                Category is required.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- Status -->
+
+          <div class="field status-field">
+
+            <!-- <label>
+              Product Status
+            </label>
+
+            <div class="status-control">
+
+              <div>
+
+                <strong>
+                  {{ form.controls.isActive.value ? 'Active' : 'Inactive' }}
+                </strong>
+
+                <span>
+                  {{
+                    form.controls.isActive.value
+                      ? 'Available for normal operations.'
+                      : 'Hidden from active operations.'
+                  }}
+                </span>
+
+              </div>
+
+
+              <label class="switch">
+
+                <input
+                  type="checkbox"
+                  formControlName="isActive"
+                />
+
+                <span></span>
+
+              </label>
+
+            </div> -->
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           Pricing
+           ================================================= -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon pricing">
+
+            <i class="bi bi-currency-dollar"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Pricing
+            </h2>
+
+            <p>
+              Define purchase and selling prices.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid pricing-grid">
+
+          <div class="field">
+
+            <label>
+              Purchase Price
+            </label>
+
+            <div class="input-with-icon">
+
+              <i class="bi bi-cash-stack"></i>
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="purchasePrice"
+              />
+
+            </div>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Selling Price
+            </label>
+
+            <div class="input-with-icon">
+
+              <i class="bi bi-tag"></i>
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="sellingPrice"
+              />
+
+            </div>
+
+          </div>
+
+
+          <div class="price-preview">
+
+            <span>
+              Expected Margin
+            </span>
+
+            <strong>
+              {{
+                form.controls.sellingPrice.value -
+                form.controls.purchasePrice.value
+                | number:'1.2-2'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           Inventory
+           ================================================= -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon inventory">
+
+            <i class="bi bi-boxes"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Inventory Settings
+            </h2>
+
+            <p>
+              Configure stock threshold for this product.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label>
+              Minimum Stock
+            </label>
+
+            <div class="input-with-icon">
+
+              <i class="bi bi-arrow-down-circle"></i>
+
+              <input
+                type="number"
+                min="0"
+                formControlName="minimumStock"
+              />
+
+            </div>
+
+            <span class="hint">
+              Used to detect low-stock products.
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           Description
+           ================================================= -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-icon description-icon">
+
+            <i class="bi bi-text-paragraph"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Description
+            </h2>
+
+            <p>
+              Additional information about this product.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="field">
+
+          <textarea
+            rows="6"
+            formControlName="description"
+            placeholder="Write a detailed product description..."
+          ></textarea>
+
+          <span class="hint">
+            Maximum 1000 characters.
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- Actions -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            <span class="button-spinner"></span>
+
+            Saving...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            {{
+              editing()
+                ? 'Save Changes'
+                : 'Create Product'
+            }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

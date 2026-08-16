@@ -6,8 +6,9 @@ import {
   Validators
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Auth } from '../../../core/services/auth';
-
+import {
+  AuthService
+} from '../../../core/services/auth';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
@@ -22,7 +23,7 @@ import { Auth } from '../../../core/services/auth';
 export class ForgotPassword {
 
   private fb = inject(FormBuilder);
-  private authService = inject(Auth);
+  private AuthService = inject(AuthService);
 
   loading = false;
 
@@ -55,7 +56,7 @@ submit() {
 
   this.loading = true;
 
-  this.authService
+  this.AuthService
     .forgotPassword(this.forgotForm.value.email)
     .subscribe({
 

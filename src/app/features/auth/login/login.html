@@ -1,3 +1,43 @@
+<div class="demo-login-card">
+  <div class="demo-login-header">
+    <div class="demo-icon">
+      <i class="bi bi-person-check-fill"></i>
+    </div>
+
+    <div>
+      <strong>Demo Account</strong>
+      <span>Use these credentials to explore the system</span>
+    </div>
+  </div>
+
+  <div class="demo-credentials">
+
+    <div class="credential">
+      <div class="credential-label">
+        <i class="bi bi-envelope"></i>
+        <span>Email</span>
+      </div>
+
+      <strong>admin@erp.com</strong>
+    </div>
+
+    <div class="credential">
+      <div class="credential-label">
+        <i class="bi bi-lock"></i>
+        <span>Password</span>
+      </div>
+
+      <strong>Password123!</strong>
+    </div>
+
+  </div>
+
+  <div class="demo-hint">
+    <i class="bi bi-info-circle"></i>
+    <span>Demo credentials for portfolio preview</span>
+  </div>
+</div>
+
 <div class="login-page">
 
     <div class="left-side">
@@ -30,7 +70,19 @@
             <p class="subtitle">
                 Login to continue
             </p>
+@if(errorMessage){
 
+    <div class="login-error">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+            {{ errorMessage }}
+        </span>
+
+    </div>
+
+}
             <!-- Email -->
 
             <div class="form-group">

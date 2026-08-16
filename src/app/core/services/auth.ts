@@ -1,58 +1,311 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  inject,
+  Injectable,
+  signal
+} from '@angular/core';
+
+import {
+  Router
+} from '@angular/router';
+
+import {
+  Observable,
+  tap
+} from 'rxjs';
+
+import {
+  environment
+} from '../../../environments/environment';
+
+import {
+  AuthUser,
+  LoginRequest,
+  LoginResponse
+} from '../../features/auth/models/auth.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class Auth {
+export class AuthService {
 
-  private http = inject(HttpClient);
+  /*
+  |--------------------------------------------------------------------------
+  | Dependencies
+  |--------------------------------------------------------------------------
+  */
 
-  private api = environment.apiUrl;
+  private readonly http =
+    inject(HttpClient);
 
-  login(data: any) {
+  private readonly router =
+    inject(Router);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration
+  |--------------------------------------------------------------------------
+  */
+
+  private readonly api =
+    environment.apiUrl;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Storage Keys
+  |--------------------------------------------------------------------------
+  */
+
+  private readonly tokenKey =
+    'erp_token';
+
+  private readonly userKey =
+    'erp_user';
+
+  /*
+  |--------------------------------------------------------------------------
+  | Current User
+  |--------------------------------------------------------------------------
+  */
+
+  private readonly currentUser =
+    signal<AuthUser | null>(
+      this.getStoredUser()
+    );
+
+  readonly user =
+    this.currentUser.asReadonly();
+
+  /*
+  |--------------------------------------------------------------------------
+  | Login
+  |--------------------------------------------------------------------------
+  */
+
+  login(
+    credentials: LoginRequest
+  ): Observable<LoginResponse> {
+
+    return this.http
+      .post<LoginResponse>(
+        `${this.api}/auth/login`,
+        credentials
+      )
+      .pipe(
+
+        tap(response => {
+
+          this.setSession(response);
+
+        })
+
+      );
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Forgot Password
+  |--------------------------------------------------------------------------
+  */
+
+  forgotPassword(
+    email: string
+  ): Observable<unknown> {
+
     return this.http.post(
-      `${this.api}/auth/login`,
-      data
+      `${this.api}/auth/forgot-password`,
+      {
+        email
+      }
     );
 
   }
 
-  saveToken(token: string) {
+  /*
+  |--------------------------------------------------------------------------
+  | Reset Password
+  |--------------------------------------------------------------------------
+  */
 
-    localStorage.setItem("token", token);
+  resetPassword(
+    token: string,
+    password: string
+  ): Observable<unknown> {
+
+    return this.http.post(
+      `${this.api}/auth/reset-password/${token}`,
+      {
+        password
+      }
+    );
 
   }
-  getToken() {
 
-    return localStorage.getItem("token");
+  /*
+  |--------------------------------------------------------------------------
+  | Save Token
+  |--------------------------------------------------------------------------
+  */
+
+  saveToken(
+    token: string
+  ): void {
+
+    localStorage.setItem(
+      this.tokenKey,
+      token
+    );
 
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | Get Token
+  |--------------------------------------------------------------------------
+  */
 
+  getToken(): string | null {
 
-  logout(){
+    return localStorage.getItem(
+      this.tokenKey
+    );
 
-    localStorage.removeItem("token");
+  }
 
-}
-isLoggedIn(){
+  /*
+  |--------------------------------------------------------------------------
+  | Authentication
+  |--------------------------------------------------------------------------
+  */
+
+  isAuthenticated(): boolean {
 
     return !!this.getToken();
 
-}
-forgotPassword(email: string) {
-  return this.http.post(
-    `${environment.apiUrl}/auth/forgot-password`,
-    { email }
-  );
-}
+  }
 
-resetPassword(token: string, password: string) {
-  return this.http.post(
-    `${environment.apiUrl}/auth/reset-password/${token}`,
-    { password }
-  );
-}
+  isLoggedIn(): boolean {
+
+    return this.isAuthenticated();
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Role
+  |--------------------------------------------------------------------------
+  */
+
+  hasRole(
+    role: string
+  ): boolean {
+
+    return this.user()?.role === role;
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Logout
+  |--------------------------------------------------------------------------
+  */
+
+  logout(): void {
+
+    this.clearSession();
+
+    this.router.navigate([
+      '/login'
+    ]);
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Set Session
+  |--------------------------------------------------------------------------
+  */
+
+  private setSession(
+    response: LoginResponse
+  ): void {
+
+    this.saveToken(
+      response.accessToken
+    );
+
+    localStorage.setItem(
+      this.userKey,
+      JSON.stringify(response.user)
+    );
+
+    this.currentUser.set(
+      response.user
+    );
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Clear Session
+  |--------------------------------------------------------------------------
+  */
+
+  private clearSession(): void {
+
+    localStorage.removeItem(
+      this.tokenKey
+    );
+
+    localStorage.removeItem(
+      this.userKey
+    );
+
+    this.currentUser.set(
+      null
+    );
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get Stored User
+  |--------------------------------------------------------------------------
+  */
+
+  private getStoredUser(): AuthUser | null {
+
+    const storedUser =
+      localStorage.getItem(
+        this.userKey
+      );
+
+    if (!storedUser) {
+
+      return null;
+
+    }
+
+    try {
+
+      return JSON.parse(
+        storedUser
+      ) as AuthUser;
+
+    } catch {
+
+      localStorage.removeItem(
+        this.userKey
+      );
+
+      return null;
+
+    }
+
+  }
+
 }

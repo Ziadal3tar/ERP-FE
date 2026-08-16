@@ -1,0 +1,244 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed()"
+  [class.mobile-open]="mobileOpen()"
+>
+
+
+  <!-- =====================================================
+       Brand
+       ===================================================== -->
+
+  <div class="sidebar-brand">
+
+    <div class="brand-logo">
+
+      <i class="bi bi-boxes"></i>
+
+    </div>
+
+
+    @if (!collapsed()) {
+
+      <div class="brand-content">
+
+        <span class="brand-name">
+          ERP
+        </span>
+
+        <span class="brand-subtitle">
+          Management System
+        </span>
+
+      </div>
+
+    }
+
+
+    @if (mobileOpen()) {
+
+      <button
+        type="button"
+        class="mobile-close"
+        aria-label="Close menu"
+        (click)="closeMobileMenu()"
+      >
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       Navigation
+       ===================================================== -->
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-section">
+
+      @if (!collapsed()) {
+
+        <span class="section-title">
+          MAIN MENU
+        </span>
+
+      }
+
+
+      @for (
+        item of navigation;
+        track item.label
+      ) {
+
+
+        <!-- =================================================
+             Single Route
+             ================================================= -->
+
+        @if (!hasChildren(item)) {
+
+          <a
+            class="nav-item"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{
+              exact: true
+            }"
+            (click)="closeMobileMenu()"
+          >
+
+            <span class="nav-icon">
+
+              <i
+                class="bi"
+                [class]="item.icon"
+              ></i>
+
+            </span>
+
+
+            @if (!collapsed()) {
+
+              <span class="nav-label">
+                {{ item.label }}
+              </span>
+
+            }
+
+          </a>
+
+        }
+
+
+        <!-- =================================================
+             Group
+             ================================================= -->
+
+        @if (hasChildren(item)) {
+
+          <div class="nav-group">
+
+
+            <button
+              type="button"
+              class="nav-item nav-group-button"
+
+              [class.expanded]="
+                isGroupExpanded(item.label)
+              "
+
+              (click)="
+                toggleGroup(item.label)
+              "
+            >
+
+              <span class="nav-icon">
+
+                <i
+                  class="bi"
+                  [class]="item.icon"
+                ></i>
+
+              </span>
+
+
+              @if (!collapsed()) {
+
+                <span class="nav-label">
+
+                  {{ item.label }}
+
+                </span>
+
+
+                <i
+                  class="bi bi-chevron-down group-arrow"
+                  [class.rotated]="
+                    isGroupExpanded(item.label)
+                  "
+                ></i>
+
+              }
+
+            </button>
+
+
+            @if (
+              !collapsed() &&
+              isGroupExpanded(item.label)
+            ) {
+
+              <div class="nav-children">
+
+                @for (
+                  child of item.children;
+                  track child.label
+                ) {
+
+                  <a
+                    class="nav-child"
+                    [routerLink]="child.route"
+                    routerLinkActive="active"
+                    (click)="closeMobileMenu()"
+                  >
+
+                    <span class="child-icon">
+
+                      <i
+                        class="bi"
+                        [class]="child.icon"
+                      ></i>
+
+                    </span>
+
+                    <span>
+                      {{ child.label }}
+                    </span>
+
+                  </a>
+
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      }
+
+    </div>
+
+  </nav>
+
+
+  <!-- =====================================================
+       Bottom
+       ===================================================== -->
+
+  @if (!collapsed()) {
+
+    <div class="sidebar-footer">
+
+      <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        <span>
+          System Online
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+</aside>

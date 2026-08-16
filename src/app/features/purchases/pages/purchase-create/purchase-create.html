@@ -1,0 +1,31 @@
+<div class="purchase-create-page">
+
+  <app-page-header
+    title="Create Purchase"
+    description="Create a draft purchase order for a supplier and warehouse."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+    </div>
+
+  }
+
+
+<app-purchase-form
+  [initialSupplier]="initialSupplier()"
+  [initialWarehouse]="initialWarehouse()"
+  [loading]="loading()"
+  (submitted)="submit($event)"
+  (cancelled)="cancel()"
+/>
+</div>

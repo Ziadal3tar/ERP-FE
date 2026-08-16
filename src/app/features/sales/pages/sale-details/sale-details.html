@@ -1,0 +1,1122 @@
+<div class="sale-details-page">
+
+  <app-page-header
+    title="Sale Details"
+    description="Review customer, payment, items and inventory status."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading sale...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadSale()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  } @else if (sale(); as currentSale) {
+
+    <!-- =====================================================
+         Hero
+         ===================================================== -->
+
+    <section class="hero-card">
+
+      <div class="sale-icon">
+
+        <i class="bi bi-receipt-cutoff"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span class="eyebrow">
+          SALES ORDER
+        </span>
+
+        <h1>
+          {{ saleNumber }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span
+            class="status"
+            [class.draft]="
+              currentSale.status === 'Draft'
+            "
+            [class.confirmed]="
+              currentSale.status === 'Confirmed'
+            "
+            [class.cancelled]="
+              currentSale.status === 'Cancelled'
+            "
+          >
+
+            <i
+              class="bi"
+              [class]="
+                statusIcon(
+                  currentSale.status
+                )
+              "
+            ></i>
+
+            {{ currentSale.status }}
+
+          </span>
+
+
+          <span class="created-date">
+
+            Created
+
+            {{
+              currentSale.createdAt
+                | date:'mediumDate'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        @if (
+          currentSale.status === 'Draft'
+        ) {
+
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="actionLoading()"
+            (click)="askConfirm()"
+          >
+
+            <i class="bi bi-check2-circle"></i>
+
+            Confirm
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askCancel()"
+          >
+
+            <i class="bi bi-x-circle"></i>
+
+            Cancel
+
+          </button>
+
+        }
+@if (
+  currentSale.status === 'Confirmed'
+) {
+
+  <button
+    type="button"
+    class="invoice-button"
+    [disabled]="invoiceLoading()"
+    (click)="createInvoice()"
+  >
+
+    @if (invoiceLoading()) {
+
+      <span class="button-spinner"></span>
+
+      Creating...
+
+    } @else {
+
+      <i class="bi bi-file-earmark-text"></i>
+
+      Create Invoice
+
+    }
+
+  </button>
+
+}
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Customer / Warehouse / Payment
+         ===================================================== -->
+
+    <div class="info-grid">
+
+      <!-- Customer -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-person-vcard"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Customer
+            </h2>
+
+            <span>
+              Sale customer
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          typeof currentSale.customer !== 'string'
+        ) {
+
+          <div class="entity-content">
+
+            <strong>
+              {{ currentSale.customer.name }}
+            </strong>
+
+            <span>
+              {{ currentSale.customer.code }}
+            </span>
+
+
+            @if (
+              currentSale.customer.email
+            ) {
+
+              <a
+                [href]="
+                  'mailto:' +
+                  currentSale.customer.email
+                "
+              >
+
+                <i class="bi bi-envelope"></i>
+
+                {{ currentSale.customer.email }}
+
+              </a>
+
+            }
+
+
+            @if (
+              currentSale.customer.phone
+            ) {
+
+              <a
+                [href]="
+                  'tel:' +
+                  currentSale.customer.phone
+                "
+              >
+
+                <i class="bi bi-telephone"></i>
+
+                {{ currentSale.customer.phone }}
+
+              </a>
+
+            }
+
+
+            <a
+              class="entity-link"
+              [routerLink]="[
+                '/admin/customers',
+                currentSale.customer._id
+              ]"
+            >
+
+              View Customer
+
+              <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+          </div>
+
+        } @else {
+
+          <strong class="raw-id">
+            {{ currentSale.customer }}
+          </strong>
+
+        }
+
+      </section>
+
+
+      <!-- Warehouse -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+
+            <i class="bi bi-building"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Warehouse
+            </h2>
+
+            <span>
+              Source warehouse
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          typeof currentSale.warehouse !== 'string'
+        ) {
+
+          <div class="entity-content">
+
+            <strong>
+              {{ currentSale.warehouse.name }}
+            </strong>
+
+            <span>
+              {{ currentSale.warehouse.code }}
+            </span>
+
+
+            @if (
+              currentSale.warehouse.location
+            ) {
+
+              <small>
+
+                <i class="bi bi-geo-alt"></i>
+
+                {{ currentSale.warehouse.location }}
+
+              </small>
+
+            }
+
+
+            <a
+              class="entity-link"
+              [routerLink]="[
+                '/admin/stock/warehouse'
+              ]"
+              [queryParams]="{
+                warehouse:
+                  currentSale.warehouse._id
+              }"
+            >
+
+              View Warehouse Stock
+
+              <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+          </div>
+
+        } @else {
+
+          <strong class="raw-id">
+            {{ currentSale.warehouse }}
+          </strong>
+
+        }
+
+      </section>
+
+
+      <!-- Payment -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+
+            <i class="bi bi-wallet2"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Payment
+            </h2>
+
+            <span>
+              Payment method
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="payment-display">
+
+          <div class="payment-icon">
+
+            @switch (currentSale.paymentMethod) {
+
+              @case ('Cash') {
+
+                <i class="bi bi-cash-stack"></i>
+
+              }
+
+              @case ('Card') {
+
+                <i class="bi bi-credit-card"></i>
+
+              }
+
+              @case ('Bank') {
+
+                <i class="bi bi-bank"></i>
+
+              }
+
+              @case ('Credit') {
+
+                <i class="bi bi-person-badge"></i>
+
+              }
+
+            }
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              {{ currentSale.paymentMethod }}
+            </strong>
+
+            @if (
+              currentSale.paymentMethod === 'Credit' &&
+              typeof currentSale.customer !== 'string'
+            ) {
+
+              <small>
+
+                Credit Limit:
+                {{
+                  currentSale.customer.creditLimit
+                    | currency:'EGP':'symbol':'1.2-2'
+                }}
+
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Workflow
+         ===================================================== -->
+
+    <section class="timeline-card">
+
+      <div class="card-header">
+
+        <div class="card-icon orange">
+
+          <i class="bi bi-diagram-3"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Sale Workflow
+          </h2>
+
+          <span>
+            Current sale lifecycle
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="timeline">
+
+        <div
+          class="timeline-step"
+          [class.current]="
+            currentSale.status === 'Draft'
+          "
+          [class.completed]="
+            currentSale.status === 'Confirmed'
+          "
+        >
+
+          <div class="timeline-dot">
+
+            <i class="bi bi-file-earmark"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Draft
+            </strong>
+
+            <span>
+              Sale created
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="timeline-line"></div>
+
+
+        <div
+          class="timeline-step"
+          [class.current]="
+            currentSale.status === 'Confirmed'
+          "
+          [class.completed]="
+            currentSale.status === 'Confirmed'
+          "
+        >
+
+          <div class="timeline-dot">
+
+            <i class="bi bi-box-arrow-up"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Confirmed
+            </strong>
+
+            <span>
+
+              @if (
+                currentSale.confirmedAt
+              ) {
+
+                {{
+                  currentSale.confirmedAt
+                    | date:'medium'
+                }}
+
+              } @else {
+
+                Stock will be deducted
+
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          currentSale.status === 'Cancelled'
+        ) {
+
+          <div class="timeline-line"></div>
+
+          <div
+            class="timeline-step cancelled"
+          >
+
+            <div class="timeline-dot">
+
+              <i class="bi bi-x-circle"></i>
+
+            </div>
+
+            <div>
+
+              <strong>
+                Cancelled
+              </strong>
+
+              <span>
+                Sale cancelled
+              </span>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      @if (
+        currentSale.status === 'Confirmed'
+      ) {
+
+        <div class="stock-notice">
+
+          <i class="bi bi-box-arrow-up"></i>
+
+          <span>
+            Stock was deducted when this sale was confirmed.
+          </span>
+
+        </div>
+
+      }
+
+
+      @if (
+        currentSale.status === 'Cancelled'
+      ) {
+
+        <div class="cancelled-notice">
+
+          <i class="bi bi-x-circle-fill"></i>
+
+          This sale was cancelled before confirmation.
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- =====================================================
+         Items
+         ===================================================== -->
+
+    <section class="items-card">
+
+      <div class="card-header">
+
+        <div class="card-icon blue">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Sale Items
+          </h2>
+
+          <span>
+            {{ currentSale.items.length }}
+            products
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="items-table-wrapper">
+
+        <table class="items-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                SKU
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Unit Price
+              </th>
+
+              <th>
+                Total
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of currentSale.items;
+              track $index
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="product-cell">
+
+                    <div class="product-icon">
+
+                      <i class="bi bi-box"></i>
+
+                    </div>
+
+                    <strong>
+                      {{ productName(item) }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="sku">
+
+                    {{
+                      productSku(item) ||
+                      '—'
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    item.quantity
+                      | number
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    item.unitPrice
+                      | currency:'EGP':'symbol':'1.2-2'
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+
+                    {{
+                      item.total
+                        | currency:'EGP':'symbol':'1.2-2'
+                    }}
+
+                  </strong>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Summary
+         ===================================================== -->
+
+    <div class="bottom-grid">
+
+      <section class="notes-card">
+
+        <div class="card-header">
+
+          <div class="card-icon gray">
+
+            <i class="bi bi-sticky"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Notes
+            </h2>
+
+            <span>
+              Sale notes
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="notes-content">
+
+          @if (currentSale.notes) {
+
+            {{ currentSale.notes }}
+
+          } @else {
+
+            <span>
+              No notes added.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <section class="summary-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+
+            <i class="bi bi-calculator"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Sale Summary
+            </h2>
+
+            <span>
+              Financial breakdown
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+
+            {{
+              currentSale.subtotal
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+          <strong class="discount">
+
+            −
+            {{
+              currentSale.discount
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Tax
+          </span>
+
+          <strong>
+
+            +
+            {{
+              currentSale.tax
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="grand-total">
+
+          <span>
+            Grand Total
+          </span>
+
+          <strong>
+
+            {{
+              currentSale.total
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Audit
+         ===================================================== -->
+
+    <section class="audit-card">
+
+      <div class="card-header">
+
+        <div class="card-icon gray">
+
+          <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Record Information
+          </h2>
+
+          <span>
+            Sale audit information
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="audit-grid">
+
+        <div>
+
+          <span>
+            Created
+          </span>
+
+          <strong>
+            {{
+              currentSale.createdAt
+                | date:'medium'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Updated
+          </span>
+
+          <strong>
+            {{
+              currentSale.updatedAt
+                | date:'medium'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Created By
+          </span>
+
+          <strong>
+            {{
+              currentSale.createdBy?.name ||
+              '—'
+            }}
+          </strong>
+
+          @if (
+            currentSale.createdBy?.email
+          ) {
+
+            <small>
+              {{
+                currentSale.createdBy?.email
+              }}
+            </small>
+
+          }
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Confirmed By
+          </span>
+
+          <strong>
+            {{
+              currentSale.confirmedBy?.name ||
+              '—'
+            }}
+          </strong>
+
+          @if (
+            currentSale.confirmedBy?.email
+          ) {
+
+            <small>
+              {{
+                currentSale.confirmedBy?.email
+              }}
+            </small>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    @if (confirmOpen()) {
+
+      <app-confirm-dialog
+
+        [open]="confirmOpen()"
+
+        [title]="confirmationTitle"
+
+        [message]="confirmationMessage"
+
+        [confirmText]="confirmationText"
+
+        [cancelText]="'Cancel'"
+
+        [variant]="confirmationVariant"
+
+        [loading]="actionLoading()"
+
+        (confirmed)="confirmOperation()"
+
+        (cancelled)="closeConfirmation()"
+
+      />
+
+    }
+
+  }
+
+</div>

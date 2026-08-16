@@ -1,0 +1,434 @@
+<div class="leave-details-page">
+
+  <app-page-header
+    title="Leave Request"
+    description="Review the request and manage its approval status."
+  />
+
+
+  @if (loading()) {
+
+    <app-loading-state
+      message="Loading leave request..."
+    />
+
+  } @else if (error()) {
+
+    <div class="details-error">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      {{ error() }}
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="back()"
+      >
+        Back
+      </button>
+
+    </div>
+
+  } @else if (leave(); as currentLeave) {
+
+    <section class="leave-hero">
+
+      <div class="hero-icon">
+
+        <i class="bi bi-calendar2-event"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <div class="hero-top">
+
+          <div>
+
+            <span class="hero-label">
+              LEAVE REQUEST
+            </span>
+
+            <h2>
+              {{ currentLeave.type }}
+            </h2>
+
+          </div>
+
+
+          <app-status-badge
+            [status]="currentLeave.status"
+          />
+
+        </div>
+
+
+        <p>
+          Requested by
+          <strong>
+            {{ employeeName }}
+          </strong>
+
+          @if (employeeCode) {
+            ({{ employeeCode }})
+          }
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <div class="details-grid">
+
+      <!-- Dates -->
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Leave Period
+            </h3>
+
+            <span>
+              Requested time off.
+            </span>
+
+          </div>
+
+          <i class="bi bi-calendar3"></i>
+
+        </div>
+
+
+        <div class="date-range">
+
+          <div class="date-box">
+
+            <span>
+              Start Date
+            </span>
+
+            <strong>
+              {{
+                currentLeave.startDate
+                  | date:'mediumDate'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="range-line">
+
+            <span></span>
+
+          </div>
+
+
+          <div class="date-box">
+
+            <span>
+              End Date
+            </span>
+
+            <strong>
+              {{
+                currentLeave.endDate
+                  | date:'mediumDate'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- Reason -->
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Reason
+            </h3>
+
+            <span>
+              Employee request details.
+            </span>
+
+          </div>
+
+          <i class="bi bi-chat-left-text"></i>
+
+        </div>
+
+
+        <div class="reason-box">
+
+          @if (currentLeave.reason) {
+
+            {{ currentLeave.reason }}
+
+          } @else {
+
+            <span>
+              No reason was provided.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Rejection -->
+
+      @if (currentLeave.rejectionReason) {
+
+        <section class="details-card rejection-card">
+
+          <div class="card-heading">
+
+            <div>
+
+              <h3>
+                Rejection Reason
+              </h3>
+
+              <span>
+                Reason provided by the administrator.
+              </span>
+
+            </div>
+
+            <i class="bi bi-x-circle"></i>
+
+          </div>
+
+
+          <p>
+            {{ currentLeave.rejectionReason }}
+          </p>
+
+        </section>
+
+      }
+
+
+      <!-- Actions -->
+
+      @if (
+        currentLeave.status === 'Pending'
+      ) {
+
+        <section class="details-card actions-card">
+
+          <div class="card-heading">
+
+            <div>
+
+              <h3>
+                Request Actions
+              </h3>
+
+              <span>
+                Manage this pending request.
+              </span>
+
+            </div>
+
+            <i class="bi bi-shield-check"></i>
+
+          </div>
+
+
+          @if (!rejectMode()) {
+
+            <div class="action-buttons">
+
+              <button
+                type="button"
+                class="approve-button"
+                [disabled]="actionLoading()"
+                (click)="approve()"
+              >
+
+                @if (actionLoading()) {
+
+                  Processing...
+
+                } @else {
+
+                  <i class="bi bi-check-lg"></i>
+
+                  Approve Request
+
+                }
+
+              </button>
+
+
+              <button
+                type="button"
+                class="reject-button"
+                [disabled]="actionLoading()"
+                (click)="openReject()"
+              >
+
+                <i class="bi bi-x-lg"></i>
+
+                Reject Request
+
+              </button>
+
+            </div>
+
+          } @else {
+
+            <div class="reject-form">
+
+              <label>
+                Rejection Reason
+              </label>
+
+              <textarea
+                rows="4"
+                [ngModel]="rejectReason()"
+                (ngModelChange)="rejectReason.set($event)"
+                placeholder="Explain why this request is being rejected..."
+              ></textarea>
+
+
+              <div class="reject-actions">
+
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="cancelReject()"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  class="reject-button"
+                  [disabled]="actionLoading()"
+                  (click)="reject()"
+                >
+                  Reject Request
+                </button>
+
+              </div>
+
+            </div>
+
+          }
+
+        </section>
+
+      }
+
+
+      @if (
+        currentLeave.status === 'Approved'
+      ) {
+
+        <section class="details-card approved-card">
+
+          <i class="bi bi-check-circle-fill"></i>
+
+          <div>
+
+            <strong>
+              Leave Approved
+            </strong>
+
+            <span>
+              This leave request has been approved.
+            </span>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      @if (
+        currentLeave.status === 'Rejected'
+      ) {
+
+        <section class="details-card rejected-card">
+
+          <i class="bi bi-x-circle-fill"></i>
+
+          <div>
+
+            <strong>
+              Leave Rejected
+            </strong>
+
+            <span>
+              This request was rejected.
+            </span>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      @if (
+        currentLeave.status === 'Pending'
+      ) {
+
+        <button
+          type="button"
+          class="cancel-request-button"
+          [disabled]="actionLoading()"
+          (click)="cancelLeave()"
+        >
+
+          <i class="bi bi-slash-circle"></i>
+
+          Cancel Request
+
+        </button>
+
+      }
+
+
+      <div class="details-footer">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back to Leaves
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,267 @@
+<div class="user-form-page">
+
+  <app-page-header
+    [title]="isEditMode() ? 'Edit User' : 'Create User'"
+    [description]="
+      isEditMode()
+        ? 'Update user information and access role.'
+        : 'Create a new system user.'
+    "
+  />
+
+
+  @if (loading()) {
+
+    <app-loading-state
+      message="Loading user..."
+    />
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="userForm"
+      (ngSubmit)="submit()"
+    >
+
+      <!-- =================================================
+           Error
+           ================================================= -->
+
+      @if (error()) {
+
+        <div class="form-error">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ error() }}
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- =================================================
+           User Information
+           ================================================= -->
+
+      <div class="section-title">
+
+        <div class="section-icon">
+          <i class="bi bi-person"></i>
+        </div>
+
+        <div>
+
+          <h3>
+            User Information
+          </h3>
+
+          <p>
+            Basic account information.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- Name -->
+
+        <div class="form-field">
+
+          <label>
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Enter full name"
+          />
+
+          @if (
+            userForm.controls.name.touched &&
+            userForm.controls.name.errors?.['required']
+          ) {
+
+            <small>
+              Name is required.
+            </small>
+
+          }
+
+          @if (
+            userForm.controls.name.touched &&
+            userForm.controls.name.errors?.['minlength']
+          ) {
+
+            <small>
+              Name must contain at least 2 characters.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="form-field">
+
+          <label>
+            Email
+          </label>
+
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="name@example.com"
+          />
+
+          @if (
+            userForm.controls.email.touched &&
+            userForm.controls.email.errors?.['required']
+          ) {
+
+            <small>
+              Email is required.
+            </small>
+
+          }
+
+          @if (
+            userForm.controls.email.touched &&
+            userForm.controls.email.errors?.['email']
+          ) {
+
+            <small>
+              Enter a valid email address.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Role -->
+
+        <div class="form-field">
+
+          <label>
+            Role
+          </label>
+
+          <select
+            formControlName="role"
+          >
+
+            @for (
+              role of roles;
+              track role
+            ) {
+
+              <option [value]="role">
+                {{ role }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- Password -->
+
+        @if (!isEditMode()) {
+
+          <div class="form-field">
+
+            <label>
+              Password
+            </label>
+
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Enter password"
+            />
+
+            @if (
+              userForm.controls.password.touched &&
+              userForm.controls.password.errors?.['required']
+            ) {
+
+              <small>
+                Password is required.
+              </small>
+
+            }
+
+            @if (
+              userForm.controls.password.touched &&
+              userForm.controls.password.errors?.['minlength']
+            ) {
+
+              <small>
+                Password must be at least 6 characters.
+              </small>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+           Actions
+           ================================================= -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="goBack()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            <span class="button-spinner"></span>
+
+            Saving...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            {{ isEditMode() ? 'Save Changes' : 'Create User' }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

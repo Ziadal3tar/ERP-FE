@@ -1,0 +1,498 @@
+<div class="employee-details-page">
+
+  <app-page-header
+    title="Employee Profile"
+    description="Manage employee information, department and compensation."
+  />
+
+
+  @if (loading()) {
+
+    <app-loading-state
+      message="Loading employee profile..."
+    />
+
+  } @else if (error()) {
+
+    <div class="details-error">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="back()"
+      >
+        Back to Employees
+      </button>
+
+    </div>
+
+  } @else if (employee(); as currentEmployee) {
+
+    <div class="profile-layout">
+
+      <!-- =================================================
+           Profile
+           ================================================= -->
+
+      <section class="profile-card">
+
+        <div class="profile-cover">
+
+          <div class="cover-pattern"></div>
+
+        </div>
+
+
+        <div class="profile-main">
+
+          <div class="avatar">
+
+            {{ userName.charAt(0).toUpperCase() }}
+
+          </div>
+
+
+          <div class="profile-heading">
+
+            <div class="name-row">
+
+              <h2>
+                {{ userName }}
+              </h2>
+
+              <app-status-badge
+                [status]="
+                  currentEmployee.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                "
+              />
+
+            </div>
+
+
+            <span>
+              {{ currentEmployee.jobTitle || 'Employee' }}
+            </span>
+
+
+            <small>
+              {{ userEmail }}
+            </small>
+
+          </div>
+
+
+          <div class="profile-actions">
+
+            <button
+              type="button"
+              class="edit-button"
+              (click)="editEmployee()"
+            >
+
+              <i class="bi bi-pencil"></i>
+
+              Edit
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="profile-stats">
+
+          <div>
+
+            <span>
+              Employee ID
+            </span>
+
+            <strong>
+              {{ currentEmployee.employeeCode }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Department
+            </span>
+
+            <strong>
+              {{ departmentName }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Hire Date
+            </span>
+
+            <strong>
+
+              {{
+                currentEmployee.hireDate
+                  ? (currentEmployee.hireDate | date:'mediumDate')
+                  : '—'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           Employment
+           ================================================= -->
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Employment Information
+            </h3>
+
+            <span>
+              Current employee assignment.
+            </span>
+
+          </div>
+
+          <i class="bi bi-briefcase"></i>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span>
+              Department
+            </span>
+
+            <strong>
+              {{ departmentName }}
+            </strong>
+
+            @if (departmentCode) {
+
+              <small>
+                {{ departmentCode }}
+              </small>
+
+            }
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Job Title
+            </span>
+
+            <strong>
+              {{ currentEmployee.jobTitle || '—' }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Phone
+            </span>
+
+            <strong>
+              {{ currentEmployee.phone || '—' }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Hire Date
+            </span>
+
+            <strong>
+
+              {{
+                currentEmployee.hireDate
+                  ? (currentEmployee.hireDate | date:'longDate')
+                  : '—'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="info-item full-width">
+
+            <span>
+              Address
+            </span>
+
+            <strong>
+              {{ currentEmployee.address || '—' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           Salary
+           ================================================= -->
+
+      <section class="details-card salary-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Compensation
+            </h3>
+
+            <span>
+              Current employee salary.
+            </span>
+
+          </div>
+
+          <i class="bi bi-cash-stack"></i>
+
+        </div>
+
+
+        @if (!salaryEditing()) {
+
+          <div class="salary-display">
+
+            <div>
+
+              <span>
+                Monthly Salary
+              </span>
+
+              <strong>
+
+                {{ currentEmployee.salary | number:'1.0-2' }}
+
+                <small>
+                  EGP
+                </small>
+
+              </strong>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="outline-button"
+              (click)="startSalaryEdit()"
+            >
+
+              <i class="bi bi-pencil"></i>
+
+              Change Salary
+
+            </button>
+
+          </div>
+
+        } @else {
+
+          <div class="salary-edit">
+
+            <div class="salary-input">
+
+              <input
+                type="number"
+                min="0"
+                [ngModel]="salary()"
+                (ngModelChange)="salary.set($event)"
+              />
+
+              <span>
+                EGP
+              </span>
+
+            </div>
+
+
+            <div class="salary-actions">
+
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="cancelSalaryEdit()"
+              >
+                Cancel
+              </button>
+
+
+              <button
+                type="button"
+                class="primary-button"
+                [disabled]="salarySaving()"
+                (click)="saveSalary()"
+              >
+
+                @if (salarySaving()) {
+                  Saving...
+                } @else {
+                  Save Salary
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </section>
+
+
+      <!-- =================================================
+           Account Management
+           ================================================= -->
+
+      <section class="details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Account Management
+            </h3>
+
+            <span>
+              Manage employee account status.
+            </span>
+
+          </div>
+
+          <i class="bi bi-shield-check"></i>
+
+        </div>
+
+
+        @if (currentEmployee.isActive) {
+
+          <button
+            type="button"
+            class="danger-action"
+            (click)="openDeleteDialog()"
+          >
+
+            <i class="bi bi-person-x"></i>
+
+            <span>
+
+              <strong>
+                Deactivate Employee
+              </strong>
+
+              <small>
+                Soft delete the employee account.
+              </small>
+
+            </span>
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="success-action"
+            (click)="restoreEmployee()"
+          >
+
+            <i class="bi bi-person-check"></i>
+
+            <span>
+
+              <strong>
+                Restore Employee
+              </strong>
+
+              <small>
+                Activate the employee again.
+              </small>
+
+            </span>
+
+          </button>
+
+        }
+
+      </section>
+
+
+      <div class="details-footer">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back to Employees
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <app-confirm-dialog
+    [open]="dialogOpen()"
+    [danger]="true"
+    title="Deactivate Employee?"
+    message="The employee will be deactivated. Existing employee data will remain available."
+    confirmText="Deactivate"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDialog()"
+  />
+
+</div>

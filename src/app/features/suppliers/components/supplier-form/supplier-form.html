@@ -1,0 +1,193 @@
+<div class="supplier-form">
+
+  <!-- Name -->
+
+<div class="field">
+
+  <label>
+    Supplier Name
+    <span>*</span>
+  </label>
+
+  <input
+    type="text"
+    [formControl]="form.controls.name"
+    placeholder="Enter supplier name"
+  />
+
+  @if (
+    form.controls.name.touched &&
+    form.controls.name.errors?.['required']
+  ) {
+
+    <small>
+      Supplier name is required.
+    </small>
+
+  }
+
+  @if (
+    form.controls.name.touched &&
+    form.controls.name.errors?.['maxlength']
+  ) {
+
+    <small>
+      Name cannot exceed 150 characters.
+    </small>
+
+  }
+
+</div>
+
+
+  <!-- Code -->
+
+ <div class="field">
+
+  <label>
+    Supplier Code
+    <span>*</span>
+  </label>
+
+  <input
+    type="text"
+    [formControl]="form.controls.code"
+    placeholder="SUP-001"
+  />
+
+</div>
+
+
+  <!-- Email -->
+
+<div class="field">
+
+  <label>
+    Email
+  </label>
+
+  <input
+    type="email"
+    [formControl]="form.controls.email"
+    placeholder="supplier@example.com"
+  />
+
+</div>
+
+
+  <!-- Phone -->
+
+<div class="field">
+
+  <label>
+    Phone
+  </label>
+
+  <input
+    type="text"
+    [formControl]="form.controls.phone"
+    placeholder="+20 100 000 0000"
+  />
+
+</div>
+
+
+  <!-- Tax Number -->
+
+<div class="field">
+
+  <label>
+    Tax Number
+  </label>
+
+  <input
+    type="text"
+    [formControl]="form.controls.taxNumber"
+    placeholder="Tax registration number"
+  />
+
+</div>
+
+
+  <!-- Address -->
+
+  <div class="field">
+
+  <label>
+    Tax Number
+  </label>
+
+  <input
+    type="text"
+    [formControl]="form.controls.taxNumber"
+    placeholder="Tax registration number"
+  />
+
+</div>
+
+
+  <!-- Notes -->
+
+<div class="field full">
+
+  <label>
+    Notes
+  </label>
+
+  <textarea
+    rows="4"
+    [formControl]="form.controls.notes"
+    placeholder="Additional supplier notes..."
+  ></textarea>
+
+</div>
+
+
+  <!-- Actions -->
+
+  <div class="form-actions">
+
+    <button
+      type="button"
+      class="secondary-button"
+      [disabled]="loading()"
+      (click)="cancel()"
+    >
+
+      Cancel
+
+    </button>
+
+
+    <button
+      type="submit"
+      class="primary-button"
+      [disabled]="loading()"
+      (click)="submit()"
+    >
+
+      @if (loading()) {
+
+        <span class="spinner"></span>
+
+        Saving...
+
+      } @else {
+
+        <i
+          class="bi bi-check-lg"
+        ></i>
+
+        {{
+          isEdit
+            ? 'Save Changes'
+            : 'Create Supplier'
+        }}
+
+      }
+
+    </button>
+
+  </div>
+
+</div>

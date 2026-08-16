@@ -1,1 +1,0 @@
-import{Ka as n,La as t,Pa as o,va as s}from"./chunk-OMFI5OOX.js";var r=class a{static \u0275fac=function(e){return new(e||a)};static \u0275cmp=s({type:a,selectors:[["app-change-password"]],decls:2,vars:0,template:function(e,i){e&1&&(n(0,"p"),o(1,"change-password works!"),t())},encapsulation:2})};export{r as ChangePassword};

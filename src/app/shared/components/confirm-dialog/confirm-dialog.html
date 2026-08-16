@@ -1,0 +1,127 @@
+@if (open()) {
+
+  <div
+    class="dialog-backdrop"
+    (click)="cancel()"
+  >
+
+    <section
+      class="confirm-dialog"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- =====================================================
+           Icon
+           ===================================================== -->
+
+      <div
+        class="dialog-icon"
+
+        [class.danger]="
+          effectiveVariant === 'danger'
+        "
+
+        [class.warning]="
+          effectiveVariant === 'warning'
+        "
+
+        [class.primary]="
+          effectiveVariant === 'primary'
+        "
+
+        [class.success]="
+          effectiveVariant === 'success'
+        "
+      >
+
+        <i
+          class="bi"
+          [class]="iconClass"
+        ></i>
+
+      </div>
+
+
+      <!-- =====================================================
+           Content
+           ===================================================== -->
+
+      <div class="dialog-content">
+
+        <h3>
+          {{ title() }}
+        </h3>
+
+        <p>
+          {{ message() }}
+        </p>
+
+      </div>
+
+
+      <!-- =====================================================
+           Actions
+           ===================================================== -->
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          class="cancel-button"
+
+          [disabled]="loading()"
+
+          (click)="cancel()"
+        >
+
+          {{ cancelText() }}
+
+        </button>
+
+
+        <button
+          type="button"
+          class="confirm-button"
+
+          [class.danger]="
+            effectiveVariant === 'danger'
+          "
+
+          [class.warning]="
+            effectiveVariant === 'warning'
+          "
+
+          [class.primary]="
+            effectiveVariant === 'primary'
+          "
+
+          [class.success]="
+            effectiveVariant === 'success'
+          "
+
+          [disabled]="loading()"
+
+          (click)="confirm()"
+        >
+
+          @if (loading()) {
+
+            <span class="spinner"></span>
+
+            Processing...
+
+          } @else {
+
+            {{ confirmText() }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+}

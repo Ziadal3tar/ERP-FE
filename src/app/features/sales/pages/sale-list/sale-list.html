@@ -1,0 +1,359 @@
+<div class="sale-list-page">
+
+  <app-page-header
+    title="Sales"
+    description="Manage sales, customers, payments and inventory operations."
+  />
+
+
+<button
+     type="button"
+     class="dashboard-button"
+     routerLink="/admin/sales/dashboard"
+   >
+
+     <i class="bi bi-grid-1x2-fill"></i>
+
+     dashboard
+
+   </button>
+  <div class="page-actions">
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+
+    <a
+      routerLink="/admin/sales/create"
+      class="primary-button"
+    >
+
+      <i class="bi bi-plus-lg"></i>
+
+      New Sale
+
+    </a>
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+
+      <div class="error-content">
+
+        <strong>
+          Unable to load sales
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Sales Filters
+          </h2>
+
+          <span>
+            Filter sales by customer, warehouse or status.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <!-- Customer -->
+
+      <div class="filter-field">
+
+        <label>
+          Customer
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-person"></i>
+
+          <select
+            formControlName="customer"
+            [disabled]="filtersLoading()"
+          >
+
+            <option value="">
+              All Customers
+            </option>
+
+            @for (
+              customer of customers();
+              track customer._id
+            ) {
+
+              <option
+                [value]="customer._id"
+              >
+
+                {{ customer.name }}
+
+                ·
+
+                {{ customer.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Warehouse -->
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-building"></i>
+
+          <select
+            formControlName="warehouse"
+            [disabled]="filtersLoading()"
+          >
+
+            <option value="">
+              All Warehouses
+            </option>
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+                ·
+
+                {{ warehouse.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="filter-field">
+
+        <label>
+          Status
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-activity"></i>
+
+          <select
+            formControlName="status"
+          >
+
+            <option value="">
+              All Status
+            </option>
+
+            <option value="Draft">
+              Draft
+            </option>
+
+            <option value="Confirmed">
+              Confirmed
+            </option>
+
+            <option value="Cancelled">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Apply -->
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Sales Orders
+        </h2>
+
+        <span>
+          {{ total() }} sales
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="sales()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No sales found"
+
+      emptyMessage="There are no sales matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+
+  @if (confirmOpen()) {
+
+    <app-confirm-dialog
+
+      [open]="confirmOpen()"
+
+      [title]="confirmationTitle"
+
+      [message]="confirmationMessage"
+
+      [confirmText]="confirmationText"
+
+      [cancelText]="'Cancel'"
+
+      [variant]="confirmationVariant"
+
+      [loading]="actionLoading()"
+
+      (confirmed)="confirmOperation()"
+
+      (cancelled)="closeConfirmation()"
+
+    />
+
+  }
+
+</div>

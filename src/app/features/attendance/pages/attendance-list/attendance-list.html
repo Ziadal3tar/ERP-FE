@@ -1,0 +1,251 @@
+<div class="attendance-page">
+
+  <app-page-header
+    title="Attendance"
+    description="Monitor employee attendance, check-in and check-out records."
+  />
+
+
+  <section class="attendance-card">
+
+    <!-- ==================================================
+         Filters
+         ================================================== -->
+
+    <div class="filters">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search employee..."
+          (keyup.enter)="applyFilters()"
+          aria-label="Search attendance"
+        />
+
+      </div>
+
+
+      <div class="date-box">
+
+        <i class="bi bi-calendar3"></i>
+
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (change)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="filter-button primary"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Filter
+
+        </button>
+
+
+        <button
+          type="button"
+          class="filter-button"
+          (click)="clearFilters()"
+        >
+
+          <i class="bi bi-x-lg"></i>
+
+          Clear
+
+        </button>
+
+
+        <button
+          type="button"
+          class="filter-button icon-only"
+          (click)="refresh()"
+          aria-label="Refresh"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         Error
+         ================================================== -->
+
+    @if (error()) {
+
+      <div class="attendance-error">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ==================================================
+         Statistics
+         ================================================== -->
+
+    @if (!loading()) {
+
+      <div class="attendance-summary">
+
+        <div class="summary-item">
+
+          <span class="summary-icon total">
+            <i class="bi bi-calendar-check"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Total Records
+            </small>
+
+            <strong>
+              {{ total() }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+          <span class="summary-icon present">
+            <i class="bi bi-check-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Present
+            </small>
+
+            <strong>
+              {{
+                records()
+                  .filter(r => r.status === 'Present')
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+          <span class="summary-icon late">
+            <i class="bi bi-clock"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Late
+            </small>
+
+            <strong>
+              {{
+                records()
+                  .filter(r => r.status === 'Late')
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+          <span class="summary-icon absent">
+            <i class="bi bi-x-circle"></i>
+          </span>
+
+          <div>
+
+            <small>
+              Absent
+            </small>
+
+            <strong>
+              {{
+                records()
+                  .filter(r => r.status === 'Absent')
+                  .length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <!-- ==================================================
+         Table
+         ================================================== -->
+
+    <app-data-table
+      [columns]="columns"
+      [data]="records()"
+      [loading]="loading()"
+  [rowClickable]="true"
+      emptyTitle="No attendance records"
+      emptyMessage="Attendance records will appear here."
+      (rowClick)="openAttendance($event)"
+    />
+
+
+    <!-- ==================================================
+         Pagination
+         ================================================== -->
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

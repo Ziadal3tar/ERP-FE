@@ -1,0 +1,168 @@
+<header class="app-header">
+
+
+  <!-- =====================================================
+       Left
+       ===================================================== -->
+
+  <div class="header-left">
+
+
+    <!-- Desktop / Tablet -->
+
+    <button
+      type="button"
+      class="header-icon-button desktop-toggle"
+
+      aria-label="Toggle sidebar"
+
+      (click)="onDesktopToggle()"
+    >
+
+      <i class="bi bi-list"></i>
+
+    </button>
+
+
+    <!-- Mobile -->
+
+    <button
+      type="button"
+      class="header-icon-button mobile-toggle"
+
+      aria-label="Open menu"
+
+      (click)="onMobileToggle()"
+    >
+
+      <i class="bi bi-list"></i>
+
+    </button>
+
+
+    <div class="page-heading">
+
+      <h1>
+        {{ pageTitle() }}
+      </h1>
+
+      <span>
+        Manage your business efficiently
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       Right
+       ===================================================== -->
+
+  <div class="header-right">
+
+
+    <!-- Search -->
+
+    <div class="header-search">
+
+      <i class="bi bi-search"></i>
+
+      <input
+        type="search"
+
+        placeholder="Search..."
+
+        aria-label="Search"
+      />
+
+      <span class="search-shortcut">
+        /
+      </span>
+
+    </div>
+
+
+    <!-- =================================================
+         Notifications
+         ================================================= -->
+
+    <button
+      type="button"
+
+      class="header-icon-button notification-button"
+
+      aria-label="Notifications"
+
+      [attr.aria-label]="
+        notificationService.unreadCount() > 0
+          ? 'Notifications, ' +
+            notificationService.unreadCount() +
+            ' unread'
+          : 'Notifications'
+      "
+
+      (click)="onNotificationsClick()"
+    >
+
+      <i class="bi bi-bell"></i>
+
+
+      @if (
+        notificationService.unreadCount() > 0
+      ) {
+
+        <span class="notification-badge">
+
+          {{
+            notificationService.unreadCount() > 99
+              ? '99+'
+              : notificationService.unreadCount()
+          }}
+
+        </span>
+
+      }
+
+    </button>
+
+
+    <!-- Divider -->
+
+    <div class="header-divider"></div>
+
+
+    <!-- =================================================
+         User
+         ================================================= -->
+
+    <button
+      type="button"
+      class="user-menu"
+    >
+
+      <div class="user-avatar">
+        A
+      </div>
+
+
+      <div class="user-info">
+
+        <strong>
+          Admin
+        </strong>
+
+        <span>
+          Administrator
+        </span>
+
+      </div>
+
+
+      <i class="bi bi-chevron-down user-arrow"></i>
+
+    </button>
+
+  </div>
+
+</header>

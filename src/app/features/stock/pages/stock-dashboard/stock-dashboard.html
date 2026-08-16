@@ -1,0 +1,393 @@
+<div class="stock-page">
+
+  <app-page-header
+    title="Inventory"
+    description="Monitor stock levels across all warehouses."
+  />
+
+
+  <!-- =====================================================
+       Actions
+       ===================================================== -->
+
+<div class="page-actions">
+
+  <a
+    routerLink="/admin/stock/list"
+    class="secondary-button"
+  >
+    <i class="bi bi-list-ul"></i>
+    Stock List
+  </a>
+
+
+  <button
+    type="button"
+    class="secondary-button"
+    (click)="openMovements()"
+  >
+    <i class="bi bi-clock-history"></i>
+    Stock Movements
+  </button>
+
+
+  <button
+    type="button"
+    class="primary-button"
+    (click)="openOperation()"
+  >
+    <i class="bi bi-plus-lg"></i>
+    Stock Operation
+  </button>
+
+</div>
+
+
+  <!-- =====================================================
+       Statistics
+       ===================================================== -->
+
+  @if (!loading()) {
+
+    <section class="metrics-grid">
+
+      <!-- Total -->
+
+      <div class="metric-card">
+
+        <div class="metric-icon total">
+
+          <i class="bi bi-boxes"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total Quantity
+          </span>
+
+          <strong>
+            {{ totalQuantity | number }}
+          </strong>
+
+          <small>
+            Current page
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Healthy -->
+
+      <div class="metric-card">
+
+        <div class="metric-icon healthy">
+
+          <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Healthy Stock
+          </span>
+
+          <strong>
+            {{ healthyStockCount }}
+          </strong>
+
+          <small>
+            Above minimum level
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Low -->
+
+      <div class="metric-card">
+
+        <div class="metric-icon low">
+
+          <i class="bi bi-exclamation-triangle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Low Stock
+          </span>
+
+          <strong>
+            {{ lowStockCount }}
+          </strong>
+
+          <small>
+            Needs attention
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Out -->
+
+      <div class="metric-card">
+
+        <div class="metric-icon out">
+
+          <i class="bi bi-x-circle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Out of Stock
+          </span>
+
+          <strong>
+            {{ outOfStockCount }}
+          </strong>
+
+          <small>
+            No quantity available
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- =====================================================
+       Inventory Card
+       ===================================================== -->
+
+  <section class="inventory-card">
+
+    <div class="filters-header">
+
+      <div>
+
+        <h2>
+          Stock Inventory
+        </h2>
+
+        <p>
+          View product quantities by warehouse.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="loading()"
+        (click)="refresh()"
+      >
+
+        <i class="bi bi-arrow-clockwise"></i>
+
+        Refresh
+
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         Filters
+         =================================================== -->
+
+    <div class="filters">
+
+      <!-- Product -->
+
+      <div class="filter-field">
+
+        <label>
+          Product
+        </label>
+
+        <select
+          [(ngModel)]="selectedProduct"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Products
+          </option>
+
+          @for (
+            product of products();
+            track product._id
+          ) {
+
+            <option
+              [value]="product._id"
+            >
+
+              {{ product.name }}
+              ·
+              {{ product.sku }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Warehouse -->
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+        <select
+          [(ngModel)]="selectedWarehouse"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Warehouses
+          </option>
+
+          @for (
+            warehouse of warehouses();
+            track warehouse._id
+          ) {
+
+            <option
+              [value]="warehouse._id"
+            >
+
+              {{ warehouse.name }}
+              ·
+              {{ warehouse.code }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-buttons">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Apply
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="clearFilters()"
+        >
+
+          Clear
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         Error
+         =================================================== -->
+
+    @if (error()) {
+
+      <div class="error-box">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         Data Table
+         =================================================== -->
+
+    <app-data-table
+      [columns]="columns"
+      [data]="stock()"
+      [loading]="loading()"
+      [rowClickable]="true"
+      emptyTitle="No stock records found"
+      emptyMessage="There are no inventory records matching your filters."
+
+    />
+
+
+    <!-- ===================================================
+         Pagination
+         =================================================== -->
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+
+  <!-- =====================================================
+       Operation Modal
+       ===================================================== -->
+
+  @if (operationModalOpen()) {
+
+    <app-stock-operation-modal
+      (closed)="closeOperation()"
+      (completed)="operationCompleted()"
+    />
+
+  }
+
+</div>

@@ -1,0 +1,190 @@
+<div class="category-form-page">
+
+  <app-page-header
+    [title]="editing() ? 'Edit Category' : 'Create Category'"
+    [description]="
+      editing()
+        ? 'Update category information.'
+        : 'Create a new product category.'
+    "
+  />
+
+
+  <form
+    class="form-card"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
+
+    @if (error()) {
+
+      <div class="error-box">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        {{ error() }}
+
+      </div>
+
+    }
+
+
+    <div class="section-heading">
+
+      <div class="section-icon">
+
+        <i class="bi bi-grid"></i>
+
+      </div>
+
+      <div>
+
+        <h2>
+          Category Information
+        </h2>
+
+        <p>
+          Define how this category will appear in the inventory.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-grid">
+
+      <!-- Name -->
+
+      <div class="form-field full">
+
+        <label>
+          Category Name
+        </label>
+
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="e.g. Electronics"
+        />
+
+
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.errors?.['required']
+        ) {
+
+          <small>
+            Category name is required.
+          </small>
+
+        }
+
+
+        @if (
+          form.controls.name.touched &&
+          form.controls.name.errors?.['minlength']
+        ) {
+
+          <small>
+            Minimum 2 characters.
+          </small>
+
+        }
+
+      </div>
+
+
+      <!-- Description -->
+
+      <div class="form-field full">
+
+        <label>
+          Description
+        </label>
+
+        <textarea
+          rows="5"
+          formControlName="description"
+          placeholder="Describe this category..."
+        ></textarea>
+
+        <span class="hint">
+          Optional. Maximum 500 characters.
+        </span>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="status-field full">
+
+        <div>
+
+          <strong>
+            Category Status
+          </strong>
+
+          <span>
+            Inactive categories can remain in the system
+            without being available for new products.
+          </span>
+
+        </div>
+
+
+        <label class="switch">
+
+          <input
+            type="checkbox"
+            formControlName="isActive"
+          />
+
+          <span></span>
+
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="back()"
+      >
+
+        Cancel
+
+      </button>
+
+
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="saving()"
+      >
+
+        @if (saving()) {
+
+          Saving...
+
+        } @else {
+
+          <i class="bi bi-check-lg"></i>
+
+          {{ editing() ? 'Save Changes' : 'Create Category' }}
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

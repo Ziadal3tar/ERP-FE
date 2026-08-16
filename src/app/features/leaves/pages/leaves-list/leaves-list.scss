@@ -1,0 +1,456 @@
+:host {
+  display: block;
+}
+
+.leaves-page {
+  width: 100%;
+}
+
+.leaves-card {
+
+  padding: 18px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--color-surface);
+
+  box-shadow:
+    var(--shadow-sm);
+
+}
+
+/* =========================================================
+   Filters
+   ========================================================= */
+
+.filters {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 18px;
+
+}
+
+.search-box,
+.select-box {
+
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    0 11px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    9px;
+
+  background:
+    var(--color-background);
+
+  color:
+    var(--color-text-muted);
+
+}
+
+.search-box {
+
+  width: 280px;
+
+}
+
+.select-box {
+
+  width: 190px;
+
+}
+
+.search-box:focus-within,
+.select-box:focus-within {
+
+  border-color:
+    #bfdbfe;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, .08);
+
+}
+
+.search-box input,
+.select-box select {
+
+  width: 100%;
+
+  min-width: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background:
+    transparent;
+
+  color:
+    var(--color-text);
+
+  font-size: 11px;
+
+}
+
+.select-box select {
+
+  cursor: pointer;
+
+}
+
+.filter-actions {
+
+  display: flex;
+
+  gap: 6px;
+
+  margin-left: auto;
+
+}
+
+.filter-button {
+
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    9px;
+
+  background: white;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size:
+    11px;
+
+  font-weight:
+    600;
+
+}
+
+.filter-button.primary {
+
+  border-color:
+    var(--color-primary);
+
+  background:
+    var(--color-primary);
+
+  color:
+    white;
+
+}
+
+.filter-button.icon-only {
+
+  width: 40px;
+
+  padding: 0;
+
+}
+
+/* =========================================================
+   Summary
+   ========================================================= */
+
+.summary-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+}
+
+.summary-card {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    10px;
+
+  background:
+    white;
+
+}
+
+.summary-icon {
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+
+}
+
+.summary-icon.total {
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+}
+
+.summary-icon.pending {
+
+  background:
+    var(--color-warning-soft);
+
+  color:
+    var(--color-warning);
+
+}
+
+.summary-icon.approved {
+
+  background:
+    var(--color-success-soft);
+
+  color:
+    var(--color-success);
+
+}
+
+.summary-icon.rejected {
+
+  background:
+    var(--color-danger-soft);
+
+  color:
+    var(--color-danger);
+
+}
+
+.summary-card small {
+
+  display: block;
+
+  margin-bottom: 2px;
+
+  color:
+    var(--color-text-muted);
+
+  font-size:
+    9px;
+
+}
+
+.summary-card strong {
+
+  color:
+    var(--color-text);
+
+  font-size:
+    17px;
+
+}
+
+/* =========================================================
+   Error
+   ========================================================= */
+
+.leaves-error {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 14px;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius:
+    9px;
+
+  background:
+    #fef2f2;
+
+  color:
+    #b91c1c;
+
+  font-size:
+    12px;
+
+}
+
+.leaves-error button {
+
+  margin-left:
+    auto;
+
+  border: 0;
+
+  background:
+    transparent;
+
+  color:
+    #b91c1c;
+
+  font-weight:
+    600;
+
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+  .filters {
+
+    flex-wrap:
+      wrap;
+
+    align-items:
+      stretch;
+
+  }
+
+  .search-box {
+
+    flex: 1;
+
+    min-width:
+      220px;
+
+  }
+
+  .select-box {
+
+    width:
+      180px;
+
+  }
+
+  .filter-actions {
+
+    margin-left:
+      0;
+
+  }
+
+  .summary-grid {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+  }
+
+}
+
+@media (max-width: 575.98px) {
+
+  .leaves-card {
+
+    padding:
+      12px;
+
+  }
+
+  .filters {
+
+    flex-direction:
+      column;
+
+  }
+
+  .search-box,
+  .select-box {
+
+    width:
+      100%;
+
+  }
+
+  .filter-actions {
+
+    width:
+      100%;
+
+  }
+
+  .filter-button {
+
+    flex:
+      1;
+
+  }
+
+  .filter-button.icon-only {
+
+    flex:
+      0 0 40px;
+
+  }
+
+  .summary-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+}

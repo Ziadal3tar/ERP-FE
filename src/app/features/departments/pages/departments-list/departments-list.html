@@ -1,0 +1,202 @@
+<div class="departments-page">
+
+  <app-page-header
+    title="Departments"
+    description="Organize your workforce into departments."
+    actionLabel="Add Department"
+    actionIcon="bi-plus-lg"
+    (actionClick)="createDepartment()"
+  />
+
+
+  <section class="departments-card">
+
+    <!-- =====================================================
+         Toolbar
+         ===================================================== -->
+
+    <div class="toolbar">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search departments..."
+          (keyup.enter)="applySearch()"
+          aria-label="Search departments"
+        />
+
+      </div>
+
+
+      <div class="toolbar-actions">
+
+        <button
+          type="button"
+          class="toolbar-button primary"
+          (click)="applySearch()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          <span>
+            Search
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="toolbar-button"
+          (click)="loadDepartments()"
+          aria-label="Refresh departments"
+          title="Refresh"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         Error
+         ===================================================== -->
+
+    @if (error()) {
+
+      <div class="departments-error">
+
+        <div class="error-content">
+
+          <div class="error-icon">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              Unable to load departments
+            </strong>
+
+            <span>
+              {{ error() }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="retry-button"
+          (click)="loadDepartments()"
+        >
+
+          Retry
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         Data Table
+         ===================================================== -->
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="departments()"
+
+      [actions]="actions"
+
+      [loading]="loading()"
+
+      [rowClickable]="true"
+
+      emptyTitle="No departments found"
+
+      emptyMessage="
+        Create your first department to get started.
+      "
+
+      (rowClick)="editDepartment($event)"
+
+      (actionClick)="handleAction($event)"
+
+    />
+
+
+    <!-- =====================================================
+         Pagination
+         ===================================================== -->
+
+    <app-pagination
+
+      [page]="page()"
+
+      [total]="total()"
+
+      [totalPages]="totalPages()"
+
+      (pageChange)="changePage($event)"
+
+    />
+
+  </section>
+
+
+  <!-- =====================================================
+       Confirmation Dialog
+       ===================================================== -->
+
+  <app-confirm-dialog
+
+    [open]="dialogOpen()"
+
+    [danger]="
+      actionType() === 'delete'
+    "
+
+    [title]="
+      actionType() === 'delete'
+        ? 'Delete Department?'
+        : 'Restore Department?'
+    "
+
+    [message]="
+      actionType() === 'delete'
+        ? 'The department will be deactivated and can be restored later.'
+        : 'The department will become active again.'
+    "
+
+    [confirmText]="
+      actionType() === 'delete'
+        ? 'Delete Department'
+        : 'Restore Department'
+    "
+
+    [cancelText]="'Cancel'"
+
+    (confirmed)="confirmAction()"
+
+    (cancelled)="closeDialog()"
+
+  />
+
+</div>

@@ -1,0 +1,26 @@
+<div class="empty-state">
+
+  <div class="empty-icon">
+
+    <i
+      class="bi"
+      [class]="icon()"
+    ></i>
+
+  </div>
+
+
+  <strong>
+    {{ title() }}
+  </strong>
+
+
+  @if (message()) {
+
+    <span>
+      {{ message() }}
+    </span>
+
+  }
+
+</div>

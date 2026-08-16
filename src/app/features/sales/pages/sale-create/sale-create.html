@@ -1,0 +1,32 @@
+<div class="sale-create-page">
+
+  <app-page-header
+    title="Create Sale"
+    description="Create a draft sale for a customer and warehouse."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <app-sale-form
+    [initialCustomer]="initialCustomer()"
+    [initialWarehouse]="initialWarehouse()"
+    [loading]="loading()"
+    (submitted)="submit($event)"
+    (cancelled)="cancel()"
+  />
+
+</div>

@@ -1,0 +1,739 @@
+:host {
+  display: block;
+}
+
+
+.notification-list-page {
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 0 auto;
+}
+
+
+.notification-card {
+  overflow: hidden;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius: 14px;
+
+  background: white;
+
+  box-shadow:
+    var(--shadow-sm);
+}
+
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.notification-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding:
+    18px 19px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+}
+
+
+.eyebrow {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color:
+    var(--color-primary);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: .12em;
+}
+
+
+.notification-header h2 {
+  margin:
+    0 0 3px;
+
+  color:
+    var(--color-text);
+
+  font-size: 14px;
+}
+
+
+.notification-header p {
+  margin: 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 10px;
+}
+
+
+.read-all-button {
+  min-height: 36px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    0 11px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  background:
+    #eff6ff;
+
+  color:
+    #2563eb;
+
+  font-size: 10px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+
+.read-all-button:hover {
+  background:
+    #dbeafe;
+}
+
+
+/* =========================================================
+   Tabs
+   ========================================================= */
+
+.filter-tabs {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding:
+    10px 17px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+
+  background:
+    #fafcff;
+}
+
+
+.filter-tabs button {
+  min-height: 30px;
+
+  padding:
+    0 10px;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  background: transparent;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 10px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+
+.filter-tabs button:hover {
+  background:
+    #f1f5f9;
+}
+
+
+.filter-tabs button.active {
+  background:
+    white;
+
+  color:
+    var(--color-primary);
+
+  box-shadow:
+    0 1px 4px
+    rgba(15,23,42,.06);
+}
+
+
+/* =========================================================
+   Notification Item
+   ========================================================= */
+
+.notifications {
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+.notification-item {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    40px
+    minmax(0, 1fr)
+    30px;
+
+  align-items: flex-start;
+
+  gap: 11px;
+
+  padding:
+    15px 17px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease;
+}
+
+
+.notification-item:last-child {
+  border-bottom: 0;
+}
+
+
+.notification-item:hover {
+  background:
+    #fafcff;
+}
+
+
+.notification-item.unread {
+  background:
+    #f8fbff;
+}
+
+
+.notification-item.unread:hover {
+  background:
+    #f1f7ff;
+}
+
+
+/* =========================================================
+   Icon
+   ========================================================= */
+
+.notification-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  font-size: 13px;
+}
+
+
+.notification-icon.info {
+  background:
+    #eff6ff;
+
+  color:
+    #2563eb;
+}
+
+
+.notification-icon.success {
+  background:
+    #f0fdf4;
+
+  color:
+    #16a34a;
+}
+
+
+.notification-icon.warning {
+  background:
+    #fff7ed;
+
+  color:
+    #ea580c;
+}
+
+
+.notification-icon.error {
+  background:
+    #fef2f2;
+
+  color:
+    #dc2626;
+}
+
+
+/* =========================================================
+   Content
+   ========================================================= */
+
+.notification-content {
+  min-width: 0;
+}
+
+
+.notification-top {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+
+.notification-top > div {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+
+.notification-top strong {
+  color:
+    var(--color-text);
+
+  font-size: 12px;
+}
+
+
+.unread-dot {
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    #2563eb;
+}
+
+
+.notification-time {
+  flex-shrink: 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 9px;
+}
+
+
+.notification-content p {
+  margin:
+    6px 0 8px;
+
+  color:
+    var(--color-text-secondary);
+
+  font-size: 10px;
+
+  line-height: 1.6;
+}
+
+
+.notification-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  flex-wrap: wrap;
+}
+
+
+.type-badge,
+.module-badge,
+.read-state {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding:
+    3px 6px;
+
+  border-radius: 20px;
+
+  font-size: 6px;
+
+  font-weight: 700;
+}
+
+
+.type-badge.info {
+  background:
+    #eff6ff;
+
+  color:
+    #2563eb;
+}
+
+
+.type-badge.success {
+  background:
+    #f0fdf4;
+
+  color:
+    #15803d;
+}
+
+
+.type-badge.warning {
+  background:
+    #fff7ed;
+
+  color:
+    #c2410c;
+}
+
+
+.type-badge.error {
+  background:
+    #fef2f2;
+
+  color:
+    #b91c1c;
+}
+
+
+.module-badge {
+  background:
+    #f1f5f9;
+
+  color:
+    #475569;
+}
+
+
+.read-state {
+  background:
+    #f8fafc;
+
+  color:
+    #64748b;
+}
+
+
+/* =========================================================
+   Delete
+   ========================================================= */
+
+.delete-button {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  background: transparent;
+
+  color:
+    #94a3b8;
+
+  opacity: 0;
+
+  cursor: pointer;
+
+  transition:
+    opacity .2s,
+    background .2s,
+    color .2s;
+}
+
+
+.notification-item:hover
+.delete-button {
+  opacity: 1;
+}
+
+
+.delete-button:hover {
+  background:
+    #fef2f2;
+
+  color:
+    #dc2626;
+}
+
+
+/* =========================================================
+   Loading
+   ========================================================= */
+
+.loading-state {
+  min-height: 300px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 9px;
+}
+
+
+.spinner {
+  width: 18px;
+  height: 18px;
+
+  border:
+    2px solid #dbeafe;
+
+  border-top-color:
+    #2563eb;
+
+  border-radius: 50%;
+
+  animation:
+    spin .7s linear infinite;
+}
+
+
+/* =========================================================
+   Empty
+   ========================================================= */
+
+.empty-state {
+  min-height: 300px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 3px;
+
+  border-radius: 14px;
+
+  background:
+    #eff6ff;
+
+  color:
+    #2563eb;
+
+  font-size: 20px;
+}
+
+
+.empty-state strong {
+  color:
+    var(--color-text);
+
+  font-size: 11px;
+}
+
+
+.empty-state span {
+  color:
+    var(--color-text-muted);
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   Error
+   ========================================================= */
+
+.error-banner {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 15px;
+
+  padding:
+    11px 13px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: 9px;
+
+  background:
+    #fef2f2;
+
+  color:
+    #b91c1c;
+
+  font-size: 9px;
+}
+
+
+.error-banner span {
+  flex: 1;
+}
+
+
+.error-banner button {
+  border: 0;
+
+  background:
+    transparent;
+
+  color:
+    #b91c1c;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+@keyframes spin {
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+  .notification-header {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+
+  .read-all-button {
+    width: 100%;
+
+    justify-content:
+      center;
+  }
+
+
+  .notification-top {
+    flex-direction:
+      column;
+
+    gap: 4px;
+  }
+
+
+  .notification-time {
+    order:
+      2;
+  }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+  .notification-item {
+    grid-template-columns:
+      35px
+      minmax(0, 1fr)
+      28px;
+
+    gap: 8px;
+
+    padding:
+      13px 11px;
+  }
+
+
+  .notification-icon {
+    width: 34px;
+    height: 34px;
+
+    font-size: 11px;
+  }
+
+
+  .delete-button {
+    opacity: 1;
+  }
+
+}

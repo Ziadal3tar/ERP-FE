@@ -1,0 +1,548 @@
+<div class="supplier-details-page">
+
+  <app-page-header
+    title="Supplier Details"
+    description="View supplier information and account status."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading supplier...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadSupplier()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  } @else if (supplier(); as currentSupplier) {
+
+    <!-- =====================================================
+         Hero
+         ===================================================== -->
+
+    <section class="hero-card">
+
+      <div class="supplier-avatar">
+
+        <span>
+          {{
+            currentSupplier.name
+              .charAt(0)
+              .toUpperCase()
+          }}
+        </span>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <div class="eyebrow">
+          SUPPLIER
+        </div>
+
+        <h1>
+          {{ currentSupplier.name }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span class="code">
+            {{ currentSupplier.code }}
+          </span>
+
+
+          <span
+            class="status"
+
+            [class.active]="
+              currentSupplier.isActive
+            "
+
+            [class.inactive]="
+              !currentSupplier.isActive
+            "
+          >
+
+            <span class="status-dot"></span>
+
+            {{
+              currentSupplier.isActive
+                ? 'Active'
+                : 'Inactive'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        @if (currentSupplier.isActive) {
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="edit()"
+          >
+
+            <i class="bi bi-pencil"></i>
+
+            Edit
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askDeactivate()"
+          >
+
+            <i class="bi bi-pause-circle"></i>
+
+            Deactivate
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="restore-button"
+            [disabled]="actionLoading()"
+            (click)="askRestore()"
+          >
+
+            <i class="bi bi-arrow-counterclockwise"></i>
+
+            Restore
+
+          </button>
+
+        }
+<a
+  class="purchase-button"
+  [routerLink]="['/admin/purchases/create']"
+  [queryParams]="{
+    supplier: currentSupplier._id
+  }"
+>
+
+  <i class="bi bi-cart-plus"></i>
+
+  Create Purchase
+
+</a>
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Contact
+         ===================================================== -->
+
+    <div class="details-grid">
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+            <i class="bi bi-person-lines-fill"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Contact Information
+            </h2>
+
+            <span>
+              Supplier communication details
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span>
+              Email
+            </span>
+
+            @if (currentSupplier.email) {
+
+              <a
+                [href]="
+                  'mailto:' +
+                  currentSupplier.email
+                "
+              >
+
+                {{ currentSupplier.email }}
+
+              </a>
+
+            } @else {
+
+              <strong>
+                —
+              </strong>
+
+            }
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Phone
+            </span>
+
+            @if (currentSupplier.phone) {
+
+              <a
+                [href]="
+                  'tel:' +
+                  currentSupplier.phone
+                "
+              >
+
+                {{ currentSupplier.phone }}
+
+              </a>
+
+            } @else {
+
+              <strong>
+                —
+              </strong>
+
+            }
+
+          </div>
+
+
+          <div class="info-item full">
+
+            <span>
+              Address
+            </span>
+
+            <strong>
+              {{
+                currentSupplier.address ||
+                '—'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           Business
+           ===================================================== -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+            <i class="bi bi-building"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Business Information
+            </h2>
+
+            <span>
+              Supplier identification
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span>
+              Supplier Code
+            </span>
+
+            <strong>
+              {{ currentSupplier.code }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span>
+              Tax Number
+            </span>
+
+            <strong>
+              {{
+                currentSupplier.taxNumber ||
+                '—'
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           Notes
+           ===================================================== -->
+
+      <section class="details-card full-card">
+
+        <div class="card-header">
+
+          <div class="card-icon orange">
+            <i class="bi bi-sticky"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Notes
+            </h2>
+
+            <span>
+              Additional supplier information
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="notes">
+
+          @if (currentSupplier.notes) {
+
+            {{ currentSupplier.notes }}
+
+          } @else {
+
+            <span>
+              No notes added.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           Audit
+           ===================================================== -->
+
+      <section class="details-card full-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+            <i class="bi bi-clock-history"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Record Information
+            </h2>
+
+            <span>
+              Supplier audit information
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="audit-grid">
+
+          <div>
+
+            <span>
+              Created
+            </span>
+
+            <strong>
+              {{
+                currentSupplier.createdAt
+                  | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Updated
+            </span>
+
+            <strong>
+              {{
+                currentSupplier.updatedAt
+                  | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Created By
+            </span>
+
+            <strong>
+
+              {{
+                currentSupplier.createdBy?.name ||
+                '—'
+              }}
+
+            </strong>
+
+            @if (
+              currentSupplier.createdBy?.email
+            ) {
+
+              <small>
+                {{
+                  currentSupplier.createdBy?.email
+                }}
+              </small>
+
+            }
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Updated By
+            </span>
+
+            <strong>
+
+              {{
+                currentSupplier.updatedBy?.name ||
+                '—'
+              }}
+
+            </strong>
+
+            @if (
+              currentSupplier.updatedBy?.email
+            ) {
+
+              <small>
+                {{
+                  currentSupplier.updatedBy?.email
+                }}
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Confirmation
+         ===================================================== -->
+
+  @if (confirmOpen()) {
+
+  <app-confirm-dialog
+    [open]="confirmOpen()"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [confirmText]="confirmButtonText"
+    [cancelText]="'Cancel'"
+    [variant]="confirmVariant"
+    [loading]="actionLoading()"
+    (confirmed)="confirmActionHandler()"
+    (cancelled)="cancelConfirmation()"
+  />
+
+}
+
+  }
+
+</div>

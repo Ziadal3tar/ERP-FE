@@ -1,0 +1,416 @@
+<div class="low-stock-page">
+
+  <app-page-header
+    title="Low Stock Report"
+    description="Identify products whose inventory has reached or fallen below the minimum stock level."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadReport()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading low stock report...
+
+    </div>
+
+  } @else {
+
+    <!-- =====================================================
+         Summary
+         ===================================================== -->
+
+    <section class="summary-grid">
+
+      <div class="summary-card orange">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-exclamation-triangle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Low Stock Products
+          </span>
+
+          <strong>
+            {{ totalItems | number }}
+          </strong>
+
+          <small>
+            Items requiring attention
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card red">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-x-circle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Out of Stock
+          </span>
+
+          <strong>
+            {{ criticalItems | number }}
+          </strong>
+
+          <small>
+            Current quantity is zero
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card yellow">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Low but Available
+          </span>
+
+          <strong>
+            {{ warningItems | number }}
+          </strong>
+
+          <small>
+            Quantity is above zero
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card blue">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-box-arrow-in-down"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Estimated Shortage
+          </span>
+
+          <strong>
+            {{ totalMissingUnits | number:'1.0-2' }}
+          </strong>
+
+          <small>
+            Units needed to reach minimum
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Header
+         ===================================================== -->
+
+    <section class="report-card">
+
+      <div class="report-header">
+
+        <div>
+
+          <span class="eyebrow">
+            INVENTORY ALERTS
+          </span>
+
+          <h2>
+            Products Requiring Attention
+          </h2>
+
+          <p>
+            Products are ordered from the lowest available quantity upward.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="refresh-button"
+          [disabled]="loading()"
+          (click)="loadReport()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+          Refresh
+
+        </button>
+
+      </div>
+
+
+      @if (items().length) {
+
+        <div class="stock-list">
+
+          @for (
+            item of items();
+            track item._id
+          ) {
+
+            <div class="stock-item">
+
+              <!-- Product -->
+
+              <div class="product-info">
+
+                <div class="product-icon">
+
+                  <i class="bi bi-box-seam"></i>
+
+                </div>
+
+                <div>
+
+                  <strong>
+                    {{ item.product.name }}
+                  </strong>
+
+                  <span>
+                    {{ item.product.sku }}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- Current -->
+
+              <div class="quantity-column">
+
+                <span>
+                  Current
+                </span>
+
+                <strong
+                  [class.danger]="
+                    item.quantity <= 0
+                  "
+                >
+
+                  {{
+                    item.quantity
+                      | number:'1.0-2'
+                  }}
+
+                </strong>
+
+              </div>
+
+
+              <!-- Minimum -->
+
+              <div class="quantity-column">
+
+                <span>
+                  Minimum
+                </span>
+
+                <strong>
+
+                  {{
+                    item.product.minStock
+                      | number:'1.0-2'
+                  }}
+
+                </strong>
+
+              </div>
+
+
+              <!-- Gap -->
+
+              <div class="shortage-column">
+
+                <span>
+                  Shortage
+                </span>
+
+                <strong>
+
+                  {{
+                    shortage(item)
+                      | number:'1.0-2'
+                  }}
+
+                </strong>
+
+              </div>
+
+
+              <!-- Progress -->
+
+              <div class="progress-column">
+
+                <div class="progress-header">
+
+                  <span>
+                    Stock Level
+                  </span>
+
+                  <strong>
+                    {{ stockPercentage(item) | number:'1.0-0' }}%
+                  </strong>
+
+                </div>
+
+
+                <div class="progress-track">
+
+                  <div
+                    class="progress-fill"
+                    [class.critical]="
+                      item.quantity <= 0
+                    "
+                    [class.warning]="
+                      item.quantity > 0
+                    "
+                    [style.width.%]="
+                      stockPercentage(item)
+                    "
+                  ></div>
+
+                </div>
+
+              </div>
+
+
+              <!-- Status -->
+
+              <div class="status-column">
+
+                @if (item.quantity <= 0) {
+
+                  <span class="status critical">
+
+                    <i class="bi bi-x-circle-fill"></i>
+
+                    Out of Stock
+
+                  </span>
+
+                } @else {
+
+                  <span class="status warning">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                    Low Stock
+
+                  </span>
+
+                }
+
+              </div>
+
+
+              <!-- Product Link -->
+
+              <a
+                class="view-button"
+                [routerLink]="[
+                  '/admin/products',
+                  item.product._id
+                ]"
+              >
+
+                View
+
+                <i class="bi bi-arrow-up-right"></i>
+
+              </a>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+
+            <i class="bi bi-check-circle"></i>
+
+          </div>
+
+          <strong>
+            Inventory levels look healthy
+          </strong>
+
+          <span>
+            No products are currently at or below their minimum stock level.
+          </span>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</div>

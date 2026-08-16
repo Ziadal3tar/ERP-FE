@@ -1,0 +1,313 @@
+<div class="customer-form">
+
+  <!-- =====================================================
+       Name
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Customer Name
+      <span>*</span>
+    </label>
+
+    <input
+      type="text"
+      [formControl]="form.controls.name"
+      placeholder="Enter customer name"
+    />
+
+
+    @if (
+      form.controls.name.touched &&
+      form.controls.name.errors?.['required']
+    ) {
+
+      <small>
+        Customer name is required.
+      </small>
+
+    }
+
+
+    @if (
+      form.controls.name.touched &&
+      form.controls.name.errors?.['maxlength']
+    ) {
+
+      <small>
+        Name cannot exceed 150 characters.
+      </small>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       Code
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Customer Code
+      <span>*</span>
+    </label>
+
+    <input
+      type="text"
+      [formControl]="form.controls.code"
+      placeholder="CUS-001"
+    />
+
+    <span class="hint">
+      Letters, numbers, underscore and hyphen only.
+    </span>
+
+
+    @if (
+      form.controls.code.touched &&
+      form.controls.code.errors?.['required']
+    ) {
+
+      <small>
+        Customer code is required.
+      </small>
+
+    }
+
+
+    @if (
+      form.controls.code.touched &&
+      form.controls.code.errors?.['pattern']
+    ) {
+
+      <small>
+        Invalid customer code.
+      </small>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       Email
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Email
+    </label>
+
+    <input
+      type="email"
+      [formControl]="form.controls.email"
+      placeholder="customer@example.com"
+    />
+
+
+    @if (
+      form.controls.email.touched &&
+      form.controls.email.errors?.['email']
+    ) {
+
+      <small>
+        Please enter a valid email address.
+      </small>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       Phone
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Phone
+    </label>
+
+    <input
+      type="text"
+      [formControl]="form.controls.phone"
+      placeholder="+20 100 000 0000"
+    />
+
+  </div>
+
+
+  <!-- =====================================================
+       Tax Number
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Tax Number
+    </label>
+
+    <input
+      type="text"
+      [formControl]="form.controls.taxNumber"
+      placeholder="Tax registration number"
+    />
+
+  </div>
+
+
+  <!-- =====================================================
+       Credit Limit
+       ===================================================== -->
+
+  <div class="field">
+
+    <label>
+      Credit Limit
+    </label>
+
+    <div class="money-input">
+
+      <span>
+        EGP
+      </span>
+
+      <input
+        type="number"
+        min="0"
+        step="0.01"
+        [formControl]="form.controls.creditLimit"
+        placeholder="0.00"
+      />
+
+    </div>
+
+
+    <span class="hint">
+      Used when the customer pays by Credit.
+    </span>
+
+
+    @if (
+      form.controls.creditLimit.touched &&
+      form.controls.creditLimit.errors?.['min']
+    ) {
+
+      <small>
+        Credit limit cannot be negative.
+      </small>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       Address
+       ===================================================== -->
+
+  <div class="field full">
+
+    <label>
+      Address
+    </label>
+
+    <textarea
+      rows="3"
+      [formControl]="form.controls.address"
+      placeholder="Customer address"
+    ></textarea>
+
+
+    <span class="character-count">
+
+      {{
+        form.controls.address.value.length
+      }}/300
+
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       Notes
+       ===================================================== -->
+
+  <div class="field full">
+
+    <label>
+      Notes
+    </label>
+
+    <textarea
+      rows="4"
+      [formControl]="form.controls.notes"
+      placeholder="Additional customer notes..."
+    ></textarea>
+
+
+    <span class="character-count">
+
+      {{
+        form.controls.notes.value.length
+      }}/500
+
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       Actions
+       ===================================================== -->
+
+  <div class="form-actions">
+
+    <button
+      type="button"
+      class="secondary-button"
+      [disabled]="loading()"
+      (click)="cancel()"
+    >
+
+      Cancel
+
+    </button>
+
+
+    <button
+      type="button"
+      class="primary-button"
+      [disabled]="loading()"
+      (click)="submit()"
+    >
+
+      @if (loading()) {
+
+        <span class="spinner"></span>
+
+        Saving...
+
+      } @else {
+
+        <i class="bi bi-check-lg"></i>
+
+        {{
+          isEdit
+            ? 'Save Changes'
+            : 'Create Customer'
+        }}
+
+      }
+
+    </button>
+
+  </div>
+
+</div>

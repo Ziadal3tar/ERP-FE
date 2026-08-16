@@ -1,0 +1,211 @@
+<div class="leave-form-page">
+
+  <app-page-header
+    title="Create Leave Request"
+    description="Create a leave request for an employee."
+  />
+
+
+  @if (loading()) {
+
+    <app-loading-state
+      message="Loading employees..."
+    />
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+
+      @if (error()) {
+
+        <div class="form-error">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          {{ error() }}
+
+        </div>
+
+      }
+
+
+      <div class="section-heading">
+
+        <div class="section-icon">
+
+          <i class="bi bi-calendar-plus"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Leave Information
+          </h2>
+
+          <p>
+            Define the employee leave period and type.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-field full-width">
+
+          <label>
+            Employee
+          </label>
+
+          <select
+            formControlName="employee"
+          >
+
+            <option value="">
+              Select employee
+            </option>
+
+            @for (
+              employee of employees();
+              track employee._id
+            ) {
+
+              <option
+                [value]="employee._id"
+              >
+
+                {{ getEmployeeName(employee) }}
+
+                —
+
+                {{ employee.employeeCode }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Leave Type
+          </label>
+
+          <select
+  formControlName="type"
+>
+
+        @for (
+  type of leaveTypes;
+  track type
+) {
+
+  <option [value]="type">
+    {{ type }}
+  </option>
+
+}
+
+          </select>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Start Date
+          </label>
+
+          <input
+            type="date"
+            formControlName="startDate"
+          />
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            End Date
+          </label>
+
+          <input
+            type="date"
+            formControlName="endDate"
+          />
+
+        </div>
+
+
+        <div class="form-field full-width">
+
+          <label>
+            Reason
+          </label>
+
+          <textarea
+            rows="5"
+            formControlName="reason"
+            placeholder="Optional reason..."
+          ></textarea>
+
+          <span class="field-hint">
+            Maximum 500 characters.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            Creating...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            Create Request
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

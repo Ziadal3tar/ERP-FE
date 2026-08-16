@@ -1,0 +1,53 @@
+<div class="supplier-page">
+
+  <app-page-header
+    title="Add Supplier"
+    description="Create a new supplier record."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      {{ error() }}
+
+    </div>
+
+  }
+
+
+  <section class="form-card">
+
+    <div class="form-card-header">
+
+      <div class="icon">
+        <i class="bi bi-person-vcard"></i>
+      </div>
+
+      <div>
+
+        <h2>
+          Supplier Information
+        </h2>
+
+        <p>
+          Enter the supplier details below.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <app-supplier-form
+      [loading]="loading()"
+      (submitted)="submit($event)"
+      (cancelled)="cancel()"
+    />
+
+  </section>
+
+</div>

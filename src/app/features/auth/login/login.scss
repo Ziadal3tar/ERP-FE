@@ -67,7 +67,37 @@
     font-weight: bold;
     margin-bottom: 30px;
 }
+.login-error {
 
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
+    padding: 12px 14px;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 10px;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+}
+
+.login-error i {
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+
+}
 .login-card h2 {
     font-size: 32px;
     margin-bottom: 8px;
@@ -94,7 +124,7 @@
     border: 1px solid #dbe3eb;
     border-radius: 12px;
     padding: 0 16px;
-    font-size: 15px;
+    font-size: 13px;
     transition: .3s;
 }
 
@@ -194,4 +224,112 @@ button:disabled{
 
     }
 
+}
+.demo-login-card {
+  position: fixed;
+  top: 0px;
+  left: 24px;
+
+  width: 320px;
+  padding: 18px;
+
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+
+  z-index: 1000;
+}
+
+.demo-login-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.demo-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f1f5f9;
+  color: #2563eb;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+}
+
+.demo-login-header div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.demo-login-header strong {
+  font-size: 15px;
+  color: #111827;
+}
+
+.demo-login-header span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.demo-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.credential {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.credential-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.credential-label i {
+  font-size: 13px;
+}
+
+.credential strong {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.demo-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 12px;
+
+  color: #6b7280;
+  font-size: 10px;
+}
+
+.demo-hint i {
+  color: #2563eb;
 }

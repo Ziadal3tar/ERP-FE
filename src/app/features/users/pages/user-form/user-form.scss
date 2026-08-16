@@ -1,0 +1,343 @@
+:host {
+  display: block;
+}
+
+.user-form-page {
+  width: 100%;
+}
+
+.form-card {
+
+  padding: 24px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    var(--radius-md);
+
+  background:
+    var(--color-surface);
+
+  box-shadow:
+    var(--shadow-sm);
+
+}
+
+.form-error {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 22px;
+
+  padding: 12px 14px;
+
+  border:
+    1px solid #fecaca;
+
+  border-radius: 9px;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+
+  font-size: 12px;
+
+}
+
+/* =========================================================
+   Section
+   ========================================================= */
+
+.section-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin-bottom: 24px;
+
+}
+
+.section-icon {
+
+  width: 38px;
+
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background:
+    var(--color-primary-soft);
+
+  color:
+    var(--color-primary);
+
+}
+
+.section-title h3 {
+
+  margin: 0;
+
+  color:
+    var(--color-text);
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+}
+
+.section-title p {
+
+  margin: 3px 0 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 11px;
+
+}
+
+/* =========================================================
+   Form
+   ========================================================= */
+
+.form-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+}
+
+.form-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+}
+
+.form-field label {
+
+  color:
+    var(--color-text);
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+.form-field input,
+.form-field select {
+
+  width: 100%;
+
+  height: 44px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid var(--color-border);
+
+  border-radius:
+    9px;
+
+  outline: none;
+
+  background:
+    var(--color-surface);
+
+  color:
+    var(--color-text);
+
+  font-size: 12px;
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+}
+
+.form-field input:focus,
+.form-field select:focus {
+
+  border-color:
+    #93c5fd;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, .08);
+
+}
+
+.form-field small {
+
+  color:
+    var(--color-danger);
+
+  font-size: 12px;
+
+}
+
+/* =========================================================
+   Actions
+   ========================================================= */
+
+.form-actions {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 30px;
+
+  padding-top: 20px;
+
+  border-top:
+    1px solid var(--color-border);
+
+}
+
+.primary-button,
+.secondary-button {
+
+  min-height: 40px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 16px;
+
+  border-radius: 9px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+}
+
+.primary-button {
+
+  border: 0;
+
+  background:
+    var(--color-primary);
+
+  color:
+    white;
+
+}
+
+.primary-button:hover:not(:disabled) {
+
+  background:
+    var(--color-primary-dark);
+
+}
+
+.primary-button:disabled {
+
+  cursor: not-allowed;
+
+  opacity: .65;
+
+}
+
+.secondary-button {
+
+  border:
+    1px solid var(--color-border);
+
+  background:
+    white;
+
+  color:
+    var(--color-text-secondary);
+
+}
+
+.button-spinner {
+
+  width: 14px;
+
+  height: 14px;
+
+  border:
+    2px solid
+    rgba(255,255,255,.4);
+
+  border-top-color:
+    white;
+
+  border-radius: 50%;
+
+  animation:
+    button-spin .6s linear infinite;
+
+}
+
+@keyframes button-spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+@media (max-width: 767.98px) {
+
+  .form-card {
+    padding: 18px;
+  }
+
+  .form-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .form-actions {
+
+    flex-direction: column-reverse;
+
+  }
+
+  .primary-button,
+  .secondary-button {
+
+    width: 100%;
+
+  }
+
+}

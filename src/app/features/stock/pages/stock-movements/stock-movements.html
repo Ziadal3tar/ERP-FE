@@ -1,0 +1,340 @@
+<div class="movements-page">
+
+  <app-page-header
+    title="Stock Movements"
+    description="Track every inventory movement and transaction."
+  />
+
+
+  <div class="top-actions">
+
+    <button
+      type="button"
+      class="secondary-button"
+      (click)="back()"
+    >
+
+      <i class="bi bi-arrow-left"></i>
+
+      Back to Stock
+
+    </button>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       Filters
+       ===================================================== -->
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filters-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-clock-history"></i>
+
+        </div>
+
+
+        <div>
+
+          <h2>
+            Movement Filters
+          </h2>
+
+          <span>
+            Filter inventory transactions by product,
+            warehouse and movement type.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <div class="filters-body">
+
+      <!-- Product -->
+
+      <div class="filter-field">
+
+        <label>
+          Product
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-box-seam"></i>
+
+          <select
+            [(ngModel)]="selectedProduct"
+            [disabled]="loadingFilters()"
+          >
+
+            <option value="">
+              All Products
+            </option>
+
+            @for (
+              product of products();
+              track product._id
+            ) {
+
+              <option
+                [value]="product._id"
+              >
+
+                {{ product.name }}
+
+                @if (product.sku) {
+                  · {{ product.sku }}
+                }
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Warehouse -->
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-building"></i>
+
+          <select
+            [(ngModel)]="selectedWarehouse"
+            [disabled]="loadingFilters()"
+          >
+
+            <option value="">
+              All Warehouses
+            </option>
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+                @if (warehouse.code) {
+                  · {{ warehouse.code }}
+                }
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Movement -->
+
+      <div class="filter-field">
+
+        <label>
+          Movement Type
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-arrow-left-right"></i>
+
+          <select
+            [(ngModel)]="selectedType"
+          >
+
+            <option value="">
+              All Movements
+            </option>
+
+            @for (
+              type of movementTypes;
+              track type.value
+            ) {
+
+              <option
+                [value]="type.value"
+              >
+
+                {{ type.label }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Apply -->
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       Error
+       ===================================================== -->
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+
+      <div>
+
+        <strong>
+          Unable to load movements
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       Data
+       ===================================================== -->
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Transaction History
+        </h2>
+
+        <span>
+
+          @if (total()) {
+
+            {{ total() }} transactions
+
+          } @else {
+
+            No transactions found
+
+          }
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="transactions()"
+      [loading]="loading()"
+      emptyTitle="No stock movements"
+      emptyMessage="There are no inventory transactions matching your filters."
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

@@ -1,0 +1,65 @@
+<div class="toast-container">
+
+  @for (
+    toast of toastService.toasts();
+    track toast.id
+  ) {
+
+    <article
+      class="toast"
+      [class.success]="toast.type === 'success'"
+      [class.error]="toast.type === 'error'"
+      [class.warning]="toast.type === 'warning'"
+      [class.info]="toast.type === 'info'"
+    >
+
+      <div class="toast-icon">
+
+        @if (toast.type === 'success') {
+          <i class="bi bi-check-lg"></i>
+        }
+
+        @if (toast.type === 'error') {
+          <i class="bi bi-x-lg"></i>
+        }
+
+        @if (toast.type === 'warning') {
+          <i class="bi bi-exclamation-lg"></i>
+        }
+
+        @if (toast.type === 'info') {
+          <i class="bi bi-info-lg"></i>
+        }
+
+      </div>
+
+
+      <div class="toast-content">
+
+        <strong>
+          {{ toast.title }}
+        </strong>
+
+        <span>
+          {{ toast.message }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="toast-close"
+        (click)="dismiss(toast.id)"
+        aria-label="Close notification"
+      >
+
+        <i class="bi bi-x"></i>
+
+      </button>
+
+    </article>
+
+  }
+
+</div>

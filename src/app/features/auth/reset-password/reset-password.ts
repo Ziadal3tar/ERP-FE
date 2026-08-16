@@ -8,8 +8,9 @@ import {
   ValidationErrors
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Auth } from '../../../core/services/auth';
-
+import {
+  AuthService
+} from '../../../core/services/auth';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
@@ -26,7 +27,7 @@ export class ResetPassword {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private authService = inject(Auth);
+  private AuthService = inject(AuthService);
 
   loading = false;
 
@@ -91,7 +92,7 @@ submit() {
 
   this.loading = true;
 
-  this.authService
+  this.AuthService
       .resetPassword(
           this.token,
           this.resetForm.value.password
@@ -112,7 +113,7 @@ submit() {
 
           },
 
-          error:(err)=>{
+          error:(err: { error: { message: string; }; })=>{
 
               this.loading=false;
 

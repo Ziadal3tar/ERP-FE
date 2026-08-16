@@ -1,0 +1,137 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.admin-layout {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+/* =========================================================
+   Main Area
+   ========================================================= */
+
+.main-area {
+  min-height: 100vh;
+
+  margin-left:
+    var(--sidebar-width);
+
+  transition:
+    margin-left var(--transition-normal);
+
+  background:
+    linear-gradient(
+      180deg,
+      #f8faff 0%,
+      #f6f8fc 30%,
+      #f6f8fc 100%
+    );
+}
+
+/* =========================================================
+   Collapsed Sidebar
+   ========================================================= */
+
+.admin-layout.sidebar-collapsed {
+
+  .main-area {
+
+    margin-left:
+      var(--sidebar-collapsed-width);
+
+  }
+
+}
+
+/* =========================================================
+   Page Content
+   ========================================================= */
+
+.page-content {
+  min-height:
+    calc(100vh - var(--header-height));
+
+  padding: 30px;
+}
+
+@media (max-width: 767.98px) {
+
+  .page-content {
+    padding: 18px 14px;
+  }
+
+}
+
+/* =========================================================
+   Mobile Overlay
+   ========================================================= */
+
+.sidebar-overlay {
+
+  display: none;
+
+}
+
+/* =========================================================
+   Tablet
+   ========================================================= */
+
+@media (max-width: 1199.98px) {
+
+  .main-area {
+
+    margin-left:
+      var(--sidebar-collapsed-width);
+
+  }
+
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+  .main-area,
+  .admin-layout.sidebar-collapsed .main-area {
+
+    margin-left: 0;
+
+  }
+
+  .page-content {
+
+    padding: 20px 16px;
+
+  }
+
+  .sidebar-overlay {
+
+    display: block;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1030;
+
+    width: 100%;
+
+    height: 100%;
+
+    border: 0;
+
+    padding: 0;
+
+    background:
+      rgba(15, 23, 42, 0.45);
+
+    backdrop-filter:
+      blur(2px);
+
+  }
+
+}

@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.loading-state {
+
+  min-height: 180px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+
+}
+
+.spinner {
+
+  width: 28px;
+
+  height: 28px;
+
+  border: 3px solid #dbeafe;
+
+  border-top-color: var(--color-primary);
+
+  border-radius: 50%;
+
+  animation:
+    spin .7s linear infinite;
+
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}

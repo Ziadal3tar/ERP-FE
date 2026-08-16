@@ -1,0 +1,195 @@
+<div class="department-form-page">
+
+  <app-page-header
+    [title]="
+      isEditMode()
+        ? 'Edit Department'
+        : 'Create Department'
+    "
+
+    [description]="
+      isEditMode()
+        ? 'Update department information.'
+        : 'Create a new department for your organization.'
+    "
+  />
+
+
+  @if (loading()) {
+
+    <app-loading-state
+      message="Loading department..."
+    />
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+
+      @if (error()) {
+
+        <div class="form-error">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          {{ error() }}
+
+        </div>
+
+      }
+
+
+      <div class="section-heading">
+
+        <div class="section-icon">
+
+          <i class="bi bi-diagram-3"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Department Information
+          </h2>
+
+          <p>
+            Define the department details.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label>
+            Department Name
+          </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Human Resources"
+          />
+
+          @if (
+            form.controls.name.touched &&
+            form.controls.name.errors?.['required']
+          ) {
+
+            <small>
+              Department name is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Department Code
+          </label>
+
+          <input
+            type="text"
+            formControlName="code"
+            placeholder="e.g. HR"
+          />
+
+          @if (
+            form.controls.code.touched &&
+            form.controls.code.errors?.['required']
+          ) {
+
+            <small>
+              Department code is required.
+            </small>
+
+          }
+
+          @if (
+            form.controls.code.touched &&
+            form.controls.code.errors?.['pattern']
+          ) {
+
+            <small>
+              Only letters, numbers, _ and - are allowed.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field full-width">
+
+          <label>
+            Description
+          </label>
+
+          <textarea
+            formControlName="description"
+            rows="5"
+            placeholder="Describe this department..."
+          ></textarea>
+
+          <span class="field-hint">
+            Optional. Maximum 500 characters.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving()"
+        >
+
+          @if (saving()) {
+
+            Saving...
+
+          } @else {
+
+            <i class="bi bi-check-lg"></i>
+
+            {{
+              isEditMode()
+                ? 'Save Changes'
+                : 'Create Department'
+            }}
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

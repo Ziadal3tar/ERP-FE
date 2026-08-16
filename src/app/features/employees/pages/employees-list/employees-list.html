@@ -1,0 +1,104 @@
+<div class="employees-page">
+
+  <app-page-header
+    title="Employees"
+    description="Manage your workforce, departments and compensation."
+    actionLabel="Add Employee"
+    actionIcon="bi-person-plus"
+    (actionClick)="createEmployee()"
+  />
+
+
+  <section class="employees-card">
+
+    <div class="toolbar">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search employees..."
+          (keyup.enter)="searchEmployees()"
+          aria-label="Search employees"
+        />
+
+      </div>
+
+
+      <div class="toolbar-actions">
+
+        <button
+          type="button"
+          class="toolbar-button primary"
+          (click)="searchEmployees()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Search
+
+        </button>
+
+
+        <button
+          type="button"
+          class="toolbar-button"
+          (click)="refresh()"
+          aria-label="Refresh employees"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    @if (error()) {
+
+      <div class="employees-error">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+<app-data-table
+  [columns]="columns"
+  [data]="employees()"
+  [loading]="loading()"
+  [rowClickable]="true"
+  emptyTitle="No employees found"
+  emptyMessage="Create an employee to start building your workforce."
+  (rowClick)="openEmployee($event)"
+/>
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

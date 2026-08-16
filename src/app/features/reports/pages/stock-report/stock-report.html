@@ -1,0 +1,210 @@
+<div class="stock-report-page">
+
+  <app-page-header
+    title="Stock Report"
+    description="View inventory quantities by product and warehouse."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadReport()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       Summary
+       ===================================================== -->
+
+  @if (!loading()) {
+
+    <section class="summary-grid">
+
+      <div class="summary-card blue">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-boxes"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Stock Records
+          </span>
+
+          <strong>
+            {{ totalRecords | number }}
+          </strong>
+
+          <small>
+            Product / warehouse records
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card green">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total Quantity
+          </span>
+
+          <strong>
+            {{ totalQuantity | number:'1.0-2' }}
+          </strong>
+
+          <small>
+            Across all stock records
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card orange">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-exclamation-triangle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Low Stock
+          </span>
+
+          <strong>
+            {{ lowStockCount | number }}
+          </strong>
+
+          <small>
+            At or below minimum level
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-card purple">
+
+        <div class="summary-icon">
+
+          <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Normal Stock
+          </span>
+
+          <strong>
+            {{ normalStockCount | number }}
+          </strong>
+
+          <small>
+            Above minimum level
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- =====================================================
+       Table
+       ===================================================== -->
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <span class="eyebrow">
+          INVENTORY
+        </span>
+
+        <h2>
+          Stock by Product & Warehouse
+        </h2>
+
+        <p>
+          Records are ordered from the lowest quantity to the highest.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="loading()"
+        (click)="loadReport()"
+      >
+
+        <i class="bi bi-arrow-clockwise"></i>
+
+        Refresh
+
+      </button>
+
+    </div>
+
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="stock()"
+
+      [loading]="loading()"
+
+      emptyTitle="No stock records"
+
+      emptyMessage="No inventory records are available."
+
+    />
+
+  </section>
+
+</div>

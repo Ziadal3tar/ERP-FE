@@ -1,0 +1,57 @@
+<div class="customer-page">
+
+  <app-page-header
+    title="Add Customer"
+    description="Create a new customer record."
+  />
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <section class="form-card">
+
+    <div class="form-card-header">
+
+      <div class="icon">
+
+        <i class="bi bi-person-plus"></i>
+
+      </div>
+
+      <div>
+
+        <h2>
+          Customer Information
+        </h2>
+
+        <p>
+          Enter customer contact and credit information.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <app-customer-form
+      [loading]="loading()"
+      (submitted)="submit($event)"
+      (cancelled)="cancel()"
+    />
+
+  </section>
+
+</div>

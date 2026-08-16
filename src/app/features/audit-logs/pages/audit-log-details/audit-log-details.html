@@ -1,0 +1,444 @@
+<div class="audit-log-details-page">
+
+  <app-page-header
+    title="Audit Log Details"
+    description="Review the complete record of a system activity event."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading audit log...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadLog()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  } @else if (log(); as currentLog) {
+
+    <!-- =====================================================
+         Hero
+         ===================================================== -->
+
+    <section class="hero-card">
+
+      <div class="hero-icon">
+
+        <i class="bi bi-shield-check"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span class="eyebrow">
+          AUDIT EVENT
+        </span>
+
+        <h1>
+          {{ currentLog.action }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span
+            class="action-badge"
+            [class]="actionClass()"
+          >
+
+            {{ currentLog.action }}
+
+          </span>
+
+
+          <span class="module-badge">
+
+            {{ currentLog.module }}
+
+          </span>
+
+
+          <span class="date">
+
+            {{
+              currentLog.createdAt
+                | date:'medium'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="back()"
+      >
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+      </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         Main Information
+         ===================================================== -->
+
+    <div class="info-grid">
+
+      <!-- User -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-person"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              User
+            </h2>
+
+            <span>
+              Actor who triggered the event
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="entity-content">
+
+          <strong>
+            {{ userName }}
+          </strong>
+
+
+          @if (userEmail) {
+
+            <span>
+              {{ userEmail }}
+            </span>
+
+          }
+
+
+          @if (
+            typeof currentLog.user !== 'string' &&
+            currentLog.user
+          ) {
+
+            <small>
+
+              Role:
+              {{ currentLog.user.role }}
+
+            </small>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Module -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+
+            <i class="bi bi-boxes"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Module
+            </h2>
+
+            <span>
+              Affected system area
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="large-value">
+
+          {{ currentLog.module }}
+
+        </div>
+
+      </section>
+
+
+      <!-- Resource -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+
+            <i class="bi bi-link-45deg"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Resource
+            </h2>
+
+            <span>
+              Related resource identifier
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="resource-id">
+
+          {{ resourceValue }}
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Description
+         ===================================================== -->
+
+    <section class="details-card">
+
+      <div class="card-header">
+
+        <div class="card-icon orange">
+
+          <i class="bi bi-text-left"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Description
+          </h2>
+
+          <span>
+            Event description
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="description-box">
+
+        {{
+          currentLog.description ||
+          'No description available.'
+        }}
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Request Information
+         ===================================================== -->
+
+    <section class="details-card">
+
+      <div class="card-header">
+
+        <div class="card-icon gray">
+
+          <i class="bi bi-pc-display"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Request Information
+          </h2>
+
+          <span>
+            Request environment information
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="request-grid">
+
+        <div>
+
+          <span>
+            IP Address
+          </span>
+
+          <strong>
+            {{ currentLog.ipAddress || '—' }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Created At
+          </span>
+
+          <strong>
+
+            {{
+              currentLog.createdAt
+                | date:'medium'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Updated At
+          </span>
+
+          <strong>
+
+            {{
+              currentLog.updatedAt
+                | date:'medium'
+            }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="user-agent">
+
+        <span>
+          User Agent
+        </span>
+
+        <code>
+          {{ currentLog.userAgent || '—' }}
+        </code>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Metadata
+         ===================================================== -->
+
+    <section class="details-card">
+
+      <div class="card-header">
+
+        <div class="card-icon blue">
+
+          <i class="bi bi-code-square"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Metadata
+          </h2>
+
+          <span>
+            Additional event information
+          </span>
+
+        </div>
+
+      </div>
+
+
+      @if (currentLog.metadata) {
+
+        <pre class="metadata-box"><code>{{ currentLog.metadata | json }}</code></pre>
+
+      } @else {
+
+        <div class="empty-metadata">
+
+          <i class="bi bi-database"></i>
+
+          <span>
+            No metadata was recorded for this event.
+          </span>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</div>

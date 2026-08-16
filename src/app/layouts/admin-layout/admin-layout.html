@@ -1,0 +1,62 @@
+<div
+  class="admin-layout"
+  [class.sidebar-collapsed]="sidebarCollapsed()"
+  [class.mobile-sidebar-open]="mobileSidebarOpen()"
+>
+
+
+  <!-- =====================================================
+       Sidebar
+       ===================================================== -->
+
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [mobileOpen]="mobileSidebarOpen()"
+    (closeMobile)="closeMobileSidebar()"
+  />
+
+
+  <!-- =====================================================
+       Mobile Overlay
+       ===================================================== -->
+
+  @if (mobileSidebarOpen()) {
+
+    <button
+      type="button"
+      class="sidebar-overlay"
+      aria-label="Close navigation"
+      (click)="closeMobileSidebar()"
+    ></button>
+
+  }
+
+
+  <!-- =====================================================
+       Main Area
+       ===================================================== -->
+
+  <div class="main-area">
+
+
+    <!-- Header -->
+
+    <app-header
+      (toggleSidebar)="toggleSidebar()"
+      (toggleMobileSidebar)="toggleMobileSidebar()"
+    />
+
+
+    <!-- Page Content -->
+
+    <main class="page-content">
+
+      <router-outlet />
+
+    </main>
+
+
+  </div>
+
+</div>
+<app-toast-container />

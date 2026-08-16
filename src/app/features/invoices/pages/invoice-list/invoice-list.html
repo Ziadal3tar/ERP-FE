@@ -1,0 +1,308 @@
+<div class="invoice-list-page">
+
+  <app-page-header
+    title="Invoices"
+    description="Manage customer invoices and payment status."
+  />
+
+
+  <div class="page-actions ">
+ <button
+      type="button"
+      class="dashboard-button"
+      routerLink="/admin/invoices/dashboard"
+    >
+
+      <i class="bi bi-grid-1x2-fill"></i>
+
+      dashboard
+
+    </button>
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+      <div class="error-content">
+
+        <strong>
+          Unable to load invoices
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Invoice Filters
+          </h2>
+
+          <span>
+            Filter invoices by customer or payment status.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <!-- Customer -->
+
+      <div class="filter-field">
+
+        <label>
+          Customer
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-person"></i>
+
+          <select
+            formControlName="customer"
+            [disabled]="filtersLoading()"
+          >
+
+            <option value="">
+              All Customers
+            </option>
+
+            @for (
+              customer of customers();
+              track customer._id
+            ) {
+
+              <option
+                [value]="customer._id"
+              >
+
+                {{ customer.name }}
+
+                ·
+
+                {{ customer.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="filter-field">
+
+        <label>
+          Status
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-credit-card"></i>
+
+          <select
+            formControlName="status"
+          >
+
+            <option value="">
+              All Status
+            </option>
+
+            <option value="Unpaid">
+              Unpaid
+            </option>
+
+            <option value="PartiallyPaid">
+              Partially Paid
+            </option>
+
+            <option value="Paid">
+              Paid
+            </option>
+
+            <option value="Cancelled">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Invoice Directory
+        </h2>
+
+        <span>
+          {{ total() }} invoices
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="invoices()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No invoices found"
+
+      emptyMessage="There are no invoices matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+
+  @if (confirmOpen()) {
+
+    <app-confirm-dialog
+
+      [open]="confirmOpen()"
+
+      [title]="'Cancel Invoice?'"
+
+      [message]="
+        'Are you sure you want to cancel invoice ' +
+        (
+          confirmInvoice()?.invoiceNumber ||
+          'this invoice'
+        ) +
+        '?'
+      "
+
+      [confirmText]="'Cancel Invoice'"
+
+      [cancelText]="'Keep Invoice'"
+
+      [variant]="'danger'"
+
+      [loading]="actionLoading()"
+
+      (confirmed)="confirmCancel()"
+
+      (cancelled)="closeConfirmation()"
+
+    />
+
+  }
+
+</div>

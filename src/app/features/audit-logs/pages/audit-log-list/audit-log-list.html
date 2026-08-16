@@ -1,0 +1,294 @@
+<div class="audit-log-list-page">
+
+  <app-page-header
+    title="Audit Logs"
+    description="Track successful administrative actions across the system."
+  />
+
+
+  <div class="page-actions">
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-triangle-fill"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-shield-check"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Audit Filters
+          </h2>
+
+          <span>
+            Filter activity by user, module or action.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <!-- User -->
+
+      <div class="filter-field">
+
+        <label>
+          User
+        </label>
+
+        <select
+          formControlName="user"
+          [disabled]="usersLoading()"
+        >
+
+          <option value="">
+            All Users
+          </option>
+
+          @for (
+            user of users();
+            track user._id
+          ) {
+
+            <option
+              [value]="user._id"
+            >
+
+              {{ user.name }}
+
+              @if (user.email) {
+
+                · {{ user.email }}
+
+              }
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Module -->
+
+      <div class="filter-field">
+
+        <label>
+          Module
+        </label>
+
+        <select
+          formControlName="module"
+        >
+
+          <option value="">
+            All Modules
+          </option>
+
+          @for (
+            module of modules;
+            track module
+          ) {
+
+            <option
+              [value]="module"
+            >
+
+              {{ module }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Action -->
+
+      <div class="filter-field">
+
+        <label>
+          Action
+        </label>
+
+        <select
+          formControlName="action"
+        >
+
+          <option value="">
+            All Actions
+          </option>
+
+          @for (
+            action of actions;
+            track action
+          ) {
+
+            <option
+              [value]="action"
+            >
+
+              {{ action }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <div>
+
+          <span class="eyebrow">
+            SECURITY
+          </span>
+
+          <h2>
+            System Activity
+          </h2>
+
+        </div>
+
+        <span>
+          {{ total() }} audit logs
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="logs()"
+
+      [actions]="tableActions"
+
+      [loading]="loading()"
+
+      emptyTitle="No audit logs found"
+
+      emptyMessage="No activity matches the selected filters."
+
+      (actionClick)="handleAction($event)"
+
+    />
+
+
+    <app-pagination
+
+      [page]="page()"
+
+      [total]="total()"
+
+      [totalPages]="totalPages()"
+
+      (pageChange)="changePage($event)"
+
+    />
+
+  </section>
+
+</div>

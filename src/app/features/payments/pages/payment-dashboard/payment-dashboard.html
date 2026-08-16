@@ -1,0 +1,283 @@
+<div class="payment-dashboard-page">
+
+  <app-page-header
+    title="Payment Dashboard"
+    description="Monitor payment activity and recent customer settlements."
+  />
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadDashboard()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading payment activity...
+
+    </div>
+
+  } @else {
+
+    <section class="kpi-grid">
+
+      <div class="kpi-card">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-cash-stack"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Payment Transactions
+          </span>
+
+          <strong>
+            {{ totalPayments() | number }}
+          </strong>
+
+          <small>
+            Total recorded payments
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <a
+        routerLink="/admin/payments"
+        class="kpi-card action-card"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-list-ul"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Payment History
+          </span>
+
+          <strong>
+            View
+          </strong>
+
+          <small>
+            Browse all transactions
+          </small>
+
+        </div>
+
+      </a>
+
+
+      <a
+        routerLink="/admin/invoices"
+        class="kpi-card action-card"
+      >
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-file-earmark-text"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Invoices
+          </span>
+
+          <strong>
+            Manage
+          </strong>
+
+          <small>
+            Open invoice management
+          </small>
+
+        </div>
+
+      </a>
+
+    </section>
+
+
+    <section class="recent-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            ACTIVITY
+          </span>
+
+          <h2>
+            Recent Payments
+          </h2>
+
+          <p>
+            Latest payment transactions.
+          </p>
+
+        </div>
+
+
+        <a
+          routerLink="/admin/payments"
+          class="view-all"
+        >
+
+          View All
+
+          <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+      </div>
+
+
+      @if (recentPayments().length) {
+
+        <div class="payments-list">
+
+          @for (
+            payment of recentPayments();
+            track payment._id
+          ) {
+
+            <a
+              class="payment-row"
+              [routerLink]="[
+                '/admin/payments',
+                payment._id
+              ]"
+            >
+
+              <div class="leading">
+
+                <div class="payment-row-icon">
+
+                  <i class="bi bi-cash-stack"></i>
+
+                </div>
+
+                <div>
+
+                  <strong>
+                    #{{ payment._id.slice(-6).toUpperCase() }}
+                  </strong>
+
+                  <span>
+                    {{ customerName(payment) }}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="invoice-ref">
+
+                @if (
+                  typeof payment.invoice !== 'string'
+                ) {
+
+                  {{ payment.invoice.invoiceNumber }}
+
+                } @else {
+
+                  Invoice linked
+
+                }
+
+              </div>
+
+
+              <div class="payment-method">
+
+                <span
+                  [class]="methodClass(payment.method)"
+                >
+
+                  {{ payment.method }}
+
+                </span>
+
+              </div>
+
+
+              <div class="amount">
+
+                <strong>
+
+                  {{
+                    payment.amount
+                      | number:'1.2-2'
+                  }}
+
+                  EGP
+
+                </strong>
+
+              </div>
+
+
+              <i class="bi bi-chevron-right arrow"></i>
+
+            </a>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+
+          <i class="bi bi-cash-stack"></i>
+
+          <strong>
+            No payments yet
+          </strong>
+
+          <span>
+            Payments will appear here after they are recorded.
+          </span>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</div>

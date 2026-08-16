@@ -1,0 +1,238 @@
+<div class="customer-list-page">
+
+  <app-page-header
+    title="Customers"
+    description="Manage customers, contact information and credit settings."
+  />
+
+
+  <div class="page-actions">
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+
+    <a
+      routerLink="/admin/customers/create"
+      class="primary-button"
+    >
+
+      <i class="bi bi-plus-lg"></i>
+
+      Add Customer
+
+    </a>
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+      <div class="error-content">
+
+        <strong>
+          Unable to load customers
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       Filters
+       ===================================================== -->
+
+  <section class="filters-card">
+
+    <div class="filter-group search-group">
+
+      <label>
+        Search
+      </label>
+
+      <div class="input-wrapper">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          placeholder="Name, code or phone..."
+          [value]="
+            filterForm.controls.search.value
+          "
+          (input)="
+            onSearch(
+              $any($event.target).value
+            )
+          "
+        />
+
+      </div>
+
+    </div>
+
+
+    <div class="filter-group">
+
+      <label>
+        Status
+      </label>
+
+      <select
+        [formControl]="
+          filterForm.controls.status
+        "
+        (change)="applyStatus()"
+      >
+
+        <option value="all">
+          All Customers
+        </option>
+
+        <option value="active">
+          Active
+        </option>
+
+        <option value="inactive">
+          Inactive
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="reset-button"
+      (click)="resetFilters()"
+    >
+
+      <i class="bi bi-arrow-counterclockwise"></i>
+
+      Reset
+
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+       Table
+       ===================================================== -->
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Customer Directory
+        </h2>
+
+        <span>
+          {{ total() }} customers
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="customers()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No customers found"
+
+      emptyMessage="There are no customers matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+
+  <!-- =====================================================
+       Confirmation
+       ===================================================== -->
+
+  @if (confirmOpen()) {
+
+    <app-confirm-dialog
+
+      [open]="confirmOpen()"
+
+      [title]="'Deactivate Customer?'"
+
+      [message]="
+        'Are you sure you want to deactivate ' +
+        (
+          confirmCustomer()?.name ||
+          'this customer'
+        ) +
+        '? You can restore it later.'
+      "
+
+      [confirmText]="'Deactivate'"
+
+      [cancelText]="'Cancel'"
+
+      [variant]="'danger'"
+
+      [loading]="actionLoading()"
+
+      (confirmed)="confirmDeactivate()"
+
+      (cancelled)="closeConfirmation()"
+
+    />
+
+  }
+
+</div>

@@ -1,0 +1,279 @@
+<div class="table-wrapper">
+
+  @if (loading()) {
+
+    <div class="table-loading">
+
+      <div class="table-spinner"></div>
+
+      <span>
+        Loading data...
+      </span>
+
+    </div>
+
+  } @else if (data().length === 0) {
+
+    <div class="table-empty">
+
+      <div class="empty-icon">
+
+        <i class="bi bi-inbox"></i>
+
+      </div>
+
+      <strong>
+        {{ emptyTitle() }}
+      </strong>
+
+      <span>
+        {{ emptyMessage() }}
+      </span>
+
+    </div>
+
+  } @else {
+
+    <div class="table-responsive">
+
+      <table class="app-table">
+
+        <thead>
+
+          <tr>
+
+            @for (
+              column of columns();
+              track column.key
+            ) {
+
+              <th>
+
+                {{ column.label }}
+
+              </th>
+
+            }
+
+
+            @if (
+              actions().length > 0
+            ) {
+
+              <th class="actions-header">
+
+                Actions
+
+              </th>
+
+            }
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            row of data();
+            track $index
+          ) {
+
+            <tr
+              [class.clickable]="
+                rowClickable()
+              "
+
+              (click)="
+                onRowClick(row)
+              "
+            >
+
+              @for (
+                column of columns();
+                track column.key
+              ) {
+
+                <td>
+
+                  @if (
+                    column.type === 'status'
+                  ) {
+
+                    <span
+                      class="status"
+
+                      [class.success]="
+                        getStatusClass(
+                          getDisplayValue(
+                            row,
+                            column
+                          )
+                        ) === 'success'
+                      "
+
+                      [class.warning]="
+                        getStatusClass(
+                          getDisplayValue(
+                            row,
+                            column
+                          )
+                        ) === 'warning'
+                      "
+
+                      [class.danger]="
+                        getStatusClass(
+                          getDisplayValue(
+                            row,
+                            column
+                          )
+                        ) === 'danger'
+                      "
+
+                      [class.neutral]="
+                        getStatusClass(
+                          getDisplayValue(
+                            row,
+                            column
+                          )
+                        ) === 'neutral'
+                      "
+                    >
+
+                      <span
+                        class="status-dot"
+                      ></span>
+
+                      {{
+                        getDisplayValue(
+                          row,
+                          column
+                        )
+                      }}
+
+                    </span>
+
+                  } @else {
+
+                    <span class="cell-value">
+
+                      {{
+                        getDisplayValue(
+                          row,
+                          column
+                        )
+                      }}
+
+                    </span>
+
+                  }
+
+                </td>
+
+              }
+
+
+              @if (
+                actions().length > 0
+              ) {
+
+                <td
+                  class="actions-cell"
+
+                  (click)="
+                    $event.stopPropagation()
+                  "
+                >
+
+                  <div
+                    class="row-actions"
+                  >
+
+                    @for (
+                      action of actions();
+                      track action.key
+                    ) {
+
+                      @if (
+                        isActionVisible(
+                          action,
+                          row
+                        )
+                      ) {
+
+                        <button
+                          type="button"
+
+                          class="row-action"
+
+                          [class.primary]="
+                            action.variant === 'primary'
+                          "
+
+                          [class.danger]="
+                            action.variant === 'danger'
+                          "
+
+                          [class.success]="
+                            action.variant === 'success'
+                          "
+
+                          [class.warning]="
+                            action.variant === 'warning'
+                          "
+
+                          [disabled]="
+                            isActionDisabled(
+                              action,
+                              row
+                            )
+                          "
+
+                          [title]="
+                            action.label
+                          "
+
+                          [attr.aria-label]="
+                            action.label
+                          "
+
+                          (click)="
+                            onActionClick(
+                              $event,
+                              action,
+                              row
+                            )
+                          "
+                        >
+
+                          <i
+                            class="bi"
+                            [class]="action.icon"
+                          ></i>
+
+                        </button>
+
+                      }
+
+                    }
+
+                  </div>
+
+                </td>
+
+              }
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

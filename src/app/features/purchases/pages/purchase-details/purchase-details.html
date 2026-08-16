@@ -1,0 +1,943 @@
+<div class="purchase-details-page">
+
+  <app-page-header
+    title="Purchase Details"
+    description="Review purchase information, items and receiving status."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading purchase...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadPurchase()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  } @else if (purchase(); as currentPurchase) {
+
+    <!-- =====================================================
+         Hero
+         ===================================================== -->
+
+    <section class="hero-card">
+
+      <div class="purchase-icon">
+
+        <i class="bi bi-receipt"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span class="eyebrow">
+          PURCHASE ORDER
+        </span>
+
+        <h1>
+          {{ purchaseNumber }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span class="status"
+            [class.draft]="
+              currentPurchase.status === 'Draft'
+            "
+            [class.confirmed]="
+              currentPurchase.status === 'Confirmed'
+            "
+            [class.received]="
+              currentPurchase.status === 'Received'
+            "
+            [class.cancelled]="
+              currentPurchase.status === 'Cancelled'
+            "
+          >
+
+            <i
+              class="bi"
+              [class]="
+                statusIcon(
+                  currentPurchase.status
+                )
+              "
+            ></i>
+
+            {{ currentPurchase.status }}
+
+          </span>
+
+
+          <span class="created-date">
+
+            Created
+
+            {{
+              currentPurchase.createdAt
+                | date:'mediumDate'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        @if (
+          currentPurchase.status === 'Draft'
+        ) {
+
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="actionLoading()"
+            (click)="askConfirm()"
+          >
+
+            <i class="bi bi-check2-circle"></i>
+
+            Confirm
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askCancel()"
+          >
+
+            <i class="bi bi-x-circle"></i>
+
+            Cancel
+
+          </button>
+
+        }
+
+
+        @if (
+          currentPurchase.status === 'Confirmed'
+        ) {
+
+          <button
+            type="button"
+            class="success-button"
+            [disabled]="actionLoading()"
+            (click)="askReceive()"
+          >
+
+            <i class="bi bi-box-arrow-in-down"></i>
+
+            Receive
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askCancel()"
+          >
+
+            <i class="bi bi-x-circle"></i>
+
+            Cancel
+
+          </button>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Supplier / Warehouse
+         ===================================================== -->
+
+    <div class="info-grid">
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-person-vcard"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Supplier
+            </h2>
+
+            <span>
+              Purchase supplier
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          typeof currentPurchase.supplier !== 'string'
+        ) {
+
+         <div class="entity-content">
+
+  <strong>
+    {{ currentPurchase.supplier.name }}
+  </strong>
+
+  <span>
+    {{ currentPurchase.supplier.code }}
+  </span>
+
+  ...
+
+ <a
+    class="entity-link"
+    [routerLink]="[
+      '/admin/suppliers',
+      currentPurchase.supplier._id
+    ]"
+  >
+
+    View Supplier
+
+    <i class="bi bi-arrow-up-right"></i>
+
+  </a>
+
+</div>
+
+        } @else {
+
+          <strong class="raw-id">
+
+            {{ currentPurchase.supplier }}
+
+          </strong>
+
+        }
+
+      </section>
+
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+
+            <i class="bi bi-building"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Warehouse
+            </h2>
+
+            <span>
+              Receiving warehouse
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          typeof currentPurchase.warehouse !== 'string'
+        ) {
+
+          <div class="entity-content">
+
+            <strong>
+              {{ currentPurchase.warehouse.name }}
+            </strong>
+
+            <span>
+              {{ currentPurchase.warehouse.code }}
+            </span>
+
+
+            @if (
+              currentPurchase.warehouse.location
+            ) {
+
+              <small>
+
+                <i class="bi bi-geo-alt"></i>
+
+                {{ currentPurchase.warehouse.location }}
+
+              </small>
+
+            }
+ <a
+    class="entity-link"
+    [routerLink]="[
+      '/admin/warehouses',
+      currentPurchase.warehouse._id
+    ]"
+  >
+
+    View Warehouse
+
+    <i class="bi bi-arrow-up-right"></i>
+
+  </a>
+          </div>
+
+        } @else {
+
+          <strong class="raw-id">
+
+            {{ currentPurchase.warehouse }}
+
+          </strong>
+
+        }
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Status Timeline
+         ===================================================== -->
+
+    <section class="timeline-card">
+
+      <div class="card-header">
+
+        <div class="card-icon purple">
+
+          <i class="bi bi-diagram-3"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Purchase Workflow
+          </h2>
+
+          <span>
+            Current purchase lifecycle
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="timeline">
+
+        <!-- Draft -->
+
+        <div
+          class="timeline-step"
+          [class.completed]="
+            currentPurchase.status !== 'Draft'
+          "
+          [class.current]="
+            currentPurchase.status === 'Draft'
+          "
+        >
+
+          <div class="timeline-dot">
+
+            <i class="bi bi-file-earmark"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Draft
+            </strong>
+
+            <span>
+              Purchase created
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="timeline-line"></div>
+
+
+        <!-- Confirmed -->
+
+        <div
+          class="timeline-step"
+          [class.completed]="
+            currentPurchase.status === 'Received'
+          "
+          [class.current]="
+            currentPurchase.status === 'Confirmed'
+          "
+        >
+
+          <div class="timeline-dot">
+
+            <i class="bi bi-check2-circle"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Confirmed
+            </strong>
+
+            <span>
+              Purchase approved
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="timeline-line"></div>
+
+
+        <!-- Received -->
+
+        <div
+          class="timeline-step"
+          [class.completed]="
+            currentPurchase.status === 'Received'
+          "
+          [class.current]="
+            currentPurchase.status === 'Received'
+          "
+          [class.cancelled]="
+            currentPurchase.status === 'Cancelled'
+          "
+        >
+
+          <div class="timeline-dot">
+
+            <i
+              class="bi bi-box-arrow-in-down"
+            ></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Received
+            </strong>
+
+            <span>
+
+              @if (
+                currentPurchase.receivedAt
+              ) {
+
+                {{
+                  currentPurchase.receivedAt
+                    | date:'medium'
+                }}
+
+              } @else {
+
+                Waiting for receipt
+
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      @if (
+        currentPurchase.status === 'Cancelled'
+      ) {
+
+        <div class="cancelled-notice">
+
+          <i class="bi bi-x-circle-fill"></i>
+
+          This purchase was cancelled.
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- =====================================================
+         Items
+         ===================================================== -->
+
+    <section class="items-card">
+
+      <div class="card-header">
+
+        <div class="card-icon orange">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Purchase Items
+          </h2>
+
+          <span>
+            {{ currentPurchase.items.length }}
+            products
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="items-table-wrapper">
+
+        <table class="items-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                SKU
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Unit Price
+              </th>
+
+              <th>
+                Total
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of currentPurchase.items;
+              track $index
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="product-cell">
+
+                    <div class="product-icon">
+
+                      <i class="bi bi-box"></i>
+
+                    </div>
+
+                    <strong>
+                      {{ itemProductName(item) }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="sku">
+                    {{ itemProductSku(item) || '—' }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{ item.quantity | number }}
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    item.unitPrice
+                      | currency:'EGP':'symbol':'1.2-2'
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+
+                    {{
+                      item.total
+                        | currency:'EGP':'symbol':'1.2-2'
+                    }}
+
+                  </strong>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Bottom Summary
+         ===================================================== -->
+
+    <div class="bottom-grid">
+
+      <!-- Notes -->
+
+      <section class="notes-card">
+
+        <div class="card-header">
+
+          <div class="card-icon gray">
+
+            <i class="bi bi-sticky"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Notes
+            </h2>
+
+            <span>
+              Purchase notes
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="notes-content">
+
+          @if (currentPurchase.notes) {
+
+            {{ currentPurchase.notes }}
+
+          } @else {
+
+            <span>
+              No notes added.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Summary -->
+
+      <section class="summary-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-calculator"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Purchase Summary
+            </h2>
+
+            <span>
+              Financial breakdown
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+
+            {{
+              currentPurchase.subtotal
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+          <strong class="discount">
+
+            −
+            {{
+              currentPurchase.discount
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Tax
+          </span>
+
+          <strong>
+
+            +
+            {{
+              currentPurchase.tax
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="grand-total">
+
+          <span>
+            Grand Total
+          </span>
+
+          <strong>
+
+            {{
+              currentPurchase.total
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Receiving Information
+         ===================================================== -->
+
+    @if (
+      currentPurchase.status === 'Received'
+    ) {
+
+      <section class="received-card">
+
+        <div class="received-icon">
+
+          <i class="bi bi-check-circle-fill"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            RECEIVED
+          </span>
+
+          <strong>
+            Purchase received successfully
+          </strong>
+
+          @if (
+            currentPurchase.receivedAt
+          ) {
+
+            <small>
+
+              Received on
+              {{
+                currentPurchase.receivedAt
+                  | date:'medium'
+              }}
+
+              @if (
+                currentPurchase.receivedBy
+              ) {
+
+                · by
+                {{
+                  currentPurchase.receivedBy?.name
+                }}
+
+              }
+
+            </small>
+
+          }
+
+        </div>
+
+      </section>
+ <a
+    class="stock-link"
+    [routerLink]="['/admin/stock']"
+    [queryParams]="{
+      warehouse:
+        typeof currentPurchase.warehouse === 'string'
+          ? currentPurchase.warehouse
+          : currentPurchase.warehouse._id
+    }"
+  >
+
+    <i class="bi bi-boxes"></i>
+
+    View Warehouse Stock
+
+  </a>
+    }
+
+
+    <!-- =====================================================
+         Confirmation
+         ===================================================== -->
+
+    @if (confirmOpen()) {
+
+      <app-confirm-dialog
+
+        [open]="confirmOpen()"
+
+        [title]="confirmationTitle"
+
+        [message]="confirmationMessage"
+
+        [confirmText]="confirmationText"
+
+        [cancelText]="'Cancel'"
+
+        [variant]="confirmationVariant"
+
+        [loading]="actionLoading()"
+
+        (confirmed)="confirmOperation()"
+
+        (cancelled)="closeConfirmation()"
+
+      />
+
+    }
+
+  }
+
+</div>

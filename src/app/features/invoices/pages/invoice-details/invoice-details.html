@@ -1,0 +1,1022 @@
+<div class="invoice-details-page">
+
+  <app-page-header
+    title="Invoice Details"
+    description="Review invoice information, customer, items and payment status."
+  />
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Loading invoice...
+
+    </div>
+
+  } @else if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadInvoice()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  } @else if (invoice(); as currentInvoice) {
+
+    <!-- =====================================================
+         Hero
+         ===================================================== -->
+
+    <section class="hero-card">
+
+      <div class="invoice-icon">
+
+        <i class="bi bi-file-earmark-text"></i>
+
+      </div>
+
+
+      <div class="hero-content">
+
+        <span class="eyebrow">
+          INVOICE
+        </span>
+
+        <h1>
+          {{ currentInvoice.invoiceNumber }}
+        </h1>
+
+        <div class="hero-meta">
+
+          <span
+            class="status"
+            [class]="
+              statusClass(
+                currentInvoice.status
+              )
+            "
+          >
+
+            <i
+              class="bi"
+              [class]="
+                statusIcon(
+                  currentInvoice.status
+                )
+              "
+            ></i>
+
+            {{ currentInvoice.status }}
+
+          </span>
+
+
+          <span class="issue-date">
+
+            Issued
+
+            {{
+              currentInvoice.issueDate
+                | date:'mediumDate'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="back()"
+        >
+
+          <i class="bi bi-arrow-left"></i>
+
+          Back
+
+        </button>
+
+
+        @if (
+          currentInvoice.status !== 'Paid' &&
+          currentInvoice.status !== 'Cancelled'
+        ) {
+
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="actionLoading()"
+            (click)="askCancel()"
+          >
+
+            <i class="bi bi-x-circle"></i>
+
+            Cancel Invoice
+
+          </button>
+
+
+ <button
+    type="button"
+    class="payment-button"
+    (click)="openPayment()"
+  >
+
+    <i class="bi bi-credit-card"></i>
+
+    Make Payment
+
+  </button>
+
+
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Customer / Sale
+         ===================================================== -->
+
+    <div class="info-grid">
+
+      <!-- Customer -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-person-vcard"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Customer
+            </h2>
+
+            <span>
+              Invoice customer
+            </span>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          typeof currentInvoice.customer !== 'string'
+        ) {
+
+          <div class="entity-content">
+
+            <strong>
+              {{ currentInvoice.customer.name }}
+            </strong>
+
+            <span>
+              {{ currentInvoice.customer.code }}
+            </span>
+
+
+            @if (
+              currentInvoice.customer.email
+            ) {
+
+              <a
+                [href]="
+                  'mailto:' +
+                  currentInvoice.customer.email
+                "
+              >
+
+                <i class="bi bi-envelope"></i>
+
+                {{ currentInvoice.customer.email }}
+
+              </a>
+
+            }
+
+
+            @if (
+              currentInvoice.customer.phone
+            ) {
+
+              <a
+                [href]="
+                  'tel:' +
+                  currentInvoice.customer.phone
+                "
+              >
+
+                <i class="bi bi-telephone"></i>
+
+                {{ currentInvoice.customer.phone }}
+
+              </a>
+
+            }
+
+
+            <a
+              class="entity-link"
+              [routerLink]="[
+                '/admin/customers',
+                currentInvoice.customer._id
+              ]"
+            >
+
+              View Customer
+
+              <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+          </div>
+
+        } @else {
+
+          <strong class="raw-id">
+
+            {{ currentInvoice.customer }}
+
+          </strong>
+
+        }
+
+      </section>
+
+
+      <!-- Sale -->
+
+      <section class="info-card">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+
+            <i class="bi bi-receipt"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Source Sale
+            </h2>
+
+            <span>
+              Invoice generated from sale
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="sale-reference">
+
+          <strong>
+            {{ saleNumber() }}
+          </strong>
+
+
+          @if (
+            typeof currentInvoice.sale !== 'string'
+          ) {
+
+            <span>
+
+              Status:
+              {{ currentInvoice.sale.status || '—' }}
+
+            </span>
+
+
+            @if (
+              currentInvoice.sale.paymentMethod
+            ) {
+
+              <span>
+
+                Payment:
+                {{
+                  currentInvoice.sale.paymentMethod
+                }}
+
+              </span>
+
+            }
+
+          }
+
+
+          @if (
+            typeof currentInvoice.sale === 'string'
+          ) {
+
+            <a
+              class="entity-link"
+              [routerLink]="[
+                '/admin/sales',
+                currentInvoice.sale
+              ]"
+            >
+
+              View Sale
+
+              <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+          } @else {
+
+            <a
+              class="entity-link"
+              [routerLink]="[
+                '/admin/sales',
+                currentInvoice.sale._id
+              ]"
+            >
+
+              View Sale
+
+              <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Payment -->
+
+      <section class="info-card payment-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+
+            <i class="bi bi-credit-card"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Payment Status
+            </h2>
+
+            <span>
+              Current payment position
+            </span>
+
+          </div>
+
+        </div>
+
+
+<div class="payment-summary">
+
+  <div>
+
+    <span>
+      Invoice Total
+    </span>
+
+    <strong>
+
+      {{
+        currentInvoice.total
+          | currency:'EGP':'symbol':'1.2-2'
+      }}
+
+    </strong>
+
+  </div>
+
+
+  <div>
+
+    <span>
+      Paid
+    </span>
+
+    <strong class="paid">
+
+      {{
+        currentInvoice.paidAmount
+          | currency:'EGP':'symbol':'1.2-2'
+      }}
+
+    </strong>
+
+  </div>
+
+
+  <div>
+
+    <span>
+      Remaining
+    </span>
+
+    <strong
+      class="remaining"
+      [class.zero]="
+        currentInvoice.remainingAmount === 0
+      "
+    >
+
+      {{
+        currentInvoice.remainingAmount
+          | currency:'EGP':'symbol':'1.2-2'
+      }}
+
+    </strong>
+
+  </div>
+
+</div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Invoice Information
+         ===================================================== -->
+
+    <section class="invoice-meta-card">
+
+      <div class="meta-item">
+
+        <span>
+          Invoice Number
+        </span>
+
+        <strong>
+          {{ currentInvoice.invoiceNumber }}
+        </strong>
+
+      </div>
+
+
+      <div class="meta-item">
+
+        <span>
+          Issue Date
+        </span>
+
+        <strong>
+          {{
+            currentInvoice.issueDate
+              | date:'medium'
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="meta-item">
+
+        <span>
+          Due Date
+        </span>
+
+        <strong>
+
+          {{
+            currentInvoice.dueDate
+              ? (
+                  currentInvoice.dueDate
+                    | date:'medium'
+                )
+              : 'No due date'
+          }}
+
+        </strong>
+
+      </div>
+
+
+      <div class="meta-item">
+
+        <span>
+          Status
+        </span>
+
+        <strong
+          class="inline-status"
+          [class]="
+            statusClass(
+              currentInvoice.status
+            )
+          "
+        >
+
+          {{ currentInvoice.status }}
+
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Items
+         ===================================================== -->
+
+    <section class="items-card">
+
+      <div class="card-header">
+
+        <div class="card-icon orange">
+
+          <i class="bi bi-box-seam"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Invoice Items
+          </h2>
+
+          <span>
+            {{ currentInvoice.items.length }}
+            products
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="items-table-wrapper">
+
+        <table class="items-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                SKU
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Unit Price
+              </th>
+
+              <th>
+                Total
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of currentInvoice.items;
+              track $index
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="product-cell">
+
+                    <div class="product-icon">
+
+                      <i class="bi bi-box"></i>
+
+                    </div>
+
+                    <strong>
+                      {{ productName(item) }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="sku">
+
+                    {{
+                      productSku(item) ||
+                      '—'
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    item.quantity
+                      | number
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    item.unitPrice
+                      | currency:'EGP':'symbol':'1.2-2'
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+
+                    {{
+                      item.total
+                        | currency:'EGP':'symbol':'1.2-2'
+                    }}
+
+                  </strong>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Bottom
+         ===================================================== -->
+
+    <div class="bottom-grid">
+
+      <!-- Notes -->
+
+      <section class="notes-card">
+
+        <div class="card-header">
+
+          <div class="card-icon gray">
+
+            <i class="bi bi-sticky"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Notes
+            </h2>
+
+            <span>
+              Invoice notes
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="notes-content">
+
+          @if (currentInvoice.notes) {
+
+            {{ currentInvoice.notes }}
+
+          } @else {
+
+            <span>
+              No notes added.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Financial Summary -->
+
+      <section class="summary-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+
+            <i class="bi bi-calculator"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Invoice Summary
+            </h2>
+
+            <span>
+              Financial breakdown
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+
+            {{
+              currentInvoice.subtotal
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+          <strong class="discount">
+
+            −
+            {{
+              currentInvoice.discount
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Tax
+          </span>
+
+          <strong>
+
+            +
+            {{
+              currentInvoice.tax
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="grand-total">
+
+          <span>
+            Grand Total
+          </span>
+
+          <strong>
+
+            {{
+              currentInvoice.total
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =====================================================
+         Audit
+         ===================================================== -->
+
+    <section class="audit-card">
+
+      <div class="card-header">
+
+        <div class="card-icon gray">
+
+          <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Record Information
+          </h2>
+
+          <span>
+            Invoice audit information
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="audit-grid">
+
+        <div>
+
+          <span>
+            Created
+          </span>
+
+          <strong>
+            {{
+              currentInvoice.createdAt
+                | date:'medium'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Updated
+          </span>
+
+          <strong>
+            {{
+              currentInvoice.updatedAt
+                | date:'medium'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Created By
+          </span>
+
+          <strong>
+            {{
+              currentInvoice.createdBy?.name ||
+              '—'
+            }}
+          </strong>
+
+          @if (
+            currentInvoice.createdBy?.email
+          ) {
+
+            <small>
+              {{
+                currentInvoice.createdBy?.email
+              }}
+            </small>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Confirmation
+         ===================================================== -->
+
+    @if (confirmOpen()) {
+
+      <app-confirm-dialog
+
+        [open]="confirmOpen()"
+
+        [title]="'Cancel Invoice?'"
+
+        [message]="
+          'Are you sure you want to cancel invoice ' +
+          currentInvoice.invoiceNumber +
+          '?'
+        "
+
+        [confirmText]="'Cancel Invoice'"
+
+        [cancelText]="'Keep Invoice'"
+
+        [variant]="'danger'"
+
+        [loading]="actionLoading()"
+
+        (confirmed)="confirmCancel()"
+
+        (cancelled)="closeConfirmation()"
+
+      />
+
+    }
+
+  }
+@if (paymentOpen()) {
+
+  <app-payment-form
+
+    [remainingAmount]="
+      paymentRemaining()
+    "
+
+    [loading]="
+      paymentLoading()
+    "
+
+    (submitted)="
+      submitPayment($event)
+    "
+
+    (close)="
+      closePayment()
+    "
+
+  />
+
+}
+</div>

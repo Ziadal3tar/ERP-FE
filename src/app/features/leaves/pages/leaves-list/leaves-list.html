@@ -1,0 +1,258 @@
+<div class="leaves-page">
+
+  <app-page-header
+    title="Leave Management"
+    description="Review employee leave requests and manage approvals."
+    actionLabel="Create Leave"
+    actionIcon="bi-calendar-plus"
+    (actionClick)="createLeave()"
+  />
+
+
+  <section class="leaves-card">
+
+    <!-- Filters -->
+
+    <div class="filters">
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          [(ngModel)]="search"
+          placeholder="Search employee..."
+          (keyup.enter)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="select-box">
+
+        <i class="bi bi-funnel"></i>
+
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Statuses
+          </option>
+
+          @for (
+            status of statuses;
+            track status
+          ) {
+
+            <option [value]="status">
+              {{ status }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="filter-button primary"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-funnel"></i>
+
+          Filter
+
+        </button>
+
+
+        <button
+          type="button"
+          class="filter-button"
+          (click)="clearFilters()"
+        >
+
+          Clear
+
+        </button>
+
+
+        <button
+          type="button"
+          class="filter-button icon-only"
+          (click)="refresh()"
+        >
+
+          <i class="bi bi-arrow-clockwise"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    @if (error()) {
+
+      <div class="leaves-error">
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ error() }}
+        </span>
+
+        <button
+          type="button"
+          (click)="refresh()"
+        >
+          Retry
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- Quick Summary -->
+
+    @if (!loading()) {
+
+      <div class="summary-grid">
+
+        <div class="summary-card">
+
+          <div class="summary-icon total">
+            <i class="bi bi-calendar2-week"></i>
+          </div>
+
+          <div>
+
+            <small>
+              Total
+            </small>
+
+            <strong>
+              {{ total() }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon pending">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+
+          <div>
+
+            <small>
+              Pending
+            </small>
+
+            <strong>
+              {{
+                leaves()
+                  .filter(
+                    leave =>
+                      leave.status === 'Pending'
+                  ).length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon approved">
+            <i class="bi bi-check-circle"></i>
+          </div>
+
+          <div>
+
+            <small>
+              Approved
+            </small>
+
+            <strong>
+              {{
+                leaves()
+                  .filter(
+                    leave =>
+                      leave.status === 'Approved'
+                  ).length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-icon rejected">
+            <i class="bi bi-x-circle"></i>
+          </div>
+
+          <div>
+
+            <small>
+              Rejected
+            </small>
+
+            <strong>
+              {{
+                leaves()
+                  .filter(
+                    leave =>
+                      leave.status === 'Rejected'
+                  ).length
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <!-- Table -->
+
+    <app-data-table
+      [columns]="columns"
+      [data]="leaves()"
+      [loading]="loading()"
+      [rowClickable]="true"
+      emptyTitle="No leave requests"
+      emptyMessage="Leave requests will appear here."
+      (rowClick)="openLeave($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>

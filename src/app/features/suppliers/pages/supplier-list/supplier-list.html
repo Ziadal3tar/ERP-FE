@@ -1,0 +1,199 @@
+<div class="supplier-list-page">
+
+  <app-page-header
+    title="Suppliers"
+    description="Manage your suppliers and vendor information."
+  />
+
+
+  <div class="page-actions">
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+
+    <a
+      routerLink="/admin/suppliers/create"
+      class="primary-button"
+    >
+
+      <i class="bi bi-plus-lg"></i>
+
+      Add Supplier
+
+    </a>
+
+  </div>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  <section class="filters-card">
+
+    <div class="filter-group">
+
+      <label>
+        Search
+      </label>
+
+      <div class="input-wrapper">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="search"
+          placeholder="Name, code or phone..."
+          [value]="filterForm.controls.search.value"
+          (input)="onSearch(
+            $any($event.target).value
+          )"
+        />
+
+      </div>
+
+    </div>
+
+
+    <div class="filter-group">
+
+      <label>
+        Status
+      </label>
+
+      <select
+        [formControl]="filterForm.controls.status"
+        (change)="applyStatus()"
+      >
+
+        <option value="all">
+          All Suppliers
+        </option>
+
+        <option value="active">
+          Active
+        </option>
+
+        <option value="inactive">
+          Inactive
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="reset-button"
+      (click)="resetFilters()"
+    >
+
+      <i class="bi bi-arrow-counterclockwise"></i>
+
+      Reset
+
+    </button>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Supplier Directory
+        </h2>
+
+        <span>
+          {{ total() }} suppliers
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="suppliers()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No suppliers found"
+
+      emptyMessage="There are no suppliers matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+</div>
+@if (confirmOpen()) {
+
+  <app-confirm-dialog
+
+    [title]="'Deactivate Supplier?'"
+
+    [message]="
+      'Are you sure you want to deactivate ' +
+      (confirmSupplier()?.name || 'this supplier') +
+      '? You can restore it later.'
+    "
+
+    [confirmText]="'Deactivate'"
+
+    [cancelText]="'Cancel'"
+
+    [variant]="'danger'"
+
+    [loading]="actionLoading()"
+
+    (confirmed)="confirmDeactivate()"
+
+    (cancelled)="cancelDeactivate()"
+
+  />
+
+}

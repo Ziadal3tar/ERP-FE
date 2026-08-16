@@ -1,0 +1,373 @@
+<div class="purchase-list-page">
+
+  <app-page-header
+    title="Purchases"
+    description="Manage purchase orders, supplier deliveries and inventory receiving."
+  />
+
+
+  <!-- =========================================================
+       Actions
+       ========================================================= -->
+
+  <div class="page-actions">
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+
+      <i class="bi bi-arrow-clockwise"></i>
+
+      Refresh
+
+    </button>
+
+
+    <a
+      routerLink="/admin/purchases/create"
+      class="primary-button"
+    >
+
+      <i class="bi bi-plus-lg"></i>
+
+      New Purchase
+
+    </a>
+
+  </div>
+
+
+  <!-- =========================================================
+       Error
+       ========================================================= -->
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+      </div>
+
+
+      <div class="error-content">
+
+        <strong>
+          Unable to load purchases
+        </strong>
+
+        <span>
+          {{ error() }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="refresh()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =========================================================
+       Filters
+       ========================================================= -->
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Purchase Filters
+          </h2>
+
+          <span>
+            Filter by supplier, warehouse and status.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <!-- Supplier -->
+
+      <div class="filter-field">
+
+        <label>
+          Supplier
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-person-vcard"></i>
+
+          <select
+            formControlName="supplier"
+            [disabled]="filtersLoading()"
+          >
+
+            <option value="">
+              All Suppliers
+            </option>
+
+            @for (
+              supplier of suppliers();
+              track supplier._id
+            ) {
+
+              <option
+                [value]="supplier._id"
+              >
+
+                {{ supplier.name }}
+
+                ·
+
+                {{ supplier.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Warehouse -->
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-building"></i>
+
+          <select
+            formControlName="warehouse"
+            [disabled]="filtersLoading()"
+          >
+
+            <option value="">
+              All Warehouses
+            </option>
+
+            @for (
+              warehouse of warehouses();
+              track warehouse._id
+            ) {
+
+              <option
+                [value]="warehouse._id"
+              >
+
+                {{ warehouse.name }}
+
+                ·
+
+                {{ warehouse.code }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="filter-field">
+
+        <label>
+          Status
+        </label>
+
+        <div class="select-wrapper">
+
+          <i class="bi bi-activity"></i>
+
+          <select
+            formControlName="status"
+          >
+
+            <option value="">
+              All Status
+            </option>
+
+            <option value="Draft">
+              Draft
+            </option>
+
+            <option value="Confirmed">
+              Confirmed
+            </option>
+
+            <option value="Received">
+              Received
+            </option>
+
+            <option value="Cancelled">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Apply -->
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply Filters
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <!-- =========================================================
+       Table
+       ========================================================= -->
+
+  <section class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Purchase Orders
+        </h2>
+
+        <span>
+          {{ total() }} purchases
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <app-data-table
+      [columns]="columns"
+      [data]="purchases()"
+      [actions]="actions"
+      [loading]="loading()"
+
+      emptyTitle="No purchases found"
+
+      emptyMessage="There are no purchases matching your current filters."
+
+      (actionClick)="handleAction($event)"
+    />
+
+
+    <app-pagination
+      [page]="page()"
+      [total]="total()"
+      [totalPages]="totalPages()"
+      (pageChange)="changePage($event)"
+    />
+
+  </section>
+
+
+  <!-- =========================================================
+       Confirmation
+       ========================================================= -->
+
+  @if (confirmOpen()) {
+
+    <app-confirm-dialog
+
+      [open]="confirmOpen()"
+
+      [title]="confirmationTitle"
+
+      [message]="confirmationMessage"
+
+      [confirmText]="confirmationText"
+
+      [cancelText]="'Cancel'"
+
+      [variant]="confirmationVariant"
+
+      [loading]="actionLoading()"
+
+      (confirmed)="confirmOperation()"
+
+      (cancelled)="closeConfirmation()"
+
+    />
+
+  }
+
+</div>

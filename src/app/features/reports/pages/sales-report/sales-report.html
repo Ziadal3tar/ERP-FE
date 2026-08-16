@@ -1,0 +1,590 @@
+<div class="sales-report-page">
+
+  <app-page-header
+    title="Sales Report"
+    description="Analyze confirmed sales and their financial breakdown."
+  />
+
+
+  <!-- =====================================================
+       Filters
+       ===================================================== -->
+
+  <section class="filters-card">
+
+    <div class="filters-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+
+          <i class="bi bi-funnel"></i>
+
+        </div>
+
+        <div>
+
+          <h2>
+            Report Filters
+          </h2>
+
+          <span>
+            Filter confirmed sales by customer or warehouse.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+
+        Reset
+
+      </button>
+
+    </div>
+
+
+    <form
+      class="filters-body"
+      [formGroup]="filterForm"
+    >
+
+      <div class="filter-field">
+
+        <label>
+          Customer
+        </label>
+
+        <select
+          formControlName="customer"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Customers
+          </option>
+
+          @for (
+            customer of customers();
+            track customer._id
+          ) {
+
+            <option
+              [value]="customer._id"
+            >
+
+              {{ customer.name }}
+
+              ·
+
+              {{ customer.code }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Warehouse
+        </label>
+
+        <select
+          formControlName="warehouse"
+          [disabled]="filtersLoading()"
+        >
+
+          <option value="">
+            All Warehouses
+          </option>
+
+          @for (
+            warehouse of warehouses();
+            track warehouse._id
+          ) {
+
+            <option
+              [value]="warehouse._id"
+            >
+
+              {{ warehouse.name }}
+
+              ·
+
+              {{ warehouse.code }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-action">
+
+        <button
+          type="button"
+          class="primary-button"
+          [disabled]="loading()"
+          (click)="applyFilters()"
+        >
+
+          <i class="bi bi-search"></i>
+
+          Apply
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  @if (error()) {
+
+    <div class="error-banner">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadReport()"
+      >
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <div class="spinner"></div>
+
+      Generating sales report...
+
+    </div>
+
+  } @else if (report(); as data) {
+
+    <!-- =====================================================
+         Main KPIs
+         ===================================================== -->
+
+    <section class="kpi-grid">
+
+      <div class="kpi-card primary">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-currency-exchange"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total Sales
+          </span>
+
+          <strong>
+            {{
+              data.totalSales
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+          </strong>
+
+          <small>
+            Confirmed sales only
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="kpi-card green">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-receipt"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Sales Count
+          </span>
+
+          <strong>
+            {{ data.count | number }}
+          </strong>
+
+          <small>
+            Confirmed transactions
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="kpi-card purple">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-calculator"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Average Sale
+          </span>
+
+          <strong>
+            {{
+              averageSale
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+          </strong>
+
+          <small>
+            Total sales ÷ count
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="kpi-card orange">
+
+        <div class="kpi-icon">
+
+          <i class="bi bi-percent"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Discount Rate
+          </span>
+
+          <strong>
+            {{ discountRate | number:'1.1-1' }}%
+          </strong>
+
+          <small>
+            Against subtotal
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Financial Breakdown
+         ===================================================== -->
+
+    <section class="report-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="eyebrow">
+            FINANCIAL BREAKDOWN
+          </span>
+
+          <h2>
+            Sales Summary
+          </h2>
+
+          <p>
+            Aggregated values for confirmed sales.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="financial-grid">
+
+        <div class="financial-item">
+
+          <div class="financial-icon blue">
+
+            <i class="bi bi-calculator"></i>
+
+          </div>
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+
+            {{
+              data.subtotal
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="financial-item">
+
+          <div class="financial-icon red">
+
+            <i class="bi bi-dash-circle"></i>
+
+          </div>
+
+          <span>
+            Discount
+          </span>
+
+          <strong class="discount">
+
+            {{
+              data.discount
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="financial-item">
+
+          <div class="financial-icon orange">
+
+            <i class="bi bi-percent"></i>
+
+          </div>
+
+          <span>
+            Tax
+          </span>
+
+          <strong>
+
+            {{
+              data.tax
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="financial-item total">
+
+          <div class="financial-icon green">
+
+            <i class="bi bi-cash-stack"></i>
+
+          </div>
+
+          <span>
+            Total Sales
+          </span>
+
+          <strong>
+
+            {{
+              data.totalSales
+                | currency:'EGP':'symbol':'1.2-2'
+            }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Visual Summary
+         ===================================================== -->
+
+    <section class="analysis-grid">
+
+      <div class="analysis-card">
+
+        <div class="analysis-header">
+
+          <div>
+
+            <span class="eyebrow">
+              DISCOUNT
+            </span>
+
+            <h3>
+              Discount Impact
+            </h3>
+
+          </div>
+
+          <i class="bi bi-tag"></i>
+
+        </div>
+
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill discount-progress"
+          [style.width.%]="discountProgress"
+          ></div>
+
+        </div>
+
+
+        <div class="analysis-footer">
+
+          <strong>
+            {{ discountRate | number:'1.1-1' }}%
+          </strong>
+
+          <span>
+            of subtotal
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="analysis-card">
+
+        <div class="analysis-header">
+
+          <div>
+
+            <span class="eyebrow">
+              TAX
+            </span>
+
+            <h3>
+              Tax Impact
+            </h3>
+
+          </div>
+
+          <i class="bi bi-percent"></i>
+
+        </div>
+
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill tax-progress"
+         [style.width.%]="taxProgress"
+          ></div>
+
+        </div>
+
+
+        <div class="analysis-footer">
+
+          <strong>
+            {{ taxRate | number:'1.1-1' }}%
+          </strong>
+
+          <span>
+            of subtotal
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="analysis-card highlight">
+
+        <div class="analysis-header">
+
+          <div>
+
+            <span class="eyebrow">
+              NET
+            </span>
+
+            <h3>
+              Before Tax
+            </h3>
+
+          </div>
+
+          <i class="bi bi-graph-up-arrow"></i>
+
+        </div>
+
+
+        <div class="net-value">
+
+          {{
+            netBeforeTax
+              | currency:'EGP':'symbol':'1.2-2'
+          }}
+
+        </div>
+
+
+        <div class="analysis-footer">
+
+          <span>
+            Subtotal minus discount
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>
