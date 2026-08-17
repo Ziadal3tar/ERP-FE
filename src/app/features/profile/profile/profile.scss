@@ -722,11 +722,16 @@
 
 
 
-@media (max-width: 900px) {
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 991.98px) {
 
   .profile-layout {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
+
+    gap: 14px;
   }
 
 
@@ -734,22 +739,27 @@
     display: grid;
 
     grid-template-columns:
-      auto 1fr auto;
+      82px
+      minmax(0, 1fr);
+
+    column-gap: 14px;
+    row-gap: 5px;
 
     align-items: center;
 
-    gap: 10px;
+    padding: 18px;
 
     text-align: left;
   }
 
 
   .avatar-wrapper {
-    width: 65px;
-    height: 65px;
+    width: 72px;
+    height: 72px;
 
-    grid-row:
-      span 2;
+    grid-column: 1;
+
+    grid-row: 1 / span 3;
 
     margin: 0;
 
@@ -758,27 +768,96 @@
 
 
   .profile-summary h2 {
+    grid-column: 2;
+
     margin: 0;
+
+    font-size: 15px;
   }
 
 
   .profile-summary > p {
+    grid-column: 2;
+
     margin: 0;
+
+    font-size: 8px;
   }
 
 
-  .role-badge,
+  .role-badge {
+    grid-column: 2;
+
+    justify-self: start;
+
+    width: fit-content;
+
+    margin-top: 2px;
+  }
+
+
   .account-status {
-    justify-self:
-      end;
+    grid-column: 2;
+
+    justify-content: flex-start;
+
+    margin-top: 2px;
   }
 
 
-  .summary-divider,
-  .summary-item,
+  .summary-divider {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    height: 1px;
+
+    margin: 10px 0 4px;
+  }
+
+
+  .summary-item {
+    grid-column: 1 / -1;
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 7px 0;
+  }
+
+
+  .summary-item span {
+    font-size: 7px;
+  }
+
+
+  .summary-item strong {
+    max-width: none;
+
+    font-size: 8px;
+
+    text-align: right;
+  }
+
+
   .summary-actions {
-    grid-column:
-      1 / -1;
+    grid-column: 1 / -1;
+
+    margin-top: 7px;
+  }
+
+
+  .secondary-link {
+    min-height: 36px;
+
+    width: 100%;
   }
 
 }
@@ -786,56 +865,341 @@
 
 @media (max-width: 575.98px) {
 
+  .profile-page {
+    width: 100%;
+
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+
+  .profile-layout {
+    display: flex;
+
+    flex-direction: column;
+
+    width: 100%;
+
+    gap: 10px;
+  }
+
+
+  /* =======================================================
+     Summary
+     ======================================================= */
+
+  .profile-summary {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 0;
+
+    padding: 20px 15px;
+
+    text-align: center;
+
+    border-radius: 14px;
+
+    box-sizing: border-box;
+  }
+
+
+  .avatar-wrapper {
+    width: 78px;
+    height: 78px;
+
+    margin: 0 0 10px;
+
+    border-radius: 20px;
+
+    flex-shrink: 0;
+
+    font-size: 22px;
+  }
+
+
+  .profile-summary h2 {
+    margin: 0;
+
+    font-size: 16px;
+
+    line-height: 1.4;
+  }
+
+
+  .profile-summary > p {
+    margin: 3px 0 8px;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    font-size: 8px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+  }
+
+
+  .role-badge {
+    display: inline-flex;
+
+    margin: 0 0 7px;
+
+    width: fit-content;
+  }
+
+
+  .account-status {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0;
+
+    font-size: 8px;
+  }
+
+
+  .summary-divider {
+    width: 100%;
+
+    height: 1px;
+
+    margin: 15px 0 7px;
+  }
+
+
+  .summary-item {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 8px 0;
+
+    box-sizing: border-box;
+
+    text-align: left;
+  }
+
+
+  .summary-item span {
+    flex-shrink: 0;
+
+    font-size: 7px;
+  }
+
+
+  .summary-item strong {
+    max-width: 65%;
+
+    overflow-wrap: anywhere;
+
+    font-size: 8px;
+
+    text-align: right;
+  }
+
+
+  .summary-actions {
+    width: 100%;
+
+    margin-top: 10px;
+  }
+
+
+  .secondary-link {
+    width: 100%;
+
+    min-height: 38px;
+  }
+
+
+  /* =======================================================
+     Profile Content
+     ======================================================= */
+
+  .profile-content {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
+  .profile-card {
+    width: 100%;
+
+    padding: 16px 14px;
+
+    box-sizing: border-box;
+
+    border-radius: 14px;
+  }
+
+
+  .card-header {
+    align-items: flex-start;
+
+    margin-bottom: 16px;
+
+    padding-bottom: 12px;
+  }
+
+
+  .card-header h2 {
+    font-size: 12px;
+  }
+
+
+  .card-header span {
+    font-size: 7px;
+
+    line-height: 1.5;
+  }
+
+
+  .field {
+    margin-bottom: 13px;
+  }
+
+
+  .field input {
+    height: 42px;
+
+    font-size: 9px;
+  }
+
+
   .form-actions {
-    flex-direction:
-      column-reverse;
+    flex-direction: column-reverse;
+
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding-top: 13px;
   }
 
 
   .primary-button,
   .secondary-button {
     width: 100%;
+
+    min-height: 40px;
   }
 
 
-  .profile-summary {
-    display:
-      flex;
-
-    flex-direction:
-      column;
-
-    text-align:
-      center;
-  }
-
-
-  .avatar-wrapper {
-    width: 80px;
-    height: 80px;
-  }
-
-
-  .role-badge,
-  .account-status {
-    justify-self:
-      auto;
-  }
-
+  /* =======================================================
+     Security
+     ======================================================= */
 
   .security-card {
-    align-items:
-      flex-start;
+    width: 100%;
 
-    flex-wrap:
-      wrap;
+    display: grid;
+
+    grid-template-columns:
+      38px
+      minmax(0, 1fr);
+
+    gap: 9px;
+
+    box-sizing: border-box;
+
+    padding: 13px;
+
+    margin-top: 10px;
+  }
+
+
+  .security-icon {
+    grid-row: span 2;
+  }
+
+
+  .security-card > div:nth-child(2) {
+    min-width: 0;
   }
 
 
   .security-card a {
+    grid-column: 1 / -1;
+
     width: 100%;
 
-    padding-top: 8px;
+    justify-content: center;
+
+    padding-top: 9px;
+
+    border-top:
+      1px solid #dbeafe;
+  }
+
+}
+
+
+@media (max-width: 380px) {
+
+  .profile-page {
+    padding: 0;
+  }
+
+
+  .profile-summary {
+    padding: 17px 12px;
+  }
+
+
+  .avatar-wrapper {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 18px;
+  }
+
+
+  .profile-summary h2 {
+    font-size: 14px;
+  }
+
+
+  .profile-summary > p {
+    font-size: 7px;
+  }
+
+
+  .summary-item {
+    padding: 7px 0;
+  }
+
+
+  .summary-item span {
+    font-size: 6px;
+  }
+
+
+  .summary-item strong {
+    font-size: 7px;
+  }
+
+
+  .profile-card {
+    padding: 14px 12px;
   }
 
 }
