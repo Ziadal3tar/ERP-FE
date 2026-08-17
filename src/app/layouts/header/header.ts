@@ -8,8 +8,7 @@ import {
 
 import {
   NavigationEnd,
-  Router,
-  RouterLink
+  Router
 } from '@angular/router';
 
 import {
@@ -24,15 +23,17 @@ import {
   NotificationService
 } from './../../features/notifications/services/notification';
 
+import {
+  AuthService
+} from '../../core/services/auth';
+
 
 @Component({
   selector: 'app-header',
 
   standalone: true,
 
-  imports: [
-    RouterLink
-  ],
+  imports: [],
 
   templateUrl:
     './header.html',
@@ -45,11 +46,21 @@ export class Header {
   private readonly router =
     inject(Router);
 
+
   private readonly destroyRef =
     inject(DestroyRef);
 
+
   protected readonly notificationService =
     inject(NotificationService);
+
+
+  protected readonly authService =
+    inject(AuthService);
+
+
+  protected readonly user =
+    this.authService.user;
 
 
   readonly toggleSidebar =
@@ -64,11 +75,16 @@ export class Header {
     signal('Dashboard');
 
 
+  protected readonly userMenuOpen =
+    signal(false);
+
+
   constructor() {
 
     this.router.events
 
       .pipe(
+
         filter(
           event =>
             event instanceof NavigationEnd
@@ -77,9 +93,11 @@ export class Header {
         takeUntilDestroyed(
           this.destroyRef
         )
+
       )
 
       .subscribe(
+
         (
           event: NavigationEnd
         ) => {
@@ -88,18 +106,188 @@ export class Header {
             event.urlAfterRedirects
           );
 
+
+          this.userMenuOpen.set(
+            false
+          );
+
         }
+
       );
 
   }
 
 
-  ngOnInit(): void {
+ngOnInit(): void {
 
-    this.notificationService
-      .refreshUnreadCount();
+  this.notificationService
+    .refreshUnreadCount();
+
+
+  if (
+    this.authService.isAuthenticated()
+  ) {
+
+    this.authService
+      .refreshUser()
+      .subscribe({
+
+        error: error => {
+
+          console.error(
+            'Unable to refresh current user:',
+            error
+          );
+
+        }
+
+      });
 
   }
+
+}
+
+
+
+
+  protected toggleUserMenu(): void {
+
+    this.userMenuOpen.update(
+      value =>
+        !value
+    );
+
+  }
+
+
+  protected closeUserMenu(): void {
+
+    this.userMenuOpen.set(
+      false
+    );
+
+  }
+
+
+
+
+protected openProfile(): void {
+
+  this.closeUserMenu();
+
+  this.router.navigate([
+    '/admin/profile'
+  ]);
+
+}
+
+
+
+
+  protected onNotificationsClick(): void {
+
+    this.closeUserMenu();
+
+
+    this.router.navigate([
+      '/admin/notifications'
+    ]);
+
+  }
+
+
+
+
+protected changePassword(): void {
+
+  this.closeUserMenu();
+
+  this.router.navigate([
+    '/admin/profile/change-password'
+  ]);
+
+}
+
+
+
+
+  protected logout(): void {
+
+    this.closeUserMenu();
+
+    this.authService.logout();
+
+  }
+
+
+
+
+  protected get userName(): string {
+
+    return (
+      this.user()?.name ||
+      'User'
+    );
+
+  }
+
+
+  protected get userEmail(): string {
+
+    return (
+      this.user()?.email ||
+      ''
+    );
+
+  }
+
+
+  protected get userRole(): string {
+
+    return (
+      this.user()?.role ||
+      'User'
+    );
+
+  }
+
+
+  protected get userInitials(): string {
+
+    const name =
+      this.userName.trim();
+
+
+    if (!name) {
+
+      return 'U';
+
+    }
+
+
+    const parts =
+      name.split(/\s+/);
+
+
+    if (
+      parts.length === 1
+    ) {
+
+      return parts[0]
+        .charAt(0)
+        .toUpperCase();
+
+    }
+
+
+    return (
+      parts[0].charAt(0) +
+      parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+
+  }
+
+
 
 
   private updatePageTitle(
@@ -126,11 +314,6 @@ export class Header {
 
     }
 
-
-    /*
-     * Don't expose technical route names
-     * as much as possible.
-     */
 
     const titleMap:
       Record<string, string> = {
@@ -181,7 +364,13 @@ export class Header {
         'Departments',
 
       employees:
-        'Employees'
+        'Employees',
+
+      profile:
+        'My Profile',
+
+      'change-password':
+        'Change Password'
 
     };
 
@@ -207,13 +396,6 @@ export class Header {
   }
 
 
-  protected onNotificationsClick(): void {
-
-    this.router.navigate([
-      '/admin/notifications'
-    ]);
-
-  }
 
 
   onDesktopToggle(): void {

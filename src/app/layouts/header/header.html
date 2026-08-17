@@ -8,14 +8,10 @@
   <div class="header-left">
 
 
-    <!-- Desktop / Tablet -->
-
     <button
       type="button"
       class="header-icon-button desktop-toggle"
-
       aria-label="Toggle sidebar"
-
       (click)="onDesktopToggle()"
     >
 
@@ -24,14 +20,10 @@
     </button>
 
 
-    <!-- Mobile -->
-
     <button
       type="button"
       class="header-icon-button mobile-toggle"
-
       aria-label="Open menu"
-
       (click)="onMobileToggle()"
     >
 
@@ -70,9 +62,7 @@
 
       <input
         type="search"
-
         placeholder="Search..."
-
         aria-label="Search"
       />
 
@@ -89,10 +79,7 @@
 
     <button
       type="button"
-
       class="header-icon-button notification-button"
-
-      aria-label="Notifications"
 
       [attr.aria-label]="
         notificationService.unreadCount() > 0
@@ -136,32 +123,245 @@
          User
          ================================================= -->
 
-    <button
-      type="button"
-      class="user-menu"
-    >
-
-      <div class="user-avatar">
-        A
-      </div>
+    <div class="user-menu-wrapper">
 
 
-      <div class="user-info">
+      <button
+        type="button"
+        class="user-menu"
 
-        <strong>
-          Admin
-        </strong>
+        [attr.aria-expanded]="
+          userMenuOpen()
+        "
 
-        <span>
-          Administrator
-        </span>
+        (click)="toggleUserMenu()"
+      >
 
-      </div>
+        <div class="user-avatar">
+
+          @if (user()?.avatar) {
+
+            <img
+              [src]="user()?.avatar"
+              [alt]="userName"
+            />
+
+          } @else {
+
+            {{ userInitials }}
+
+          }
+
+        </div>
 
 
-      <i class="bi bi-chevron-down user-arrow"></i>
+        <div class="user-info">
 
-    </button>
+          <strong>
+            {{ userName }}
+          </strong>
+
+          <span>
+            {{ userRole }}
+          </span>
+
+        </div>
+
+
+        <i
+          class="bi bi-chevron-down user-arrow"
+          [class.rotated]="
+            userMenuOpen()
+          "
+        ></i>
+
+      </button>
+
+
+      @if (userMenuOpen()) {
+
+        <div class="user-dropdown">
+
+
+          <!-- User Header -->
+
+          <div class="dropdown-user">
+
+            <div class="dropdown-avatar">
+
+              @if (user()?.avatar) {
+
+                <img
+                  [src]="user()?.avatar"
+                  [alt]="userName"
+                />
+
+              } @else {
+
+                {{ userInitials }}
+
+              }
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                {{ userName }}
+              </strong>
+
+              <span>
+                {{ userEmail }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="dropdown-divider"></div>
+
+
+          <!-- Profile -->
+
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="openProfile()"
+          >
+
+            <span class="dropdown-item-icon blue">
+
+              <i class="bi bi-person"></i>
+
+            </span>
+
+            <span class="dropdown-item-content">
+
+              <strong>
+                My Profile
+              </strong>
+
+              <small>
+                View and edit your profile
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <!-- Notifications -->
+
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="onNotificationsClick()"
+          >
+
+            <span class="dropdown-item-icon purple">
+
+              <i class="bi bi-bell"></i>
+
+            </span>
+
+            <span class="dropdown-item-content">
+
+              <strong>
+                Notifications
+              </strong>
+
+              <small>
+                View your notifications
+              </small>
+
+            </span>
+
+
+            @if (
+              notificationService.unreadCount() > 0
+            ) {
+
+              <span class="dropdown-count">
+
+                {{
+                  notificationService.unreadCount()
+                }}
+
+              </span>
+
+            }
+
+          </button>
+
+
+          <!-- Change Password -->
+
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="changePassword()"
+          >
+
+            <span class="dropdown-item-icon orange">
+
+              <i class="bi bi-key"></i>
+
+            </span>
+
+            <span class="dropdown-item-content">
+
+              <strong>
+                Change Password
+              </strong>
+
+              <small>
+                Update your password
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <div class="dropdown-divider"></div>
+
+
+          <!-- Logout -->
+
+          <button
+            type="button"
+            class="dropdown-item logout-item"
+            (click)="logout()"
+          >
+
+            <span class="dropdown-item-icon red">
+
+              <i class="bi bi-box-arrow-right"></i>
+
+            </span>
+
+            <span class="dropdown-item-content">
+
+              <strong>
+                Logout
+              </strong>
+
+              <small>
+                Sign out of your account
+              </small>
+
+            </span>
+
+          </button>
+
+
+        </div>
+
+      }
+
+    </div>
 
   </div>
 

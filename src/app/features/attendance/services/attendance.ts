@@ -56,11 +56,7 @@ export class AttendanceService {
   private readonly api =
     `${environment.apiUrl}/attendance`;
 
-  /*
-  |--------------------------------------------------------------------------
-  | Get Attendance
-  |--------------------------------------------------------------------------
-  */
+
 
   getAttendance(
     page = 1,
@@ -125,11 +121,7 @@ export class AttendanceService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Get One
-  |--------------------------------------------------------------------------
-  */
+
 
   getAttendanceById(
     id: string
@@ -152,11 +144,7 @@ export class AttendanceService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Create
-  |--------------------------------------------------------------------------
-  */
+
 
   createAttendance(
     data: CreateAttendanceRequest

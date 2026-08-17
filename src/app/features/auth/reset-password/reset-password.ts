@@ -1,74 +1,149 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
+  Component,
+  inject,
+  signal
+} from '@angular/core';
+
+import {
+  AbstractControl,
   FormBuilder,
   ReactiveFormsModule,
-  Validators,
-  AbstractControl,
-  ValidationErrors
+  ValidationErrors,
+  Validators
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink
+} from '@angular/router';
+
 import {
   AuthService
 } from '../../../core/services/auth';
+
+
 @Component({
   selector: 'app-reset-password',
+
   standalone: true,
+
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink
   ],
-  templateUrl: './reset-password.html',
-  styleUrl: './reset-password.scss'
+
+  templateUrl:
+    './reset-password.html',
+
+  styleUrl:
+    './reset-password.scss'
 })
 export class ResetPassword {
 
-  private fb = inject(FormBuilder);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private AuthService = inject(AuthService);
+  private readonly fb =
+    inject(FormBuilder);
 
-  loading = false;
+  private readonly route =
+    inject(ActivatedRoute);
 
-  successMessage = '';
+  private readonly router =
+    inject(Router);
 
-  errorMessage = '';
+  private readonly authService =
+    inject(AuthService);
 
-  token:any = this.route.snapshot.paramMap.get('token');
 
-  resetForm:any = this.fb.group({
+  protected readonly loading =
+    signal(false);
 
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(6)
+
+  protected readonly successMessage =
+    signal('');
+
+
+  protected readonly errorMessage =
+    signal('');
+
+
+  protected readonly showPassword =
+    signal(false);
+
+
+  protected readonly showConfirmPassword =
+    signal(false);
+
+
+  protected readonly token:
+    string | null =
+      this.route.snapshot.paramMap.get(
+        'token'
+      );
+
+
+  protected readonly resetForm =
+    this.fb.nonNullable.group({
+
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6)
+        ]
+      ],
+
+      confirmPassword: [
+        '',
+        [
+          Validators.required
+        ]
       ]
-    ],
 
-    confirmPassword: [
-      '',
-      [
-        Validators.required
-      ]
-    ]
+    }, {
 
-  }, {
-    validators: this.passwordMatchValidator
-  });
+      validators:
+        this.passwordMatchValidator
 
-  get f() {
+    });
+
+
+  protected get f() {
+
     return this.resetForm.controls;
+
   }
 
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
 
-    const password = control.get('password')?.value;
+  private passwordMatchValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
 
-    const confirmPassword = control.get('confirmPassword')?.value;
+    const password =
+      control.get(
+        'password'
+      )?.value;
 
-    if (password !== confirmPassword) {
+
+    const confirmPassword =
+      control.get(
+        'confirmPassword'
+      )?.value;
+
+
+    if (
+      !password ||
+      !confirmPassword
+    ) {
+
+      return null;
+
+    }
+
+
+    if (
+      password !==
+      confirmPassword
+    ) {
 
       return {
         passwordMismatch: true
@@ -76,53 +151,180 @@ export class ResetPassword {
 
     }
 
+
     return null;
 
   }
 
-submit() {
 
-  if (this.resetForm.invalid) {
+  protected submit(): void {
 
-    this.resetForm.markAllAsTouched();
+    this.successMessage.set('');
 
-    return;
+    this.errorMessage.set('');
 
-  }
 
-  this.loading = true;
+    if (!this.token) {
 
-  this.AuthService
+      this.errorMessage.set(
+        'This password reset link is invalid or incomplete.'
+      );
+
+      return;
+
+    }
+
+
+    if (
+      this.resetForm.invalid
+    ) {
+
+      this.resetForm.markAllAsTouched();
+
+      return;
+
+    }
+
+
+    this.loading.set(true);
+
+
+    const password =
+      this.f.password.value;
+
+
+    this.authService
+
       .resetPassword(
-          this.token,
-          this.resetForm.value.password
+        this.token,
+        password
       )
+
       .subscribe({
 
-          next: (res:any)=>{
+        next: (response: any) => {
 
-              this.loading=false;
+          this.loading.set(false);
 
-              this.successMessage=res.message;
 
-              setTimeout(()=>{
+          this.successMessage.set(
+            response?.message ??
+            'Password updated successfully.'
+          );
 
-                  this.router.navigate(['/login']);
 
-              },2000);
+          this.resetForm.reset();
 
-          },
 
-          error:(err: { error: { message: string; }; })=>{
+          setTimeout(() => {
 
-              this.loading=false;
+            this.router.navigate([
+              '/login'
+            ]);
 
-              this.errorMessage=err.error.message;
+          }, 2000);
 
-          }
+        },
+
+
+        error: error => {
+
+          console.error(
+            'Reset password error:',
+            error
+          );
+
+
+          this.loading.set(false);
+
+
+          this.errorMessage.set(
+            this.getErrorMessage(
+              error
+            )
+          );
+
+        }
 
       });
 
-}
+  }
+
+
+  protected togglePassword(): void {
+
+    this.showPassword.update(
+      value =>
+        !value
+    );
+
+  }
+
+
+  protected toggleConfirmPassword(): void {
+
+    this.showConfirmPassword.update(
+      value =>
+        !value
+    );
+
+  }
+
+
+  protected clearMessages(): void {
+
+    this.errorMessage.set('');
+
+    this.successMessage.set('');
+
+  }
+
+
+  private getErrorMessage(
+    error: any
+  ): string {
+
+    if (
+      error?.status === 0
+    ) {
+
+      return 'Unable to connect to the server. Please try again.';
+
+    }
+
+
+    if (
+      typeof error?.error?.message ===
+      'string'
+    ) {
+
+      return error.error.message;
+
+    }
+
+
+    if (
+      error?.status === 400 ||
+      error?.status === 401 ||
+      error?.status === 404
+    ) {
+
+      return 'This reset link is invalid or has expired. Please request a new one.';
+
+    }
+
+
+    if (
+      error?.status >= 500
+    ) {
+
+      return 'Something went wrong on the server. Please try again later.';
+
+    }
+
+
+    return 'Unable to reset your password. Please try again.';
+
+  }
 
 }

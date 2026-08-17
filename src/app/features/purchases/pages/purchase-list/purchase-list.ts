@@ -103,11 +103,7 @@ export class PurchaseList
   private readonly destroyRef =
     inject(DestroyRef);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Data
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly purchases =
     signal<Purchase[]>([]);
@@ -118,11 +114,7 @@ export class PurchaseList
   protected readonly warehouses =
     signal<any[]>([]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | State
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly loading =
     signal(false);
@@ -133,11 +125,7 @@ export class PurchaseList
   protected readonly error =
     signal('');
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pagination
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly page =
     signal(1);
@@ -151,11 +139,7 @@ export class PurchaseList
   protected readonly totalPages =
     signal(1);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly filterForm =
     this.fb.nonNullable.group({
@@ -169,11 +153,7 @@ export class PurchaseList
 
     });
 
-  /*
-  |--------------------------------------------------------------------------
-  | Confirmation
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly confirmOpen =
     signal(false);
@@ -192,11 +172,7 @@ export class PurchaseList
       null
     >(null);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Table
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly columns:
     TableColumn<Purchase>[] = [
@@ -327,11 +303,7 @@ export class PurchaseList
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   private loadFilters(): void {
 
@@ -587,11 +559,7 @@ export class PurchaseList
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Actions
-  |--------------------------------------------------------------------------
-  */
+
 
   protected handleAction(
     event: {
@@ -657,11 +625,7 @@ export class PurchaseList
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Confirmation
-  |--------------------------------------------------------------------------
-  */
+
 
   private openConfirmation(
     purchase: Purchase,
@@ -831,11 +795,7 @@ export class PurchaseList
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Confirmation UI
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get confirmationTitle():
     string {

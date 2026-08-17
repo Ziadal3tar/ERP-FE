@@ -1,1 +1,469 @@
-<p>profile works!</p>
+<div class="profile-page">
+
+  <app-page-header
+    title="My Profile"
+    description="Manage your personal information and account details."
+  />
+
+
+  @if (error()) {
+
+    <div class="message error-message">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ error() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="clearMessages()"
+      >
+
+        <i class="bi bi-x"></i>
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (success()) {
+
+    <div class="message success-message">
+
+      <i class="bi bi-check-circle"></i>
+
+      <span>
+        {{ success() }}
+      </span>
+
+      <button
+        type="button"
+        (click)="clearMessages()"
+      >
+
+        <i class="bi bi-x"></i>
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (loading()) {
+
+    <div class="loading-card">
+
+      <div class="spinner"></div>
+
+      Loading profile...
+
+    </div>
+
+  } @else if (user(); as currentUser) {
+
+    <div class="profile-layout">
+
+
+      <!-- =================================================
+           Profile Summary
+           ================================================= -->
+
+      <aside class="profile-summary">
+
+        <div class="avatar-wrapper">
+
+          @if (currentUser.avatar) {
+
+            <img
+              [src]="currentUser.avatar"
+              [alt]="currentUser.name"
+            />
+
+          } @else {
+
+            <span>
+              {{ initials }}
+            </span>
+
+          }
+
+        </div>
+
+
+        <h2>
+          {{ currentUser.name }}
+        </h2>
+
+
+        <p>
+          {{ currentUser.email }}
+        </p>
+
+
+        <span class="role-badge">
+          {{ currentUser.role }}
+        </span>
+
+
+        <div class="account-status">
+
+          <span
+            class="status-dot"
+            [class.active]="
+              currentUser.isActive
+            "
+          ></span>
+
+          {{ currentUser.status }}
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="summary-item">
+
+          <span>
+            Email Status
+          </span>
+
+          <strong>
+
+            @if (currentUser.isVerified) {
+
+              Verified
+
+            } @else {
+
+              Not Verified
+
+            }
+
+          </strong>
+
+        </div>
+
+
+        @if (currentUser.lastLogin) {
+
+          <div class="summary-item">
+
+            <span>
+              Last Login
+            </span>
+
+            <strong>
+
+              {{
+                currentUser.lastLogin
+                  | date:'medium'
+              }}
+
+            </strong>
+
+          </div>
+
+        }
+
+
+        @if (currentUser.createdAt) {
+
+          <div class="summary-item">
+
+            <span>
+              Member Since
+            </span>
+
+            <strong>
+
+              {{
+                currentUser.createdAt
+                  | date:'mediumDate'
+              }}
+
+            </strong>
+
+          </div>
+
+        }
+
+
+        <div class="summary-actions">
+
+          <a
+            routerLink="/admin/profile/change-password"
+            class="secondary-link"
+          >
+
+            <i class="bi bi-key"></i>
+
+            Change Password
+
+          </a>
+
+        </div>
+
+      </aside>
+
+
+      <!-- =================================================
+           Profile Form
+           ================================================= -->
+
+      <main class="profile-content">
+
+        <section class="profile-card">
+
+          <div class="card-header">
+
+            <div class="card-icon">
+
+              <i class="bi bi-person"></i>
+
+            </div>
+
+            <div>
+
+              <h2>
+                Personal Information
+              </h2>
+
+              <span>
+                Update the information associated with your account.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <form
+            [formGroup]="form"
+            (ngSubmit)="saveProfile()"
+          >
+
+
+            <!-- Name -->
+
+            <div class="field">
+
+              <label>
+                Full Name
+                <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                formControlName="name"
+                autocomplete="name"
+                placeholder="Enter your full name"
+              />
+
+
+              @if (
+                form.controls.name.touched &&
+                form.controls.name.errors?.['required']
+              ) {
+
+                <small>
+                  Name is required.
+                </small>
+
+              }
+
+
+              @if (
+                form.controls.name.touched &&
+                form.controls.name.errors?.['minlength']
+              ) {
+
+                <small>
+                  Name must be at least 3 characters.
+                </small>
+
+              }
+
+
+              @if (
+                form.controls.name.touched &&
+                form.controls.name.errors?.['maxlength']
+              ) {
+
+                <small>
+                  Name cannot exceed 100 characters.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="field">
+
+              <label>
+                Email
+              </label>
+
+              <input
+                type="email"
+                [value]="currentUser.email"
+                disabled
+              />
+
+              <span class="hint">
+                Email address cannot be changed from this page.
+              </span>
+
+            </div>
+
+
+            <!-- Phone -->
+
+            <div class="field">
+
+              <label>
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                formControlName="phone"
+                autocomplete="tel"
+                placeholder="01xxxxxxxxx"
+              />
+
+
+              <span class="hint">
+                Egyptian mobile number.
+              </span>
+
+
+              @if (
+                form.controls.phone.touched &&
+                form.controls.phone.errors?.['pattern']
+              ) {
+
+                <small>
+                  Please enter a valid Egyptian phone number.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- Role -->
+
+            <div class="field">
+
+              <label>
+                Role
+              </label>
+
+              <input
+                type="text"
+                [value]="currentUser.role"
+                disabled
+              />
+
+              <span class="hint">
+                Your role can only be changed by an administrator.
+              </span>
+
+            </div>
+
+
+            <div class="form-actions">
+
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="loadProfile()"
+                [disabled]="saving()"
+              >
+
+                Reset
+
+              </button>
+
+
+              <button
+                type="submit"
+                class="primary-button"
+                [disabled]="saving()"
+              >
+
+                @if (saving()) {
+
+                  <span class="button-spinner"></span>
+
+                  Saving...
+
+                } @else {
+
+                  <i class="bi bi-check-lg"></i>
+
+                  Save Changes
+
+                }
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </section>
+
+
+        <!-- Security -->
+
+        <section class="security-card">
+
+          <div class="security-icon">
+
+            <i class="bi bi-shield-check"></i>
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              Account Security
+            </strong>
+
+            <span>
+              Keep your account secure by using a strong password.
+            </span>
+
+          </div>
+
+
+          <a
+            routerLink="/admin/profile/change-password"
+          >
+
+            Change Password
+
+            <i class="bi bi-arrow-right"></i>
+
+          </a>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  }
+
+</div>

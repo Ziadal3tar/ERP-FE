@@ -94,11 +94,7 @@ export class StockTransfer
   private readonly destroyRef =
     inject(DestroyRef);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Data
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly products =
     signal<Product[]>([]);
@@ -106,11 +102,7 @@ export class StockTransfer
   protected readonly warehouses =
     signal<Warehouse[]>([]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | State
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly loading =
     signal(true);
@@ -121,11 +113,7 @@ export class StockTransfer
   protected readonly error =
     signal('');
 
-  /*
-  |--------------------------------------------------------------------------
-  | Form
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly form =
     this.fb.nonNullable.group({
@@ -171,11 +159,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Load Products + Warehouses
-  |--------------------------------------------------------------------------
-  */
+
 
   private loadDependencies(): void {
 
@@ -277,11 +261,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Destination Warehouses
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get destinationWarehouses():
     Warehouse[] {
@@ -297,11 +277,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Submit
-  |--------------------------------------------------------------------------
-  */
+
 
   protected submit(): void {
 
@@ -403,11 +379,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Navigation
-  |--------------------------------------------------------------------------
-  */
+
 
   protected back(): void {
 
@@ -417,11 +389,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Selected Product
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get selectedProduct():
     Product | null {
@@ -440,11 +408,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Source Warehouse
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get selectedSourceWarehouse():
     Warehouse | null {
@@ -463,11 +427,7 @@ export class StockTransfer
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Destination Warehouse
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get selectedDestinationWarehouse():
     Warehouse | null {

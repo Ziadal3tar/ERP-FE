@@ -1,1 +1,0 @@
-import"./chunk-2NFLSA4Y.js";var o=[{path:"",loadComponent:()=>import("./chunk-OC55JZP5.js").then(t=>t.LeavesList)},{path:"create",loadComponent:()=>import("./chunk-F2G25O5R.js").then(t=>t.LeaveForm)},{path:":id",loadComponent:()=>import("./chunk-WC5NYMZ7.js").then(t=>t.LeaveDetails)}];export{o as LEAVES_ROUTES};

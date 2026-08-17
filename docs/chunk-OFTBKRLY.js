@@ -1,1 +1,0 @@
-import{Ba as o,Wa as i,Xa as n,kb as r}from"./chunk-QTPWOX57.js";import"./chunk-2NFLSA4Y.js";var a=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=o({type:t,selectors:[["app-profile"]],decls:2,vars:0,template:function(e,f){e&1&&(i(0,"p"),r(1,"profile works!"),n())},encapsulation:2})};export{a as Profile};

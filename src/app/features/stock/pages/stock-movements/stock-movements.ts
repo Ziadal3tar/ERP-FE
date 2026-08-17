@@ -94,11 +94,7 @@ export class StockMovements
     inject(Router);
   private readonly route =
     inject(ActivatedRoute);
-  /*
-  |--------------------------------------------------------------------------
-  | Data
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly transactions =
     signal<StockTransaction[]>([]);
@@ -109,11 +105,7 @@ export class StockMovements
   protected readonly warehouses =
     signal<Warehouse[]>([]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | State
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly loading =
     signal(false);
@@ -124,11 +116,7 @@ export class StockMovements
   protected readonly error =
     signal('');
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pagination
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly page =
     signal(1);
@@ -142,11 +130,7 @@ export class StockMovements
   protected readonly totalPages =
     signal(1);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   protected selectedProduct = '';
 
@@ -188,11 +172,7 @@ export class StockMovements
 
   ];
 
-  /*
-  |--------------------------------------------------------------------------
-  | Table Columns
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly columns:
     TableColumn<StockTransaction>[] = [
@@ -268,11 +248,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Load Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   private loadFilters(): void {
 
@@ -398,11 +374,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Load Movements
-  |--------------------------------------------------------------------------
-  */
+
 
   protected loadMovements(): void {
 
@@ -477,11 +449,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   protected applyFilters(): void {
 
@@ -505,11 +473,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pagination
-  |--------------------------------------------------------------------------
-  */
+
 
   protected changePage(
     page: number
@@ -531,11 +495,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Movement Helpers
-  |--------------------------------------------------------------------------
-  */
+
 
   protected getMovementLabel(
     type: StockTransactionType
@@ -595,11 +555,7 @@ export class StockMovements
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Navigation
-  |--------------------------------------------------------------------------
-  */
+
 
   protected back(): void {
 

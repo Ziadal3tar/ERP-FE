@@ -98,11 +98,7 @@ export class StockDashboard implements OnInit {
   private readonly router =
     inject(Router);
 
-  /*
-  |--------------------------------------------------------------------------
-  | State
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly stock =
     signal<Stock[]>([]);
@@ -122,11 +118,7 @@ export class StockDashboard implements OnInit {
   protected readonly error =
     signal('');
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pagination
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly page =
     signal(1);
@@ -140,30 +132,18 @@ export class StockDashboard implements OnInit {
   protected readonly totalPages =
     signal(0);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   protected selectedProduct = '';
 
   protected selectedWarehouse = '';
 
-  /*
-  |--------------------------------------------------------------------------
-  | Modal
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly operationModalOpen =
     signal(false);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Table Columns
-  |--------------------------------------------------------------------------
-  */
+
 
   protected readonly columns:
     TableColumn<Stock>[] = [
@@ -244,11 +224,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Load Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   private loadFilters(): void {
 
@@ -358,11 +334,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Load Stock
-  |--------------------------------------------------------------------------
-  */
+
 
   protected loadStock(): void {
 
@@ -417,11 +389,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   protected applyFilters(): void {
 
@@ -443,11 +411,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pagination
-  |--------------------------------------------------------------------------
-  */
+
 
   protected changePage(
     page: number
@@ -513,11 +477,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Stock Status
-  |--------------------------------------------------------------------------
-  */
+
 
   protected stockStatus(
     stock: Stock
@@ -565,11 +525,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Operation Modal
-  |--------------------------------------------------------------------------
-  */
+
 
   protected openOperation(): void {
 
@@ -597,11 +553,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Movements
-  |--------------------------------------------------------------------------
-  */
+
 
   protected openMovements(): void {
 
@@ -611,11 +563,7 @@ export class StockDashboard implements OnInit {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Refresh
-  |--------------------------------------------------------------------------
-  */
+
 
   protected refresh(): void {
 

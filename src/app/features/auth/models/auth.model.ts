@@ -4,11 +4,29 @@ export interface LoginRequest {
 }
 
 export interface AuthUser {
+
   _id: string;
+
   name: string;
+
   email: string;
-  role: string;
-  isActive: boolean;
+
+  phone?: string;
+
+  avatar?: string | null;
+
+  role: 'Admin' | 'Manager' | 'Employee';
+
+  status?: 'Active' | 'Inactive' | 'Suspended';
+
+  isActive?: boolean;
+
+  isVerified?: boolean;
+
+  lastLogin?: string | null;
+
+  createdAt?: string;
+
 }
 
 export interface LoginResponse {

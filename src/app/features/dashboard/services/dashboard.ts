@@ -35,11 +35,7 @@ export class DashboardService {
     `${environment.apiUrl}`;
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Recent Sales
-  |--------------------------------------------------------------------------
-  */
+
 
   getRecentSales():
     Observable<RecentSale[]> {
@@ -74,11 +70,7 @@ export class DashboardService {
   }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Recent Purchases
-  |--------------------------------------------------------------------------
-  */
+
 
   getRecentPurchases():
     Observable<RecentPurchase[]> {

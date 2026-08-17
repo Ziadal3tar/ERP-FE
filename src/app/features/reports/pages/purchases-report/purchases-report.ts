@@ -98,14 +98,24 @@ export class PurchasesReport
     signal('');
 
 
-  protected readonly filterForm =
-    this.fb.nonNullable.group({
+protected readonly filterForm =
+  this.fb.nonNullable.group({
 
-      supplier: [''],
+    supplier: [
+      {
+        value: '',
+        disabled: true
+      }
+    ],
 
-      warehouse: ['']
+    warehouse: [
+      {
+        value: '',
+        disabled: true
+      }
+    ]
 
-    });
+  });
 Math: any;
 
 
@@ -118,11 +128,7 @@ Math: any;
   }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filters
-  |--------------------------------------------------------------------------
-  */
+
 
   private loadFilters(): void {
 
@@ -233,30 +239,35 @@ Math: any;
   }
 
 
-  private finishFilters(
-    suppliersLoaded: boolean,
-    warehousesLoaded: boolean
-  ): void {
+private finishFilters(
+  suppliersLoaded: boolean,
+  warehousesLoaded: boolean
+): void {
 
-    if (
-      suppliersLoaded &&
-      warehousesLoaded
-    ) {
+  if (
+    suppliersLoaded &&
+    warehousesLoaded
+  ) {
 
-      this.filtersLoading.set(
-        false
-      );
+    this.filterForm.controls.supplier.enable({
+      emitEvent: false
+    });
 
-    }
+    this.filterForm.controls.warehouse.enable({
+      emitEvent: false
+    });
+
+
+    this.filtersLoading.set(
+      false
+    );
 
   }
 
+}
 
-  /*
-  |--------------------------------------------------------------------------
-  | Report
-  |--------------------------------------------------------------------------
-  */
+
+
 
   protected loadReport(): void {
 
@@ -344,11 +355,7 @@ Math: any;
   }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Calculations
-  |--------------------------------------------------------------------------
-  */
+
 
   protected get netBeforeTax(): number {
 

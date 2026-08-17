@@ -1,1 +1,0 @@
-import{Ba as s,Wa as n,Xa as t,kb as o}from"./chunk-QTPWOX57.js";import"./chunk-2NFLSA4Y.js";var r=class a{static \u0275fac=function(e){return new(e||a)};static \u0275cmp=s({type:a,selectors:[["app-change-password"]],decls:2,vars:0,template:function(e,i){e&1&&(n(0,"p"),o(1,"change-password works!"),t())},encapsulation:2})};export{r as ChangePassword};

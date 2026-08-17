@@ -1,174 +1,549 @@
-<div class="demo-login-card">
-  <div class="demo-login-header">
-    <div class="demo-icon">
-      <i class="bi bi-person-check-fill"></i>
-    </div>
-
-    <div>
-      <strong>Demo Account</strong>
-      <span>Use these credentials to explore the system</span>
-    </div>
-  </div>
-
-  <div class="demo-credentials">
-
-    <div class="credential">
-      <div class="credential-label">
-        <i class="bi bi-envelope"></i>
-        <span>Email</span>
-      </div>
-
-      <strong>admin@erp.com</strong>
-    </div>
-
-    <div class="credential">
-      <div class="credential-label">
-        <i class="bi bi-lock"></i>
-        <span>Password</span>
-      </div>
-
-      <strong>Password123!</strong>
-    </div>
-
-  </div>
-
-  <div class="demo-hint">
-    <i class="bi bi-info-circle"></i>
-    <span>Demo credentials for portfolio preview</span>
-  </div>
-</div>
-
 <div class="login-page">
 
-    <div class="left-side">
+  <div class="login-background"></div>
 
-        <div class="overlay">
+  <div class="login-grid">
 
-            <h1>ERP System</h1>
+    <section class="hero-panel">
 
-            <p>
-                Manage your business with one powerful platform.
-            </p>
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+
+        <div class="brand-mark">
+          <span>ERP</span>
+        </div>
+
+        <div class="hero-copy">
+
+          <span class="eyebrow">
+            BUSINESS MANAGEMENT PLATFORM
+          </span>
+
+          <h1>
+            Run your business
+            <span>with clarity.</span>
+          </h1>
+
+          <p>
+            Manage inventory, sales, purchases,
+            customers and business operations
+            from one powerful platform.
+          </p>
 
         </div>
 
-    </div>
 
-    <div class="right-side">
+        <div class="hero-features">
+
+          <div class="feature-item">
+
+            <span class="feature-icon">
+              <i class="bi bi-box-seam"></i>
+            </span>
+
+            <div>
+              <strong>
+                Smart Inventory
+              </strong>
+
+              <span>
+                Real-time stock visibility
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="feature-item">
+
+            <span class="feature-icon">
+              <i class="bi bi-graph-up-arrow"></i>
+            </span>
+
+            <div>
+              <strong>
+                Business Reports
+              </strong>
+
+              <span>
+                Clear operational insights
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="feature-item">
+
+            <span class="feature-icon">
+              <i class="bi bi-shield-check"></i>
+            </span>
+
+            <div>
+              <strong>
+                Secure Access
+              </strong>
+
+              <span>
+                Role-based account protection
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="hero-footer">
+
+          <span>
+            ERP Management System
+          </span>
+
+          <span class="footer-dot"></span>
+
+          <span>
+            Built for modern operations
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="login-panel">
+
+      <div class="login-panel-inner">
+
+
+        <div class="mobile-brand">
+
+          <div class="brand-mark small">
+            <span>ERP</span>
+          </div>
+
+          <div>
+
+            <strong>
+              ERP System
+            </strong>
+
+            <span>
+              Business Management Platform
+            </span>
+
+          </div>
+
+        </div>
+
 
         <form
-            class="login-card"
-            [formGroup]="loginForm"
-            (ngSubmit)="submit()">
+          class="login-card"
+          [formGroup]="loginForm"
+          (ngSubmit)="submit()"
+          novalidate
+        >
 
-            <div class="logo">
-                ERP
-            </div>
 
-            <h2>Welcome Back</h2>
+          <div class="login-header">
 
-            <p class="subtitle">
-                Login to continue
+            <span class="login-eyebrow">
+              WELCOME BACK
+            </span>
+
+            <h2>
+              Sign in to your account
+            </h2>
+
+            <p>
+              Enter your credentials to continue
+              to the dashboard.
             </p>
-@if(errorMessage){
 
-    <div class="login-error">
+          </div>
 
-        <i class="bi bi-exclamation-circle"></i>
 
-        <span>
-            {{ errorMessage }}
-        </span>
+          @if (errorMessage()) {
 
-    </div>
+            <div
+              class="login-error"
+              role="alert"
+            >
 
-}
-            <!-- Email -->
+              <div class="error-icon">
 
-            <div class="form-group">
+                <i class="bi bi-exclamation-triangle-fill"></i>
 
-                <label>Email</label>
+              </div>
 
-                <input
-                    type="email"
-                    placeholder="Enter your email"
-                    formControlName="email">
 
-                @if(f.email.touched && f.email.errors?.['required']){
+              <div class="error-content">
 
-                <small>Email is required</small>
+                <strong>
+                  Sign in failed
+                </strong>
 
-                }
+                <span>
+                  {{ errorMessage() }}
+                </span>
 
-                @if(f.email.touched && f.email.errors?.['email']){
+              </div>
 
-                <small>Invalid email</small>
 
-                }
+              <button
+                type="button"
+                class="error-close"
+                aria-label="Dismiss error"
+                (click)="clearError()"
+              >
 
-            </div>
+                <i class="bi bi-x"></i>
 
-            <!-- Password -->
-
-            <div class="form-group">
-
-                <label>Password</label>
-
-                <input
-                    type="password"
-                    placeholder="Enter password"
-                    formControlName="password">
-
-                @if(f.password.touched && f.password.errors?.['required']){
-
-                <small>Password is required</small>
-
-                }
-
-                @if(f.password.touched && f.password.errors?.['minlength']){
-
-                <small>Password must be at least 6 characters</small>
-
-                }
+              </button>
 
             </div>
 
-            <div class="options">
+          }
 
-                <label>
 
-                    <input
-                        type="checkbox"
-                        formControlName="rememberMe">
+          <div class="form-group">
 
-                    Remember me
+            <label for="email">
+              Email address
+            </label>
 
-                </label>
 
-                <a routerLink="/forgot-password">
-                    Forgot Password?
-                </a>
+            <div
+              class="input-shell"
+              [class.invalid]="
+                f.email.touched &&
+                f.email.invalid
+              "
+            >
+
+              <span class="input-icon">
+                <i class="bi bi-envelope"></i>
+              </span>
+
+
+              <input
+                id="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                formControlName="email"
+                (input)="clearError()"
+              />
 
             </div>
+
+
+            @if (
+              f.email.touched &&
+              f.email.errors?.['required']
+            ) {
+
+              <div class="field-error">
+                <i class="bi bi-exclamation-circle"></i>
+                Email is required.
+              </div>
+
+            }
+
+
+            @if (
+              f.email.touched &&
+              f.email.errors?.['email']
+            ) {
+
+              <div class="field-error">
+                <i class="bi bi-exclamation-circle"></i>
+                Enter a valid email address.
+              </div>
+
+            }
+
+          </div>
+
+
+          <div class="form-group">
+
+            <div class="label-row">
+
+              <label for="password">
+                Password
+              </label>
+
+              <a
+                routerLink="/forgot-password"
+                class="forgot-link"
+              >
+                Forgot password?
+              </a>
+
+            </div>
+
+
+            <div
+              class="input-shell"
+              [class.invalid]="
+                f.password.touched &&
+                f.password.invalid
+              "
+            >
+
+              <span class="input-icon">
+                <i class="bi bi-lock"></i>
+              </span>
+
+
+              <input
+                id="password"
+                [type]="
+                  showPassword()
+                    ? 'text'
+                    : 'password'
+                "
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                formControlName="password"
+                (input)="clearError()"
+              />
+
+
+              <button
+                type="button"
+                class="password-toggle"
+                tabindex="-1"
+                aria-label="Toggle password visibility"
+                (click)="togglePassword()"
+              >
+
+                <i
+                  class="bi"
+                  [class.bi-eye]="
+                    !showPassword()
+                  "
+                  [class.bi-eye-slash]="
+                    showPassword()
+                  "
+                ></i>
+
+              </button>
+
+            </div>
+
+
+            @if (
+              f.password.touched &&
+              f.password.errors?.['required']
+            ) {
+
+              <div class="field-error">
+                <i class="bi bi-exclamation-circle"></i>
+                Password is required.
+              </div>
+
+            }
+
+
+            @if (
+              f.password.touched &&
+              f.password.errors?.['minlength']
+            ) {
+
+              <div class="field-error">
+                <i class="bi bi-exclamation-circle"></i>
+                Password must be at least 6 characters.
+              </div>
+
+            }
+
+          </div>
+
+
+          <div class="options">
+
+            <label class="remember-option">
+
+              <input
+                type="checkbox"
+                formControlName="rememberMe"
+              />
+
+              <span class="custom-checkbox">
+
+                <i class="bi bi-check"></i>
+
+              </span>
+
+              <span>
+                Remember me
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="login-button"
+            [disabled]="loading()"
+          >
+
+            @if (loading()) {
+
+              <span class="button-loader"></span>
+
+              <span>
+                Signing you in...
+              </span>
+
+            } @else {
+
+              <span>
+                Sign in
+              </span>
+
+              <i class="bi bi-arrow-right"></i>
+
+            }
+
+          </button>
+
+
+          <div class="secure-note">
+
+            <i class="bi bi-shield-check"></i>
+
+            <span>
+              Secure authentication
+            </span>
+
+          </div>
+
+
+          <div class="demo-login-card">
+
+            <div class="demo-login-header">
+
+              <div class="demo-icon">
+
+                <i class="bi bi-stars"></i>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Demo Account
+                </strong>
+
+                <span>
+                  Portfolio preview credentials
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="demo-credentials">
+
 
 <button
-    type="submit"
-    [disabled]="loading">
+  type="button"
+  class="credential"
+  (click)="fillDemoEmail()"
+>
 
-    @if(!loading){
+  <div class="credential-label">
 
-        Login
+    <i class="bi bi-envelope"></i>
 
-    } @else {
+    <span>
+      Email
+    </span>
 
-        Logging in...
+  </div>
 
-    }
+
+  <strong>
+    admin@erp.com
+  </strong>
+
+
+  <i class="bi bi-copy credential-copy"></i>
 
 </button>
 
+
+<button
+  type="button"
+  class="credential"
+  (click)="fillDemoPassword()"
+>
+
+  <div class="credential-label">
+
+    <i class="bi bi-lock"></i>
+
+    <span>
+      Password
+    </span>
+
+  </div>
+
+
+  <strong>
+    Password123!
+  </strong>
+
+
+  <i class="bi bi-copy credential-copy"></i>
+
+</button>
+
+
+            </div>
+
+
+            <div class="demo-hint">
+
+              <i class="bi bi-info-circle"></i>
+
+              <span>
+                Click a credential to fill the login form.
+              </span>
+
+            </div>
+
+          </div>
+
         </form>
 
-    </div>
+
+        <div class="login-footer">
+
+          <span>
+            © 2026 ERP System
+          </span>
+
+          <span>
+            Secure business management platform
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
 
 </div>

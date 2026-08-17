@@ -27,90 +27,127 @@ import {
   LoginResponse
 } from '../../features/auth/models/auth.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Dependencies
-  |--------------------------------------------------------------------------
-  */
+
+
 
   private readonly http =
     inject(HttpClient);
 
+
   private readonly router =
     inject(Router);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Configuration
-  |--------------------------------------------------------------------------
-  */
+
+
 
   private readonly api =
     environment.apiUrl;
 
-  /*
-  |--------------------------------------------------------------------------
-  | Storage Keys
-  |--------------------------------------------------------------------------
-  */
+
+
 
   private readonly tokenKey =
     'erp_token';
 
+
   private readonly userKey =
     'erp_user';
 
-  /*
-  |--------------------------------------------------------------------------
-  | Current User
-  |--------------------------------------------------------------------------
-  */
+
+
 
   private readonly currentUser =
     signal<AuthUser | null>(
       this.getStoredUser()
     );
 
+
   readonly user =
     this.currentUser.asReadonly();
 
-  /*
-  |--------------------------------------------------------------------------
-  | Login
-  |--------------------------------------------------------------------------
-  */
+
+
 
   login(
     credentials: LoginRequest
   ): Observable<LoginResponse> {
 
     return this.http
+
       .post<LoginResponse>(
         `${this.api}/auth/login`,
         credentials
       )
+
       .pipe(
 
-        tap(response => {
+        tap(
+          response => {
 
-          this.setSession(response);
+            this.setSession(
+              response
+            );
 
-        })
+          }
+        )
 
       );
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Forgot Password
-  |--------------------------------------------------------------------------
-  */
+
+
+
+  // getProfile():
+  //   Observable<{
+  //     success: boolean;
+  //     user: AuthUser;
+  //   }> {
+
+  //   return this.http.get<{
+  //     success: boolean;
+  //     user: AuthUser;
+  //   }>(
+  //     `${this.api}/auth/profile`
+  //   );
+
+  // }
+
+
+
+
+  refreshUser():
+    Observable<{
+      success: boolean;
+      user: AuthUser;
+    }> {
+
+    return this.getProfile()
+
+      .pipe(
+
+        tap(
+          response => {
+
+            this.setUser(
+              response.user
+            );
+
+          }
+        )
+
+      );
+
+  }
+
+
+
 
   forgotPassword(
     email: string
@@ -125,11 +162,8 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Reset Password
-  |--------------------------------------------------------------------------
-  */
+
+
 
   resetPassword(
     token: string,
@@ -145,11 +179,8 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Save Token
-  |--------------------------------------------------------------------------
-  */
+
+
 
   saveToken(
     token: string
@@ -162,11 +193,8 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Get Token
-  |--------------------------------------------------------------------------
-  */
+
+
 
   getToken(): string | null {
 
@@ -176,11 +204,8 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Authentication
-  |--------------------------------------------------------------------------
-  */
+
+
 
   isAuthenticated(): boolean {
 
@@ -188,17 +213,15 @@ export class AuthService {
 
   }
 
+
   isLoggedIn(): boolean {
 
     return this.isAuthenticated();
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Role
-  |--------------------------------------------------------------------------
-  */
+
+
 
   hasRole(
     role: string
@@ -208,27 +231,53 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Logout
-  |--------------------------------------------------------------------------
-  */
+
+
 
   logout(): void {
 
-    this.clearSession();
+    this.http
 
-    this.router.navigate([
-      '/login'
-    ]);
+      .post<{
+        success: boolean;
+        message: string;
+      }>(
+        `${this.api}/auth/logout`,
+        {}
+      )
+
+      .pipe()
+
+      .subscribe({
+
+        next: () => {
+
+          this.finishLogout();
+
+        },
+
+        error: error => {
+
+          /*
+           * Even if the backend request fails,
+           * we still clear the local session.
+           */
+
+          console.error(
+            'Logout error:',
+            error
+          );
+
+          this.finishLogout();
+
+        }
+
+      });
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Set Session
-  |--------------------------------------------------------------------------
-  */
+
+
 
   private setSession(
     response: LoginResponse
@@ -238,22 +287,47 @@ export class AuthService {
       response.accessToken
     );
 
-    localStorage.setItem(
-      this.userKey,
-      JSON.stringify(response.user)
-    );
 
-    this.currentUser.set(
+    this.setUser(
       response.user
     );
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Clear Session
-  |--------------------------------------------------------------------------
-  */
+
+
+
+ private setUser(
+  user: AuthUser
+): void {
+
+  localStorage.setItem(
+    this.userKey,
+    JSON.stringify(user)
+  );
+
+  this.currentUser.set(
+    user
+  );
+
+}
+
+
+
+
+  private finishLogout(): void {
+
+    this.clearSession();
+
+
+    this.router.navigate([
+      '/login'
+    ]);
+
+  }
+
+
+
 
   private clearSession(): void {
 
@@ -261,9 +335,11 @@ export class AuthService {
       this.tokenKey
     );
 
+
     localStorage.removeItem(
       this.userKey
     );
+
 
     this.currentUser.set(
       null
@@ -271,24 +347,24 @@ export class AuthService {
 
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Get Stored User
-  |--------------------------------------------------------------------------
-  */
 
-  private getStoredUser(): AuthUser | null {
+
+
+  private getStoredUser():
+    AuthUser | null {
 
     const storedUser =
       localStorage.getItem(
         this.userKey
       );
 
+
     if (!storedUser) {
 
       return null;
 
     }
+
 
     try {
 
@@ -302,10 +378,93 @@ export class AuthService {
         this.userKey
       );
 
+
       return null;
 
     }
 
   }
+getProfile(): Observable<{
+  success: boolean;
+  user: AuthUser;
+}> {
 
+  return this.http.get<{
+    success: boolean;
+    user: AuthUser;
+  }>(
+    `${this.api}/auth/profile`
+  );
+
+}
+updateProfile(
+  data: {
+    name?: string;
+    phone?: string;
+    avatar?: string;
+  }
+):
+  Observable<{
+    success: boolean;
+    message: string;
+    data?: AuthUser;
+    user?: AuthUser;
+  }> {
+
+  return this.http
+
+    .put<{
+      success: boolean;
+      message: string;
+      data?: AuthUser;
+      user?: AuthUser;
+    }>(
+      `${this.api}/users/me`,
+      data
+    )
+
+    .pipe(
+
+      tap(
+        response => {
+
+          const updatedUser =
+            response.data ??
+            response.user;
+
+
+          if (updatedUser) {
+
+            this.setUser(
+              updatedUser
+            );
+
+          }
+
+        }
+      )
+
+    );
+
+}
+changePassword(
+  currentPassword: string,
+  newPassword: string
+): Observable<{
+  success: boolean;
+  message: string;
+}> {
+
+  return this.http.put<{
+    success: boolean;
+    message: string;
+  }>(
+    `${this.api}/auth/change-password`,
+    {
+      currentPassword,
+      newPassword
+    }
+  );
+
+}
 }

@@ -28,11 +28,7 @@ export const errorInterceptor: HttpInterceptorFn = (
     catchError(
       (error: HttpErrorResponse) => {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Unauthorized
-        |--------------------------------------------------------------------------
-        */
+
 
         if (
           error.status === 401 &&

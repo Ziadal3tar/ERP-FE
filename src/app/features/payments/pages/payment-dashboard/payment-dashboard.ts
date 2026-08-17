@@ -68,11 +68,7 @@ export class PaymentDashboard
   protected readonly recentPayments =
     signal<Payment[]>([]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | This is number of payment records, not money.
-  |--------------------------------------------------------------------------
-  */
+
 
   ngOnInit(): void {
 
