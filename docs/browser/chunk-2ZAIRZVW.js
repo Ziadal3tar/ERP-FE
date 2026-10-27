@@ -1,0 +1,1 @@
+import"./chunk-2NFLSA4Y.js";var o=[{path:"",loadComponent:()=>import("./chunk-ACRZ6DE2.js").then(t=>t.DepartmentsList)},{path:"create",loadComponent:()=>import("./chunk-W6F7QLZV.js").then(t=>t.DepartmentForm)},{path:":id/edit",loadComponent:()=>import("./chunk-W6F7QLZV.js").then(t=>t.DepartmentForm)}];export{o as DEPARTMENTS_ROUTES};
