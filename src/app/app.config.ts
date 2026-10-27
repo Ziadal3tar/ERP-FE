@@ -5,7 +5,8 @@ import {
 } from '@angular/core';
 
 import {
-  provideRouter
+  provideRouter,
+  withHashLocation
 } from '@angular/router';
 
 import {
@@ -33,7 +34,7 @@ export const appConfig: ApplicationConfig = {
 
     provideZonelessChangeDetection(),
 
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()),
 
     provideHttpClient(
 

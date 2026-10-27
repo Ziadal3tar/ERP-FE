@@ -1,0 +1,1 @@
+import"./chunk-2NFLSA4Y.js";var t=[{path:"",loadComponent:()=>import("./chunk-QV6PWT2X.js").then(o=>o.Profile)},{path:"change-password",loadComponent:()=>import("./chunk-73BIQCAW.js").then(o=>o.ChangePassword)}];export{t as PROFILE_ROUTES};

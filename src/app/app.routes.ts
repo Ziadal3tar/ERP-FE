@@ -127,127 +127,127 @@ export const routes: Routes = [
               m => m.WAREHOUSES_ROUTES
             )
       },
-     {
-  path: 'stock',
+      {
+        path: 'stock',
 
-  loadChildren: () =>
-    import(
-      './features/stock/stock.routes'
-    )
-    .then(
-      m => m.STOCK_ROUTES
-    )
-},
-{
-  path: 'purchases',
+        loadChildren: () =>
+          import(
+            './features/stock/stock.routes'
+          )
+            .then(
+              m => m.STOCK_ROUTES
+            )
+      },
+      {
+        path: 'purchases',
 
-  loadChildren: () =>
-    import(
-      './features/purchases/purchases.routes'
-    )
-    .then(
-      m => m.PURCHASES_ROUTES
-    )
-},
-{
-  path: 'suppliers',
+        loadChildren: () =>
+          import(
+            './features/purchases/purchases.routes'
+          )
+            .then(
+              m => m.PURCHASES_ROUTES
+            )
+      },
+      {
+        path: 'suppliers',
 
-  loadChildren: () =>
-    import(
-      './features/suppliers/suppliers.routes'
-    )
-    .then(
-      m => m.SUPPLIERS_ROUTES
-    )
-},
-{
-  path: 'customers',
+        loadChildren: () =>
+          import(
+            './features/suppliers/suppliers.routes'
+          )
+            .then(
+              m => m.SUPPLIERS_ROUTES
+            )
+      },
+      {
+        path: 'customers',
 
-  loadChildren: () =>
-    import(
-      './features/customers/customers.routes'
-    )
-    .then(
-      m => m.CUSTOMERS_ROUTES
-    )
-},
-{
-  path: 'sales',
+        loadChildren: () =>
+          import(
+            './features/customers/customers.routes'
+          )
+            .then(
+              m => m.CUSTOMERS_ROUTES
+            )
+      },
+      {
+        path: 'sales',
 
-  loadChildren: () =>
-    import(
-      './features/sales/sales.routes'
-    )
-    .then(
-      m => m.SALES_ROUTES
-    )
-},
-{
-  path: 'invoices',
+        loadChildren: () =>
+          import(
+            './features/sales/sales.routes'
+          )
+            .then(
+              m => m.SALES_ROUTES
+            )
+      },
+      {
+        path: 'invoices',
 
-  loadChildren: () =>
-    import(
-      './features/invoices/invoices.routes'
-    )
-    .then(
-      m => m.INVOICES_ROUTES
-    )
-},
-{
-  path: 'payments',
+        loadChildren: () =>
+          import(
+            './features/invoices/invoices.routes'
+          )
+            .then(
+              m => m.INVOICES_ROUTES
+            )
+      },
+      {
+        path: 'payments',
 
-  loadChildren: () =>
-    import(
-      './features/payments/payments.routes'
-    )
-    .then(
-      m => m.PAYMENTS_ROUTES
-    )
-},
-{
-  path: 'reports',
+        loadChildren: () =>
+          import(
+            './features/payments/payments.routes'
+          )
+            .then(
+              m => m.PAYMENTS_ROUTES
+            )
+      },
+      {
+        path: 'reports',
 
-  loadChildren: () =>
-    import(
-      './features/reports/reports.routes'
-    )
-    .then(
-      m => m.REPORTS_ROUTES
-    )
-},
-{
-  path: 'audit-logs',
+        loadChildren: () =>
+          import(
+            './features/reports/reports.routes'
+          )
+            .then(
+              m => m.REPORTS_ROUTES
+            )
+      },
+      {
+        path: 'audit-logs',
 
-  loadChildren: () =>
-    import(
-      './features/audit-logs/audit-logs.routes'
-    )
-    .then(
-      m => m.AUDIT_LOGS_ROUTES
-    )
-},
-{
-  path: 'notifications',
+        loadChildren: () =>
+          import(
+            './features/audit-logs/audit-logs.routes'
+          )
+            .then(
+              m => m.AUDIT_LOGS_ROUTES
+            )
+      },
+      {
+        path: 'notifications',
 
-  loadChildren: () =>
-    import(
-      './features/notifications/notifications.routes'
-    )
-    .then(
-      m => m.NOTIFICATIONS_ROUTES
-    )
-},
-{
-  path: 'profile',
+        loadChildren: () =>
+          import(
+            './features/notifications/notifications.routes'
+          )
+            .then(
+              m => m.NOTIFICATIONS_ROUTES
+            )
+      },
+      {
+        path: 'profile',
 
-  loadChildren: () =>
-    import(
-      './features/profile/profile/profile.routes'
-    )
-    .then(
-      m => m.PROFILE_ROUTES
-    )
-},
+        loadChildren: () =>
+          import(
+            './features/profile/profile/profile.routes'
+          )
+            .then(
+              m => m.PROFILE_ROUTES
+            )
+      },
 
 
       {
