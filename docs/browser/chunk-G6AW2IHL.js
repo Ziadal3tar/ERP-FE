@@ -1,0 +1,1 @@
+import"./chunk-2NFLSA4Y.js";var o=[{path:"",loadComponent:()=>import("./chunk-EXLG2H7U.js").then(t=>t.AuditLogList)},{path:":id",loadComponent:()=>import("./chunk-VD6KEYSK.js").then(t=>t.AuditLogDetails)}];export{o as AUDIT_LOGS_ROUTES};
